@@ -1,10 +1,10 @@
-﻿using IcosWebApi.Models;
+﻿using IcosWebApiGenerics.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcosWebApi
+namespace IcosWebApiGenerics
 {
     public interface IValidatorService<T>
     {

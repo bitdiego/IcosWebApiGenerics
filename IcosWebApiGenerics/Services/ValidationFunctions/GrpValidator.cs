@@ -1,14 +1,14 @@
-﻿using IcosWebApi.Models;
-using IcosWebApi.Utils;
+﻿using IcosWebApiGenerics.Models;
+using IcosWebApiGenerics.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using IcosWebApi.Data;
-using IcosWebApi.Models.Obj;
+using IcosWebApiGenerics.Data;
+using IcosWebApiGenerics.Models.BADM;
 
-namespace IcosWebApi.Services.ValidationFunctions
+namespace IcosWebApiGenerics.Services.ValidationFunctions
 {
     public class GrpValidator
     {

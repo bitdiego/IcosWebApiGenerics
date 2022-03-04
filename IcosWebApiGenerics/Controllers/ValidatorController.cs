@@ -1,6 +1,6 @@
-﻿using IcosWebApi.Models;
-using IcosWebApi.Models.Obj;
-using IcosWebApi.Services;
+﻿using IcosWebApiGenerics.Models;
+using IcosWebApiGenerics.Models.BADM;
+using IcosWebApiGenerics.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcosWebApi.Controllers
+namespace IcosWebApiGenerics.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

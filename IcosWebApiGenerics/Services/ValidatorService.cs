@@ -1,14 +1,14 @@
-﻿using IcosWebApi.Models;
-using IcosWebApi.Utils;
+﻿using IcosWebApiGenerics.Models;
+using IcosWebApiGenerics.Utils;
 using System;
-using IcosWebApi.Services.ValidationFunctions;
+using IcosWebApiGenerics.Services.ValidationFunctions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IcosWebApi.Data;
-using IcosWebApi.Models.Obj;
+using IcosWebApiGenerics.Data;
+using IcosWebApiGenerics.Models.BADM;
 
-namespace IcosWebApi.Services
+namespace IcosWebApiGenerics.Services
 {
     public class ValidatorService<T> : IValidatorService<T> where T : BaseClass, new()
     {

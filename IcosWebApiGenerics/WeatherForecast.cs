@@ -1,6 +1,6 @@
 using System;
 
-namespace IcosWebApi
+namespace IcosWebApiGenerics
 {
     public class WeatherForecast
     {

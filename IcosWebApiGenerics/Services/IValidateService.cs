@@ -1,8 +1,8 @@
-﻿using IcosWebApi.Models;
-using IcosWebApi.Models.Obj;
+﻿using IcosWebApiGenerics.Models;
+using IcosWebApiGenerics.Models.BADM;
 using System.Collections.Generic;
 
-namespace IcosWebApi.Services
+namespace IcosWebApiGenerics.Services
 {
     public interface IValidateService
     {

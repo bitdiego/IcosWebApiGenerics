@@ -1,12 +1,12 @@
-﻿using IcosWebApi.Data;
-using IcosWebApi.Models.Obj;
-using IcosWebApi.Utils;
+﻿using IcosWebApiGenerics.Data;
+using IcosWebApiGenerics.Models.BADM;
+using IcosWebApiGenerics.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcosWebApi.Services
+namespace IcosWebApiGenerics.Services
 {
     public class SaveDataService<T> : ISaveDataService<T> where T : BaseClass, new()
     {

@@ -1,4 +1,4 @@
-﻿using IcosWebApi.Controllers;
+﻿using IcosWebApiGenerics.Controllers;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Reflection;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcosWebApi.ControllerFactory
+namespace IcosWebApiGenerics.ControllerFactory
 {
     public class GenericTypeControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
     {

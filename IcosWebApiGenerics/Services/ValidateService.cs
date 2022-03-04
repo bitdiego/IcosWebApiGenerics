@@ -1,12 +1,12 @@
-﻿using IcosWebApi.Models;
-using IcosWebApi.Models.Obj;
-using IcosWebApi.Utils;
+﻿using IcosWebApiGenerics.Models;
+using IcosWebApiGenerics.Models.BADM;
+using IcosWebApiGenerics.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcosWebApi.Services
+namespace IcosWebApiGenerics.Services
 {
     public class ValidateService : IValidateService
     {

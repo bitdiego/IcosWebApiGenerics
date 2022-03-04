@@ -1,8 +1,8 @@
-﻿using IcosWebApi.Models.Obj;
+﻿using IcosWebApiGenerics.Models.BADM;
 using System.Threading.Tasks;
 
 
-namespace IcosWebApi.Services
+namespace IcosWebApiGenerics.Services
 {
     public interface ISaveGroupService
     {

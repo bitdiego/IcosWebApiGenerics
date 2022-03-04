@@ -1,4 +1,4 @@
-﻿namespace IcosWebApi.Models
+﻿namespace IcosWebApiGenerics.Models
 {
     public class Variable
     {

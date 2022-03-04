@@ -1,10 +1,10 @@
-﻿using IcosWebApi.Models.Obj;
+﻿using IcosWebApiGenerics.Models.BADM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace IcosWebApi.Models
+namespace IcosWebApiGenerics.Models
 {
     public class Mapper : IMapper
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace IcosWebApi.Models
+namespace IcosWebApiGenerics.Models
 {
     public class ErrorLogger : IErrorLogger
     {

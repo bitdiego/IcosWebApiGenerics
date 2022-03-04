@@ -1,16 +1,16 @@
-using IcosWebApi.ControllerFactory;
-using IcosWebApi.Data;
-using IcosWebApi.Services;
+using IcosWebApiGenerics.ControllerFactory;
+using IcosWebApiGenerics.Data;
+using IcosWebApiGenerics.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using Microsoft.EntityFrameworkCore;
-using IcosWebApi.Models;
+using IcosWebApiGenerics.Models;
 
-namespace IcosWebApi
+
+namespace IcosWebApiGenerics
 {
     public class Startup
     {

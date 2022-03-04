@@ -1,7 +1,7 @@
-﻿using IcosWebApi.Models.Obj;
+﻿using IcosWebApiGenerics.Models.BADM;
 using Microsoft.EntityFrameworkCore;
 
-namespace IcosWebApi.Data
+namespace IcosWebApiGenerics.Data
 {
     public class IcosDbContext : DbContext
     {

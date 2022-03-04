@@ -1,8 +1,8 @@
-﻿using IcosWebApi.ControllerFactory;
-using IcosWebApi.Models.Obj;
+﻿using IcosWebApiGenerics.ControllerFactory;
+using IcosWebApiGenerics.Models.BADM;
 using System.Collections.Generic;
 
-namespace IcosWebApi.Models
+namespace IcosWebApiGenerics.Models
 {
     [GeneratedController("api/varforgroup")]
     public class VarForGroup : BaseClass

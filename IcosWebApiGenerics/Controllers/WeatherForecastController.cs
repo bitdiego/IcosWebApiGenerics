@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcosWebApi.Controllers
+namespace IcosWebApiGenerics.Controllers
 {
     [ApiController]
     [Route("[controller]")]

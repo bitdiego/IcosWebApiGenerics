@@ -1,6 +1,6 @@
-﻿using IcosWebApi.Models.Obj;
+﻿using IcosWebApiGenerics.Models.BADM;
 
-namespace IcosWebApi.Models
+namespace IcosWebApiGenerics.Models
 {
     public interface IMapper
     {

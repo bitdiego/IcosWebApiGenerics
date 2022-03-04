@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Reflection;
 
-namespace IcosWebApi.ControllerFactory
+namespace IcosWebApiGenerics.ControllerFactory
 {
     public class GenericControllerRouteConvention : IControllerModelConvention
     {
