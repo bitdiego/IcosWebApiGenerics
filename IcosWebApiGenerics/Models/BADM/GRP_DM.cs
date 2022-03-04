@@ -1,8 +1,10 @@
-﻿using IcosWebApiGenerics.Utils;
+﻿using IcosWebApiGenerics.ControllerFactory;
+using IcosWebApiGenerics.Utils;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IcosWebApiGenerics.Models.BADM
 {
+	[GeneratedController("api/distmanager")]
 	public class GRP_DM : BaseClass
 	{
 		public GRP_DM()

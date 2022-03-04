@@ -1,4 +1,5 @@
-﻿using IcosWebApiGenerics.Utils;
+﻿using IcosWebApiGenerics.ControllerFactory;
+using IcosWebApiGenerics.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace IcosWebApiGenerics.Models.BADM
 {
+	[GeneratedController("api/climateavg")]
 	public class GRP_CLIM_AVG : BaseClass
 	{
 		public GRP_CLIM_AVG() { GroupId = (int)Globals.Groups.GRP_CLIM_AVG; }

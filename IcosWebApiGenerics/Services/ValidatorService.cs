@@ -78,6 +78,10 @@ namespace IcosWebApiGenerics.Services
                     GRP_DM distManager = t as GRP_DM;
                     response = GrpValidator.ValidateDistManResponse(distManager, _context);
                     break;
+                case (int)Globals.Groups.GRP_PLOT:
+                    GRP_PLOT samplingScheme = t as GRP_PLOT;
+                    response = GrpValidator.ValidateSamplingSchemeResponse(samplingScheme);
+                    break;
             }
             return response;
         }

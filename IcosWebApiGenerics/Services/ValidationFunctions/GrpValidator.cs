@@ -26,7 +26,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         }
         public static Response ValidateLocationResponse(GRP_LOCATION location)
         {
-            MissingDate(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
+           // MissingDate(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
+            MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
             IsoDateCheck(location.LOCATION_DATE, "LOCATION_DATE");
             
             if (location.LOCATION_LAT > Globals.MAX_LATITUDE_VALUE || location.LOCATION_LAT < -Globals.MAX_LATITUDE_VALUE)
@@ -77,7 +78,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateTowerResponse(GRP_TOWER tower, IcosDbContext db)
         {
-            MissingDate(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
+            //MissingDate(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
+            MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
             IsoDateCheck(tower.TOWER_DATE, "TOWER_DATE");
             ItemInBadmList("TOWER_TYPE", tower.TOWER_TYPE, "GRP_TOWER", (int)Globals.CvIndexes.TOWER_TYPE, db);
             ItemInBadmList("TOWER_ACCES", tower.TOWER_ACCESS, "GRP_TOWER", (int)Globals.CvIndexes.TOWER_ACCESS, db);
@@ -88,7 +90,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateClimateAvgResponse(GRP_CLIM_AVG climateAvg)
         {
-            MissingDate(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
+            //MissingDate(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
+            MissingMandatoryData<string>(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
             IsoDateCheck(climateAvg.MAC_DATE, "MAC_DATE");
             //check if MAP, MAR, MAS, MAC_YEARS must only be positive
             return response;
@@ -100,7 +103,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             IsoDateCheck(distMan.DM_DATE_END, "DM_DATE_END");
             if(!String.IsNullOrEmpty(distMan.DM_DATE)&& !String.IsNullOrEmpty(distMan.DM_DATE_START) && !String.IsNullOrEmpty(distMan.DM_DATE_END))
             {
-                //{ 4, "$V0$ and $V1$/$V2$ are mutually exclusive"},
                 errorCode = 4;
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
@@ -110,7 +112,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             {
                 if(String.Compare(distMan.DM_DATE_START, distMan.DM_DATE_END) > 0)
                 {
-                    //{ 6, "$V0$ must be greater than $V1$"},
                     errorCode = 6;
                     response.Code += errorCode;
                     Err = ErrorCodes.GeneralErrors[errorCode];
@@ -132,6 +133,16 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
             ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
 
+            return response;
+        }
+
+        public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme)
+        {
+            //MissingDate(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
+            MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
+            IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
+            MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
+            MissingMandatoryData<decimal?>(samplingScheme.PLOT_LOCATION_LAT, "PLOT_LOCATION_LAT", "GRP_PLOT");
             return response;
         }
 
@@ -166,9 +177,24 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Messages.Add(name, Err);
             }
         }
+        public static void MissingMandatoryData<T>(T value, string name, string groupName)
+        {
+            if (value == null)
+            {
+                errorCode = 1;
+                response.Code += errorCode;
+                Err = ErrorCodes.GeneralErrors[errorCode];
+                Globals.FormatError(ref Err, "$V0$", name, "$GRP$", groupName);
+                response.Messages.Add(name, Err);
+            }
+        }
 
         private static void IsoDateCheck(string dateValue, string name)
         {
+            if (dateValue == "")
+            {
+                return ;
+            }
             errorCode = ValidateIsoDate(dateValue);
             if (errorCode > 0)
             {
@@ -187,10 +213,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             string numReg = "^[0-9]+$";
             int[] daysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-            if (input == "")
-            {
-                return 0;
-            }
             if ((input.Length) % 2 > 0 || input.Length > 12)
             {
                 return 2;
