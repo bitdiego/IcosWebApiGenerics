@@ -17,6 +17,7 @@ namespace IcosWebApiGenerics.Utils
             { 6, "$V0$ must be greater than $V1$"},
             { 7, "Not found $V0$ value in list $V1$ for variable $GRP$"},
             { 8, "Negative number not allowed for variable $V0$. Found $V1$"},
+            { 9, "Error: You have to submit at least one variable"}
         };
 
         public static Dictionary<int, string> GrpLocationErrors = new Dictionary<int, string>

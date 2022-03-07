@@ -86,10 +86,10 @@ namespace IcosWebApiGenerics.Services
             {
                 return 1;
             }
-            if (!Globals.ValidateIsoDate(utcOffset.UTC_OFFSET_DATE_START))
+           /* if (!Globals.ValidateIsoDate(utcOffset.UTC_OFFSET_DATE_START))
             {
                 return 300;
-            }
+            }*/
             return 0;
         }
 
@@ -101,10 +101,10 @@ namespace IcosWebApiGenerics.Services
             {
                 ErrorCodes.Add(10);
             }
-            if (!Globals.ValidateIsoDate(utcOffset.UTC_OFFSET_DATE_START))
+           /* if (!Globals.ValidateIsoDate(utcOffset.UTC_OFFSET_DATE_START))
             {
                 ErrorCodes.Add(11);
-            }
+            }*/
         }
     }
 }

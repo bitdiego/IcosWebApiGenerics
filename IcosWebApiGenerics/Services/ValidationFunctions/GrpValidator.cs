@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using IcosWebApiGenerics.Data;
 using IcosWebApiGenerics.Models.BADM;
+using System.Reflection;
 
 namespace IcosWebApiGenerics.Services.ValidationFunctions
 {
@@ -132,13 +133,18 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             ItemInBadmList("DM_TILL", distMan.DM_FERT_M, "DM_TILL", (int)Globals.CvIndexes.DM_TILL, db); 
             ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
             ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
+            if (!IsAnyPropNotNull<GRP_DM>(distMan))
+            {
+                errorCode = 9;
+                response.Code += errorCode;
+                Err = ErrorCodes.GeneralErrors[errorCode];
+            }
 
             return response;
         }
 
         public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme)
         {
-            //MissingDate(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
             MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
             IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
             MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
@@ -313,6 +319,26 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 return false;
             }
 
+        }
+
+        private static bool IsAnyPropNotNull<T>(T model)
+        {
+            Type myType = model.GetType();
+            IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
+
+            var subList = props.Where(item => !item.Name.Contains("_DATE") &&
+                                               !item.Name.Contains("COMMENT") &&
+                                               item.Name != "Id" &&
+                                               item.Name != "DataStatus" &&
+                                               !item.Name.Contains("UserId") &&
+                                               !item.Name.Contains("Date") &&
+                                               !item.Name.Contains("SiteId") &&
+                                               !item.Name.Contains("GroupId") &&
+                                               !item.Name.Contains("DataOrigin")).ToList();
+
+            var isAnyVAlue = subList.Any(item => item.GetValue(model, null) != null);
+
+            return isAnyVAlue;
         }
     }
 }
