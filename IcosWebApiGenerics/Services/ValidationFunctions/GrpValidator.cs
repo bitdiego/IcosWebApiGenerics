@@ -33,18 +33,18 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             
             if (location.LOCATION_LAT > Globals.MAX_LATITUDE_VALUE || location.LOCATION_LAT < -Globals.MAX_LATITUDE_VALUE)
             {
-                errorCode = 5;
-                response.Code += errorCode;
-                Err = ErrorCodes.GrpLocationErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$",  location.LOCATION_LAT.ToString());
-                response.Messages.Add("LOCATION_LAT", ErrorCodes.GrpLocationErrors[errorCode]);
-            }
-            if (location.LOCATION_LONG > Globals.MAX_LATITUDE_VALUE|| location.LOCATION_LONG < -Globals.MAX_LATITUDE_VALUE)
-            {
                 errorCode = 6;
                 response.Code += errorCode;
                 Err = ErrorCodes.GrpLocationErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", location.LOCATION_LAT.ToString());
+                Globals.FormatError(ref Err, "$V0$",  location.LOCATION_LAT.ToString());
+                response.Messages.Add("LOCATION_LAT", Err);
+            }
+            if (location.LOCATION_LONG > Globals.MAX_LONGITUDE_VALUE|| location.LOCATION_LONG < -Globals.MAX_LONGITUDE_VALUE)
+            {
+                errorCode = 5;
+                response.Code += errorCode;
+                Err = ErrorCodes.GrpLocationErrors[errorCode];
+                Globals.FormatError(ref Err, "$V0$", location.LOCATION_LONG.ToString());
                 response.Messages.Add("LOCATION_LONG", Err);
             }
             return response;
@@ -197,7 +197,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         private static void IsoDateCheck(string dateValue, string name)
         {
-            if (dateValue == "")
+            if (String.IsNullOrEmpty(dateValue))
             {
                 return ;
             }

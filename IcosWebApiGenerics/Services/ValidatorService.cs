@@ -51,10 +51,9 @@ namespace IcosWebApiGenerics.Services
 
         public Response Validate(T t)
         {
-            //Response res = GrpValidator.GetResponse();
             switch (t.GroupId)
             {
-                case (int)Globals.Groups.GRP_LOCATION: //grp location
+                case (int)Globals.Groups.GRP_LOCATION:
                     GRP_LOCATION location = t as GRP_LOCATION;
                     response = GrpValidator.ValidateLocationResponse(location);
                     break;
@@ -84,15 +83,6 @@ namespace IcosWebApiGenerics.Services
                     break;
             }
             return response;
-        }
-
-        private int ValidateLocationGroup(T t)
-        {
-            GRP_LOCATION location = t as GRP_LOCATION;
-            if (String.IsNullOrEmpty(location.LOCATION_DATE)) return 1;
-            if (location.LOCATION_LAT > 1000) return 2;
-            if (location.LOCATION_LONG > 1000) return 3;
-            return 0;
         }
 
         /// <summary>
