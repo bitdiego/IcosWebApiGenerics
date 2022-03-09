@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IcosWebApiGenerics.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,27 @@ namespace IcosWebApiGenerics.Models
             Messages = new Dictionary<string, string>();
         }
         public int Code { get; set; }
-        //public string Message { get; set; }
         public Dictionary<string, string> Messages { get; set; }
+        private string Error { get; set; }
+        public void FormatError(string key, params string[] list)
+        {
+            for (int i = 0; i < list.Length; i += 2)
+            {
+                Error = Error.Replace(list[i], list[i + 1]);
+            }
+            this.Messages.Add(key, Error);
+        }
+
+        public void FormatError(string err, string key, params string[] list)
+        {
+            Error = err;
+            for (int i = 0; i < list.Length; i += 2)
+            {
+                Error = Error.Replace(list[i], list[i + 1]);
+            }
+            this.Messages.Add(key, Error);
+            Error = "";
+        }
+
     }
 }

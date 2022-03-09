@@ -15,7 +15,7 @@ namespace IcosWebApiGenerics.Utils
             { 4, "$V0$ and $V1$/$V2$ are mutually exclusive"},
             { 5, "$V0$ and $V1$ must be both submitted"},
             { 6, "$V0$ must be greater than $V1$"},
-            { 7, "Not found $V0$ value in list $V1$ for variable $GRP$"},
+            { 7, "Not found $V0$ value in list $V1$ for group $GRP$"},
             { 8, "Negative number not allowed for variable $V0$. Found $V1$"},
             { 9, "You have to submit at least one variable"}
         };
@@ -66,6 +66,16 @@ namespace IcosWebApiGenerics.Utils
            // { 4, "DM_DATE and DM_DATE_START/DM_DATE_END are mutually exclusive"},
            // { 5, "DM_DATE_START and DM_DATE_END must be both submitted"},
           //  { 6, "DM_DATE_END must be greater than DM_DATE_START"}
+        };
+
+        public static Dictionary<int, string> GrpSamplingSchemeErrors = new Dictionary<int, string>
+        {
+            {1,"Mismatch between PLOT_ID and PLOT_TYPE: expected $V0$, found $V1$"},
+            {2,@"Error: for GRP_PLOT you have to submit either PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR or PLOT_LOCATION_LAT <---> PLOT_LOCATION_LONG."+
+                  Environment.NewLine + "These couples of information are mutually exclusive"},
+            {3,"Error: PLOT_REFERENCE_POINT is allowed only for SP-II sampling points"},
+            {4,"Error: PLOT_REFERENCE_POINT is not allowed when PLOT_LOCATION_LAT and PLOT_LOCATION_LONG are submitted"},
+            {5,"Error: PLOT_REFERENCE_POINT is mandatory for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
         };
 
         /*

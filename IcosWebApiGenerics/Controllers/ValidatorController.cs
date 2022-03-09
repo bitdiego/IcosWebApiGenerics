@@ -56,8 +56,8 @@ namespace IcosWebApiGenerics.Controllers
             bool result = await _saveData.SaveItemAsync(model, model.InsertUserId, model.SiteId);
             if (!result)
             {
-                response.Code = 100;
-               // response.Message = "An error occurred in saving data. Please contact info@icos-etc.eu";
+                response.Code = 500;
+                //response.Messages = "An error occurred in saving data. Please contact info@icos-etc.eu";
             }
             else
             {

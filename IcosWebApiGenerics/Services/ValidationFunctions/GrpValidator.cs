@@ -27,42 +27,44 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         }
         public static Response ValidateLocationResponse(GRP_LOCATION location)
         {
-           // MissingDate(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
-            MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
-            IsoDateCheck(location.LOCATION_DATE, "LOCATION_DATE");
+            errorCode =  MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
+            if (errorCode != 0)
+            {
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOCATION_DATE", "$V0$", "LOCATION_DATE", "$GRP$", "GRP_LOCATION");
+            }
+            errorCode = IsoDateCheck(location.LOCATION_DATE, "LOCATION_DATE");
+            if (errorCode != 0)
+            {
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOCATION_DATE", "$V0$", "LOCATION_DATE", "$V1$", location.LOCATION_DATE);
+            }
             
             if (location.LOCATION_LAT > Globals.MAX_LATITUDE_VALUE || location.LOCATION_LAT < -Globals.MAX_LATITUDE_VALUE)
             {
                 errorCode = 6;
                 response.Code += errorCode;
-                Err = ErrorCodes.GrpLocationErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$",  location.LOCATION_LAT.ToString());
-                response.Messages.Add("LOCATION_LAT", Err);
+                response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LAT", "$V0$", location.LOCATION_LAT.ToString());
             }
             if (location.LOCATION_LONG > Globals.MAX_LONGITUDE_VALUE|| location.LOCATION_LONG < -Globals.MAX_LONGITUDE_VALUE)
             {
                 errorCode = 5;
                 response.Code += errorCode;
-                Err = ErrorCodes.GrpLocationErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", location.LOCATION_LONG.ToString());
-                response.Messages.Add("LOCATION_LONG", Err);
+                response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LONG", "$V0$", location.LOCATION_LONG.ToString());
             }
             return response;
         }
 
         public static Response ValidateUtcResponse(GRP_UTC_OFFSET utc)
         {
-            if (!String.IsNullOrEmpty(utc.UTC_OFFSET_DATE_START))
+            errorCode = IsoDateCheck(utc.UTC_OFFSET_DATE_START, "UTC_OFFSET_DATE_START");
+            if (errorCode != 0)
             {
-                IsoDateCheck(utc.UTC_OFFSET_DATE_START, "UTC_OFFSET_DATE_START");
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "UTC_OFFSET_DATE_START", "$V0$", "UTC_OFFSET_DATE_START", "$V1$", utc.UTC_OFFSET_DATE_START);
             }
             if (Decimal.Compare(utc.UTC_OFFSET, Globals.MIN_UTC_OFFSET_VAL) < 0 || Decimal.Compare(utc.UTC_OFFSET, Globals.MAX_UTC_OFFSET_VAL) > 0)
             {
                 errorCode = 1;
                 response.Code += errorCode;
-                Err = ErrorCodes.GrpUtcErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", utc.UTC_OFFSET.ToString());
-                response.Messages.Add("UTC_OFFSET", Err);
+                response.FormatError(ErrorCodes.GrpUtcErrors[errorCode], "UTC_OFFSET", "$V0$", utc.UTC_OFFSET.ToString());
             }
             return response;
         }
@@ -71,21 +73,30 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         {
             if (!String.IsNullOrEmpty(land.LAND_DATE))
             {
-                IsoDateCheck(land.LAND_DATE, "LAND_DATE");
+                errorCode = IsoDateCheck(land.LAND_DATE, "LAND_DATE");
+                if (errorCode != 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_DATE", "$V0$", "LAND_DATE", "$V1$", land.LAND_DATE);
+                }
             }
-            ItemInBadmList("LAND_OWNERSHIP", land.LAND_OWNERSHIP, "GRP_LAND_OWNERSHIP", (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
+
+            if (!String.IsNullOrEmpty(land.LAND_OWNERSHIP))
+            {
+                errorCode = ItemInBadmList(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_OWNERSHIP", "$V0$", land.LAND_OWNERSHIP, "$V1$", "LAND_OWNERSHIP", "$GRP$", "GRP_LAND_OWNERSHIP");
+            }
             return response;
         }
 
         public static Response ValidateTowerResponse(GRP_TOWER tower, IcosDbContext db)
         {
-            //MissingDate(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
             MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
-            IsoDateCheck(tower.TOWER_DATE, "TOWER_DATE");
-            ItemInBadmList("TOWER_TYPE", tower.TOWER_TYPE, "GRP_TOWER", (int)Globals.CvIndexes.TOWER_TYPE, db);
-            ItemInBadmList("TOWER_ACCES", tower.TOWER_ACCESS, "GRP_TOWER", (int)Globals.CvIndexes.TOWER_ACCESS, db);
-            ItemInBadmList("TOWER_POWER", tower.TOWER_POWER, "GRP_TOWER", (int)Globals.CvIndexes.TOWER_POWER, db);
-            ItemInBadmList("TOWER_DATATRAN", tower.TOWER_DATATRAN, "GRP_TOWER", (int)Globals.CvIndexes.TOWER_DATATRAN, db);
+            IsoDateCheck( tower.TOWER_DATE, "TOWER_DATE");
+            ItemInBadmList( tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
+            ItemInBadmList( tower.TOWER_ACCESS,  (int)Globals.CvIndexes.TOWER_ACCESS, db);
+            ItemInBadmList( tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
+            ItemInBadmList( tower.TOWER_DATATRAN,  (int)Globals.CvIndexes.TOWER_DATATRAN, db);
             return response;
         }
 
@@ -107,7 +118,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 errorCode = 4;
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE, "$V1$", distMan.DM_DATE_START, "$V2$", distMan.DM_DATE_END);
+                response.FormatError("DM_DATE", "$V0$", distMan.DM_DATE, "$V1$", distMan.DM_DATE_START, "$V2$", distMan.DM_DATE_END);
+                //Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE, "$V1$", distMan.DM_DATE_START, "$V2$", distMan.DM_DATE_END);
             }
             if ( !String.IsNullOrEmpty(distMan.DM_DATE_START) && !String.IsNullOrEmpty(distMan.DM_DATE_END))
             {
@@ -116,9 +128,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     errorCode = 6;
                     response.Code += errorCode;
                     Err = ErrorCodes.GeneralErrors[errorCode];
-                    Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
+                    response.FormatError("DM_DATE_START", "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
+                    //Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
                 }
             }
+            /*
             ItemInBadmList("DM_ENCROACH", distMan.DM_ENCROACH, "GRP_DM", (int)Globals.CvIndexes.DM_ENCROACH, db);
             ItemInBadmList("DM_AGRICULTURE", distMan.DM_AGRICULTURE, "GRP_DM", (int)Globals.CvIndexes.DM_AGRICULTURE, db);
             ItemInBadmList("DM_EXT_WEATHER", distMan.DM_EXT_WEATHER, "GRP_DM", (int)Globals.CvIndexes.DM_EXT_WEATHER, db);
@@ -133,6 +147,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             ItemInBadmList("DM_TILL", distMan.DM_FERT_M, "DM_TILL", (int)Globals.CvIndexes.DM_TILL, db); 
             ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
             ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
+            */
             if (!IsAnyPropNotNull<GRP_DM>(distMan))
             {
                 errorCode = 9;
@@ -143,73 +158,150 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme)
+        public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme, IcosDbContext db)
         {
-            MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
-            IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
-            MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
-            MissingMandatoryData<decimal?>(samplingScheme.PLOT_LOCATION_LAT, "PLOT_LOCATION_LAT", "GRP_PLOT");
+            errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$GRP$", "GRP_PLOT");
+            }
+            errorCode = IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$V1$", samplingScheme.PLOT_DATE);
+            }
+            errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
+            
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_ID", "$V0$", "PLOT_ID", "$GRP$", "GRP_PLOT");
+            }
+
+            errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_TYPE, "PLOT_TYPE", "GRP_PLOT");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_TYPE", "$V0$", "PLOT_TYPE", "$GRP$", "GRP_PLOT");
+            }
+            else
+            {
+                //check if plot_type in controlled vocabulary
+                errorCode = ItemInBadmList( samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_TYPE", "$V0$", samplingScheme.PLOT_TYPE, "$V1$", "PLOTTYPE", "$GRP$", "GRP_PLOT");
+                }
+                string _subPlot = samplingScheme.PLOT_ID.Substring(0, samplingScheme.PLOT_ID.IndexOf('_'));
+                errorCode = 1;
+                response.Code += errorCode;
+                if (String.Compare(_subPlot, samplingScheme.PLOT_TYPE, true) != 0)
+                {
+                    response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_TYPE", "$V0$", _subPlot, "$V1$", samplingScheme.PLOT_TYPE);
+                }
+            }
+
+            //validate coordinate system:  PLOT_EASTWARD_DIST/PLOT_NORTHWARD_DIST or PLOT_ANGLE_POLAR/PLOT_DISTANCE_POLAR or PLOT_LOCATION_LAT/PLOT_LOCATION_LONG
+            //must be mutually exclusive
+            int xc = Globals.IsValidCoordinateSystem<decimal?>(samplingScheme.PLOT_EASTWARD_DIST, samplingScheme.PLOT_NORTHWARD_DIST,
+                                                               samplingScheme.PLOT_DISTANCE_POLAR, samplingScheme.PLOT_ANGLE_POLAR,
+                                                               samplingScheme.PLOT_LOCATION_LAT, samplingScheme.PLOT_LOCATION_LONG);
+            if (xc > 0)
+            {
+                errorCode = 2;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_EASTWARD_DIST");
+            }
+
+            if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
+            {
+                //check if plot_type in controlled vocabulary
+                errorCode = ItemInBadmList(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_REFERENCE_POINT", "$V0$", samplingScheme.PLOT_REFERENCE_POINT, "$V1$", "PLOTREF", "$GRP$", "GRP_PLOT");
+                }
+                if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                {
+                    errorCode = 3;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                }
+                if (samplingScheme.PLOT_LOCATION_LAT != null && samplingScheme.PLOT_LOCATION_LONG != null)
+                {
+                    errorCode = 4;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                }
+            }
+            else
+            {
+                if (samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                {
+                    if ((samplingScheme.PLOT_ANGLE_POLAR != null && samplingScheme.PLOT_DISTANCE_POLAR != null) ||
+                    (samplingScheme.PLOT_EASTWARD_DIST != null && samplingScheme.PLOT_NORTHWARD_DIST != null))
+                    {
+                        errorCode = 5;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                    }
+                }
+            }
             return response;
         }
 
         /////////////////////////////////
         ///
 
-        private static void ItemInBadmList(string name, string value, string groupName, int cvIndex, IcosDbContext db)
+        private static int ItemInBadmList(string value, int cvIndex, IcosDbContext db)
         {
-            if (String.IsNullOrEmpty(value)) return;
+            
+            if (String.IsNullOrEmpty(value)) return 0;
             string bmList = db.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefault();
             var res = db.BADMList.Where(item => item.cv_index == cvIndex)
-                                       .Any(item => (String.Compare(item.shortname, value, true) == 0));
+                                 .Any(item => (String.Compare(item.shortname, value, true) == 0));
             if (!res)
             {
-                errorCode = 7;
-                response.Code += errorCode;
-                Err = ErrorCodes.GeneralErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", value, "$V1$", bmList, "$GRP$", groupName);
-                response.Messages.Add(name, Err);
+                return 7;
             }
-            //return res;
+            return 0;
         }
 
-        private static void MissingDate(string dateValue, string name, string groupName)
-        {
-            if (String.IsNullOrEmpty(dateValue))
-            {
-                errorCode = 1;
-                response.Code += errorCode;
-                Err = ErrorCodes.GeneralErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", name, "$GRP$", groupName);
-                response.Messages.Add(name, Err);
-            }
-        }
-        public static void MissingMandatoryData<T>(T value, string name, string groupName)
+        public static int MissingMandatoryData<T>(T value, string name, string groupName)
         {
             if (value == null)
             {
-                errorCode = 1;
+               /*errorCode = 1;
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
                 Globals.FormatError(ref Err, "$V0$", name, "$GRP$", groupName);
-                response.Messages.Add(name, Err);
+                response.Messages.Add(name, Err);*/
+               return 1;
             }
+            return 0;
         }
 
-        private static void IsoDateCheck(string dateValue, string name)
+        private static int IsoDateCheck(string dateValue, string name)
         {
             if (String.IsNullOrEmpty(dateValue))
             {
-                return ;
+                return 0;
             }
             errorCode = ValidateIsoDate(dateValue);
             if (errorCode > 0)
-            {
+            {/*
                 errorCode = 2;
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
                 Globals.FormatError(ref Err, "$V0$", name, "$V1$", dateValue);
-                response.Messages.Add(name, Err);
+                response.Messages.Add(name, Err);*/
+                return 2;
             }
+            return 0;
         }
 
         private static int ValidateIsoDate(string input)

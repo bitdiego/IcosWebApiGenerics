@@ -480,12 +480,12 @@ namespace IcosWebApiGenerics.Utils
             return isMatch;
         }
 
-        public static void FormatError(ref string err, params string[] list)
+       /* public static void FormatError(ref string err, params string[] list)
         {
             for (int i = 0; i < list.Length; i += 2)
             {
                 err = err.Replace(list[i], list[i + 1]);
             }
-        }
+        }*/
     }
 }

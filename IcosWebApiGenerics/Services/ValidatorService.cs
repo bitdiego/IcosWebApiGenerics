@@ -19,6 +19,7 @@ namespace IcosWebApiGenerics.Services
             this._context = context;
             response= GrpValidator.GetResponse();
             response.Code = 0;
+            //response.Error = "";
             response.Messages.Clear();
         }
         /* public int ValidateModel(T t)
@@ -79,7 +80,7 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_PLOT:
                     GRP_PLOT samplingScheme = t as GRP_PLOT;
-                    response = GrpValidator.ValidateSamplingSchemeResponse(samplingScheme);
+                    response = GrpValidator.ValidateSamplingSchemeResponse(samplingScheme, _context);
                     break;
             }
             return response;
