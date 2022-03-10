@@ -78,6 +78,28 @@ namespace IcosWebApiGenerics.Utils
             {5,"Error: PLOT_REFERENCE_POINT is mandatory for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
         };
 
+        public static Dictionary<int, string> GrpFlsmErrors = new Dictionary<int, string>
+        {
+            {1,"Error: FLSM_SPP and FLSM_PTYPE are mutually exclusive for GRP_FLSM"},
+            {2,"Error: entered FLSM_PLOT_ID not found in GRP_PLOT"},
+            {3,"Error: entered FLSM_PLOT_ID not found in GRP_PLOT"},
+        };
+
+        public static Dictionary<int, string> GrpSosmErrors = new Dictionary<int, string>
+        {
+            {1,"Error: entered SOSM_PLOT_ID not found in GRP_PLOT"},
+            {2,"Error: SOSM_SAMPLE_MAT organic options (O, Oi, Oa, Oe) are not allowed when SOSM_PLOT_ID is of type SP-I"},
+            {3,"Error: SOSM_UD and SOSM_SD must be submitted together when SOSM_SAMPLE_MAT is M"},
+            {4,"Error: SOSM_AREA and SOSM_VOLUME must be submitted together when SOSM_SAMPLE_MAT is M and SOSM_PLOT_ID is of type SP-II"},
+            {5,"Error: SOSM_AREA, SOSM_VOLUME and SOSM_THICKNESS must be submitted together when SOSM_SAMPLE_MAT is in (O, Oi, Oa, Oe) and SOSM_PLOT_ID is of type SP-II"},
+            {6,"Error: CP_XX not allowed for SOSM_PLOT_ID"},
+            {7,"Error: Wrong format for SOSM_SAMPLE_ID: must be in the format CC-Xxx_YYYYMMDD_NN_AA_BB when SOSM_PLOT_ID is of type SP-I and SOSM_SAMPLE_MAT is M"},
+            {8,"Error: Wrong format for SOSM_SAMPLE_ID: must be in the format CC-Xxx_YYYYMMDD_NN-MM_AA_BB when SOSM_PLOT_ID is of type SP-II and SOSM_SAMPLE_MAT is M"},
+            {9,"Error: Wrong format for SOSM_SAMPLE_ID: must be in the format CC-Xxx_YYYYMMDD_NN-MM_(O|Oa|Oe|Oi)_BB when SOSM_PLOT_ID is of type SP-II and SOSM_SAMPLE_MAT is in (O, Oi, Oa, Oe)"},
+        };
+
+        //
+
         /*
         public static Dictionary<int, string> ErrorsList = new Dictionary<int, string>
         {

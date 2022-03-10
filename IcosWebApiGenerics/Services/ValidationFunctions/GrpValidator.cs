@@ -25,6 +25,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return response;
         }
+
+        //OK
         public static Response ValidateLocationResponse(GRP_LOCATION location)
         {
             errorCode =  MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
@@ -53,6 +55,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        //OK
         public static Response ValidateUtcResponse(GRP_UTC_OFFSET utc)
         {
             errorCode = IsoDateCheck(utc.UTC_OFFSET_DATE_START, "UTC_OFFSET_DATE_START");
@@ -69,6 +72,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        //OK
         public static Response ValidateLandOwnerResponse(GRP_LAND_OWNERSHIP land, IcosDbContext db)
         {
             if (!String.IsNullOrEmpty(land.LAND_DATE))
@@ -89,6 +93,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        
         public static Response ValidateTowerResponse(GRP_TOWER tower, IcosDbContext db)
         {
             MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
@@ -100,6 +105,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        //to do
         public static Response ValidateClimateAvgResponse(GRP_CLIM_AVG climateAvg)
         {
             //MissingDate(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
@@ -108,6 +114,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             //check if MAP, MAR, MAS, MAC_YEARS must only be positive
             return response;
         }
+
+        //to do
         public static Response ValidateDistManResponse(GRP_DM distMan, IcosDbContext db)
         {
             IsoDateCheck(distMan.DM_DATE, "DM_DATE");
@@ -158,6 +166,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        //seems OK
         public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme, IcosDbContext db)
         {
             errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
@@ -254,13 +263,161 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        //validate also numeric values...
+        public static Response ValidateFlsmResponse(GRP_FLSM flsm, IcosDbContext db)
+        {
+            //to do::: FLSM_PLOT_ID present in GRP_PLOT
+            errorCode = MissingMandatoryData<string>(flsm.FLSM_DATE, "FLSM_DATE", "GRP_FLSM");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_DATE", "$V0$", "FLSM_DATE", "$GRP$", "GRP_FLSM");
+            }
+            errorCode = IsoDateCheck(flsm.FLSM_DATE, "FLSM_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_DATE", "$V0$", "FLSM_DATE", "$V1$", flsm.FLSM_DATE);
+            }
+
+            errorCode = MissingMandatoryData<string>(flsm.FLSM_SAMPLE_TYPE, "FLSM_SAMPLE_TYPE", "GRP_FLSM");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_TYPE", "$V0$", "FLSM_SAMPLE_TYPE", "$GRP$", "GRP_FLSM");
+            }
+            else 
+            {
+                errorCode=ItemInBadmList(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_TYPE", "$V0$", flsm.FLSM_SAMPLE_TYPE, "$V1$", "FLSM_STYPE", "$GRP$", "GRP_FLSM");
+                }
+            }
+
+            errorCode = MissingMandatoryData<int>(flsm.FLSM_SAMPLE_ID, "FLSM_SAMPLE_ID", "GRP_FLSM");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_ID", "$V0$", "FLSM_SAMPLE_ID", "$GRP$", "GRP_FLSM");
+            }
+
+            if (!XORNull<string>(flsm.FLSM_SPP, flsm.FLSM_PTYPE))
+            {
+                errorCode = 1;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpFlsmErrors[errorCode], "FLSM_SPP");
+            }
+
+            if (!String.IsNullOrEmpty(flsm.FLSM_PTYPE))
+            {
+                errorCode = ItemInBadmList(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PTYPE", "$V0$", flsm.FLSM_PTYPE, "$V1$", "FLSM_PTYPE", "$GRP$", "GRP_FLSM");
+                }
+            }
+
+            return response;
+        }
+
+        public static Response ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext context)
+        {
+            //to do::: SOSM_PLOT_ID present in GRP_PLOT
+            errorCode = MissingMandatoryData<string>(sosm.SOSM_DATE, "SOSM_DATE", "GRP_SOSM");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_DATE", "$V0$", "SOSM_DATE", "$GRP$", "GRP_SOSM");
+            }
+            errorCode = IsoDateCheck(sosm.SOSM_DATE, "SOSM_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_DATE", "$V0$", "SOSM_DATE", "$V1$", sosm.SOSM_DATE);
+            }
+
+            //
+            string sosmPlotid = sosm.SOSM_PLOT_ID.ToLower();
+            string sosmSampleMat = sosm.SOSM_SAMPLE_MAT.ToLower();
+            if (sosmPlotid.StartsWith("sp-i") && !sosmPlotid.StartsWith("sp-ii"))
+            {
+                if (sosmSampleMat.StartsWith("o"))
+                {
+                    errorCode = 2;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_PLOT_ID");
+                }
+                if (sosm.SOSM_UD == null || sosm.SOSM_LD == null)
+                {
+                    errorCode = 3;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_UD");
+                }
+                if (!IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiSosmM))
+                {
+                    errorCode = 7;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_SAMPLE_ID");
+                }
+            }
+            else if (sosmPlotid.StartsWith("sp-ii"))
+            {
+                if (sosmSampleMat == "m")
+                {
+                    if (sosm.SOSM_UD == null || sosm.SOSM_LD == null)
+                    {
+                        errorCode = 3;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_UD");
+                    }
+                    if (!CountBoundedProps<GRP_SOSM>(sosm, 2, "SOSM_AREA", "SOSM_VOLUME"))
+                    {
+                        errorCode = 2;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_UD");
+                    }
+                    if (!IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiiSosmM))
+                    {
+                        errorCode = 8;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_SAMPLE_ID");
+                    }
+                }
+                else
+                {
+                    //O, Oi, Oa, Oe
+                    if (!CountBoundedProps<GRP_SOSM>(sosm, 3, "SOSM_THICKNESS", "SOSM_AREA", "SOSM_VOLUME"))
+                    {
+                        errorCode = 5;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_SAMPLE_ID");
+                    }
+                    if (!IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiiSosmOrganic))
+                    {
+                        errorCode = 9;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_SAMPLE_ID");
+                    }
+                }
+
+            }
+            else
+            {
+                errorCode = 6;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_PLOT_ID");
+            }
+            return response;
+        }
+
         /////////////////////////////////
         ///
 
         private static int ItemInBadmList(string value, int cvIndex, IcosDbContext db)
         {
-            
-            if (String.IsNullOrEmpty(value)) return 0;
             string bmList = db.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefault();
             var res = db.BADMList.Where(item => item.cv_index == cvIndex)
                                  .Any(item => (String.Compare(item.shortname, value, true) == 0));
@@ -275,11 +432,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         {
             if (value == null)
             {
-               /*errorCode = 1;
-                response.Code += errorCode;
-                Err = ErrorCodes.GeneralErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", name, "$GRP$", groupName);
-                response.Messages.Add(name, Err);*/
                return 1;
             }
             return 0;
@@ -432,5 +584,61 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             return isAnyVAlue;
         }
+
+        private static bool XORNull<T>(string obja, string objb) where T : IComparable<T>
+        {
+            if (String.IsNullOrEmpty(obja) && !String.IsNullOrEmpty(objb))
+            {
+                return true;
+            }
+            if (!String.IsNullOrEmpty(obja) && String.IsNullOrEmpty(objb))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static bool IsValidPattern(string pattern, string regex)
+        {
+            Match match = Regex.Match(pattern, regex);
+            return match.Success;
+        }
+
+        private static bool CountBoundedProps<T>(T model, int bound, params string[] vars)
+        {
+            Type myType = model.GetType();
+            IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
+
+            var subList = props.Where(item => vars.Contains(item.Name)).ToList();
+
+            var countValue = subList.Count(item => item.GetValue(model, null) != null);
+
+            return (countValue == 0) || (countValue == bound);
+        }
+
+        /* public async Task<int> FlsmPlotIdInSamplingPointGroupAsync(GRP_FLSM model, int siteId, IcosDbContext _context)
+         {
+             var item = await _context.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+                                                 String.Compare(plot.PLOT_ID, model.FLSM_PLOT_ID) == 0 &&
+                                                 String.Compare(plot.PLOT_DATE, model.FLSM_DATE) <= 0).FirstOrDefaultAsync();
+             if (item == null)
+             {
+                 return (int)Globals.ErrorValidationCodes.FLSM_PLOT_ID_NOT_FOUND;
+             }
+             return 0;
+         }
+
+          public async Task<int> SosmPlotIdInSamplingPointGroupAsync(GRP_SOSM model, int siteId)
+         {
+             var item = await _context.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+                                                 String.Compare(plot.PLOT_ID, model.SOSM_PLOT_ID) == 0 &&
+                                                 String.Compare(plot.PLOT_DATE, model.SOSM_DATE) <= 0).FirstOrDefaultAsync();
+             if (item == null)
+             {
+                 return (int)Globals.ErrorValidationCodes.SOSM_PLOT_ID_NOT_FOUND;
+             }
+             return 0;
+         }
+        */
     }
 }

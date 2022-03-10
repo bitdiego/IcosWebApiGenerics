@@ -82,6 +82,14 @@ namespace IcosWebApiGenerics.Services
                     GRP_PLOT samplingScheme = t as GRP_PLOT;
                     response = GrpValidator.ValidateSamplingSchemeResponse(samplingScheme, _context);
                     break;
+                case (int)Globals.Groups.GRP_FLSM:
+                    GRP_FLSM flsm = t as GRP_FLSM;
+                    response = GrpValidator.ValidateFlsmResponse(flsm, _context);
+                    break;
+                case (int)Globals.Groups.GRP_SOSM:
+                    GRP_SOSM sosm = t as GRP_SOSM;
+                    response = GrpValidator.ValidateSosmResponse(sosm, _context);
+                    break;
             }
             return response;
         }
