@@ -105,6 +105,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        
         //to do
         public static Response ValidateClimateAvgResponse(GRP_CLIM_AVG climateAvg)
         {
@@ -181,12 +182,21 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$V1$", samplingScheme.PLOT_DATE);
             }
+
             errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
-            
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_ID", "$V0$", "PLOT_ID", "$GRP$", "GRP_PLOT");
+            }
+            else
+            {
+                if(!IsValidPlotString(samplingScheme.PLOT_ID, samplingScheme.GroupId))
+                {
+                    errorCode = 10;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_ID", "$V0$", "PLOT_ID", "$V1$", samplingScheme.PLOT_ID);
+                }
             }
 
             errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_TYPE, "PLOT_TYPE", "GRP_PLOT");
@@ -546,9 +556,9 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 //validation of plot reg ex
                 if(!IsValidPlotString(gai.GAI_PLOT, gai.GroupId))
                 {
-                    errorCode = 1;
+                    errorCode = 10;
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GrpGaiErrors[errorCode], "GAI_PLOT", "$V0$", gai.GAI_PLOT);
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_PLOT", "$V0$", "GAI_PLOT", "$V1$", gai.GAI_PLOT);
                 }
             }
 
@@ -586,6 +596,81 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             errorCode = ValidateGaiByMethod(gai, ecosystem);
             return response;
         }
+
+        public static Response ValidateCeptResponse(GRP_CEPT cept)
+        {
+            errorCode = MissingMandatoryData<string>(cept.CEPT_DATE, "CEPT_DATE", "GRP_CEPT");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "CEPT_DATE", "$V0$", "CEPT_DATE", "$GRP$", "GRP_CEPT");
+            }
+            errorCode = IsoDateCheck(cept.CEPT_DATE, "CEPT_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "CEPT_DATE", "$V0$", "CEPT_DATE", "$V1$", cept.CEPT_DATE);
+            }
+            return response;
+        }
+
+
+        public static Response ValidateBulkhResponse(GRP_BULKH bulkh, IcosDbContext db)
+        {
+            errorCode = MissingMandatoryData<string>(bulkh.BULKH_DATE, "BULKH_DATE", "GRP_BULKH");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_DATE", "$V0$", "BULKH_DATE", "$GRP$", "GRP_BULKH");
+            }
+            errorCode = IsoDateCheck(bulkh.BULKH_DATE, "BULKH_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_DATE", "$V0$", "BULKH_DATE", "$V1$", bulkh.BULKH_DATE);
+            }
+
+            errorCode = MissingMandatoryData<string>(bulkh.BULKH_PLOT, "BULKH_PLOT", "GRP_BULKH");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_PLOT", "$V0$", "BULKH_PLOT", "$GRP$", "GRP_BULKH");
+            }
+            else
+            {
+                if (!IsValidPlotString(bulkh.BULKH_PLOT, bulkh.GroupId))
+                {
+                    errorCode = 10;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_PLOT", "$V0$", "BULKH_PLOT", "$V1$", bulkh.BULKH_PLOT);
+                }
+            }
+
+            errorCode = MissingMandatoryData<string>(bulkh.BULKH_PLOT_TYPE, "BULKH_PLOT_TYPE", "GRP_BULKH");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_PLOT_TYPE", "$V0$", "BULKH_PLOT_TYPE", "$GRP$", "GRP_BULKH");
+            }
+            else
+            {
+                errorCode = ItemInBadmList(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_PLOT_TYPE", "$V0$", bulkh.BULKH_PLOT_TYPE, "$V1$", "BULKH_PLOT_TYPE", "$GRP$", "GRP_BULKH");
+                }
+            }
+
+            errorCode = MissingMandatoryData<decimal>(bulkh.BULKH, "BULKH", "GRP_BULKH");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH", "$V0$", "BULKH", "$GRP$", "GRP_BULKH");
+            }
+            return response;
+        }
+
 
         /////////////////////////////////
         ///
@@ -775,11 +860,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         private static bool IsValidPlotString(string plot, int group)
         {
+            /*
             if (String.Compare(plot, "outside_cp", true) == 0)
             {
                 return true;
             }
-
+            */
             int[] allowedOutside = { 10, 17, 19, 21, 22 };
             List<int> notSP_II_Valid = new List<int>() { 21, 22 };
             bool isMatch = true;
@@ -787,17 +873,17 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             {
                 Match match;
 
-                if (plot.ToLower() == "cp")
+                if (plot.ToLower().StartsWith("cp"))
                 {
                     match = Regex.Match(plot, Globals.cpReg, RegexOptions.IgnoreCase);
                     isMatch = match.Success;
                 }
-                else if (plot.ToLower() == "sp-i")
+                else if (plot.ToLower().StartsWith("sp-i_"))
                 {
                     match = Regex.Match(plot, Globals.sp1Reg, RegexOptions.IgnoreCase);
                     isMatch = match.Success;
                 }
-                else if (plot.ToLower() == "sp-ii")
+                else if (plot.ToLower().StartsWith( "sp-ii"))
                 {
                     if (notSP_II_Valid.Any(id => id == group))
                     {

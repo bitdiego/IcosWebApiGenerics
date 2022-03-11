@@ -98,6 +98,14 @@ namespace IcosWebApiGenerics.Services
                     GRP_GAI gai = t as GRP_GAI;
                     response = GrpValidator.ValidateGaiResponse(gai, _context);
                     break;
+                case (int)Globals.Groups.GRP_CEPT:
+                    GRP_CEPT cept = t as GRP_CEPT;
+                    response = GrpValidator.ValidateCeptResponse(cept);
+                    break;
+                case (int)Globals.Groups.GRP_BULKH:
+                    GRP_BULKH bulkh = t as GRP_BULKH;
+                    response = GrpValidator.ValidateBulkhResponse(bulkh, _context);
+                    break;
             }
             return response;
         }

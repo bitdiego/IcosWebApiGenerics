@@ -17,7 +17,8 @@ namespace IcosWebApiGenerics.Utils
             { 6, "$V0$ must be greater than $V1$"},
             { 7, "Not found $V0$ value in list $V1$ for group $GRP$"},
             { 8, "Negative number not allowed for variable $V0$. Found $V1$"},
-            { 9, "You have to submit at least one variable"}
+            { 9, "You have to submit at least one variable"},
+            {10,"Error: $V0$ string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V1$"},
         };
 
         public static Dictionary<int, string> GrpLocationErrors = new Dictionary<int, string>
@@ -76,6 +77,7 @@ namespace IcosWebApiGenerics.Utils
             {3,"Error: PLOT_REFERENCE_POINT is allowed only for SP-II sampling points"},
             {4,"Error: PLOT_REFERENCE_POINT is not allowed when PLOT_LOCATION_LAT and PLOT_LOCATION_LONG are submitted"},
             {5,"Error: PLOT_REFERENCE_POINT is mandatory for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
+            {6,"Error: PLOT_ID is mandatory for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
         };
 
         public static Dictionary<int, string> GrpFlsmErrors = new Dictionary<int, string>
@@ -105,7 +107,6 @@ namespace IcosWebApiGenerics.Utils
 
         public static Dictionary<int, string> GrpGaiErrors = new Dictionary<int, string>
         {
-            {1,"Error: PLOT_ID string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V0$"},
             {58,@"Error: for GRP_PLOT you have to submit either PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR or PLOT_LOCATION_LAT <---> PLOT_LOCATION_LONG."+
                   Environment.NewLine + "These couples of information are mutually exclusive"},
             {63,"Error: GAI_SPP is mandatory for Mires Ecosystem and Visual estimation and Modified VGA GAI_METHODs"},
