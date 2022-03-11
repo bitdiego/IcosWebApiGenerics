@@ -90,6 +90,14 @@ namespace IcosWebApiGenerics.Services
                     GRP_SOSM sosm = t as GRP_SOSM;
                     response = GrpValidator.ValidateSosmResponse(sosm, _context);
                     break;
+                case (int)Globals.Groups.GRP_DHP:
+                    GRP_DHP dhp = t as GRP_DHP;
+                    response = GrpValidator.ValidateDhpResponse(dhp, _context);
+                    break;
+                case (int)Globals.Groups.GRP_GAI:
+                    GRP_GAI gai = t as GRP_GAI;
+                    response = GrpValidator.ValidateGaiResponse(gai, _context);
+                    break;
             }
             return response;
         }

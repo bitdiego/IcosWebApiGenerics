@@ -413,6 +413,180 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        public static Response ValidateDhpResponse(GRP_DHP dhp, IcosDbContext db)
+        {
+            errorCode = MissingMandatoryData<int>(dhp.DHP_ID, "DHP_ID", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_ID", "$V0$", "DHP_ID", "$GRP$", "GRP_DHP");
+            }
+            else
+            {
+                //must be integer value...
+            }
+
+            errorCode = MissingMandatoryData<string>(dhp.DHP_CAMERA, "DHP_CAMERA", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA", "$V0$", "DHP_CAMERA", "$GRP$", "GRP_DHP");
+            }
+            else
+            {
+                //must be in badmlist
+                errorCode = ItemInBadmList(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA", "$V0$", dhp.DHP_CAMERA, "$V1$", "CAMERA", "$GRP$", "GRP_DHP");
+                }
+            }
+
+            errorCode = MissingMandatoryData<string>(dhp.DHP_CAMERA_SN, "DHP_CAMERA_SN", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA_SN", "$V0$", "DHP_CAMERA_SN", "$GRP$", "GRP_DHP");
+            }
+
+            errorCode = MissingMandatoryData<string>(dhp.DHP_LENS, "DHP_LENS", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_LENS", "$V0$", "DHP_LENS", "$GRP$", "GRP_DHP");
+            }
+            else
+            {
+                //must be in badmlist
+                errorCode = ItemInBadmList(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_LENS", "$V0$", dhp.DHP_LENS, "$V1$", "LENS", "$GRP$", "GRP_DHP");
+                }
+            }
+
+            errorCode = MissingMandatoryData<string>(dhp.DHP_LENS_SN, "DHP_LENS_SN", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_LENS_SN", "$V0$", "DHP_LENS_SN", "$GRP$", "GRP_DHP");
+            }
+
+            bool isRowCol = true;
+            errorCode = MissingMandatoryData<int>(dhp.DHP_OC_ROW, "DHP_OC_ROW", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_OC_ROW", "$V0$", "DHP_OC_ROW", "$GRP$", "GRP_DHP");
+                isRowCol = false;
+            }
+            else
+            {
+                //must be integer value...
+            }
+
+            errorCode = MissingMandatoryData<int>(dhp.DHP_OC_COL, "DHP_OC_COL", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_OC_COL", "$V0$", "DHP_OC_COL", "$GRP$", "GRP_DHP");
+                isRowCol = false;
+            }
+            else
+            {
+                //must be integer value...
+            }
+
+            if(isRowCol)
+            {
+                if (dhp.DHP_OC_COL <= dhp.DHP_OC_ROW)
+                {
+                    errorCode = 1;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpDhpErrors[errorCode], "DHP_OC_COL");
+                }
+             
+            }
+
+            errorCode = MissingMandatoryData<decimal>(dhp.DHP_RADIUS, "DHP_RADIUS", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_RADIUS", "$V0$", "DHP_RADIUS", "$GRP$", "GRP_DHP");
+            }
+
+            errorCode = MissingMandatoryData<string>(dhp.DHP_DATE, "DHP_DATE", "GRP_DHP");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_DATE", "$V0$", "DHP_DATE", "$GRP$", "GRP_DHP");
+            }
+            errorCode = IsoDateCheck(dhp.DHP_DATE, "DHP_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_DATE", "$V0$", "DHP_DATE", "$V1$", dhp.DHP_DATE);
+            }
+
+            return response;
+        }
+
+        public static Response ValidateGaiResponse(GRP_GAI gai, IcosDbContext db)
+        {
+            errorCode = MissingMandatoryData<string>(gai.GAI_PLOT, "GAI_PLOT", "GRP_GAI");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_PLOT", "$V0$", "GAI_PLOT", "$GRP$", "GRP_GAI");
+            }
+            else
+            {
+                //validation of plot reg ex
+                if(!IsValidPlotString(gai.GAI_PLOT, gai.GroupId))
+                {
+                    errorCode = 1;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpGaiErrors[errorCode], "GAI_PLOT", "$V0$", gai.GAI_PLOT);
+                }
+            }
+
+            errorCode = MissingMandatoryData<string>(gai.GAI_METHOD, "GAI_METHOD", "GRP_GAI");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_METHOD", "$V0$", "GAI_METHOD", "$GRP$", "GRP_GAI");
+            }
+            else
+            {
+                //in badm list
+                errorCode = ItemInBadmList(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_METHOD", "$V0$", gai.GAI_METHOD, "$V1$", "GAI_METHOD", "$GRP$", "GRP_GAI");
+                }
+            }
+
+            errorCode = MissingMandatoryData<string>(gai.GAI_DATE, "GAI_DATE", "GRP_GAI");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_DATE", "$V0$", "GAI_DATE", "$GRP$", "GRP_GAI");
+            }
+            errorCode = IsoDateCheck(gai.GAI_DATE, "GAI_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_DATE", "$V0$", "GAI_DATE", "$V1$", gai.GAI_DATE);
+            }
+
+            string ecosystem = ""; //get by site id!!!
+            errorCode = ValidateGaiByMethod(gai, ecosystem);
+            return response;
+        }
+
         /////////////////////////////////
         ///
 
@@ -445,12 +619,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             errorCode = ValidateIsoDate(dateValue);
             if (errorCode > 0)
-            {/*
-                errorCode = 2;
-                response.Code += errorCode;
-                Err = ErrorCodes.GeneralErrors[errorCode];
-                Globals.FormatError(ref Err, "$V0$", name, "$V1$", dateValue);
-                response.Messages.Add(name, Err);*/
+            {
                 return 2;
             }
             return 0;
@@ -604,6 +773,66 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return match.Success;
         }
 
+        private static bool IsValidPlotString(string plot, int group)
+        {
+            if (String.Compare(plot, "outside_cp", true) == 0)
+            {
+                return true;
+            }
+
+            int[] allowedOutside = { 10, 17, 19, 21, 22 };
+            List<int> notSP_II_Valid = new List<int>() { 21, 22 };
+            bool isMatch = true;
+            try
+            {
+                Match match;
+
+                if (plot.ToLower() == "cp")
+                {
+                    match = Regex.Match(plot, Globals.cpReg, RegexOptions.IgnoreCase);
+                    isMatch = match.Success;
+                }
+                else if (plot.ToLower() == "sp-i")
+                {
+                    match = Regex.Match(plot, Globals.sp1Reg, RegexOptions.IgnoreCase);
+                    isMatch = match.Success;
+                }
+                else if (plot.ToLower() == "sp-ii")
+                {
+                    if (notSP_II_Valid.Any(id => id == group))
+                    {
+                        isMatch = false;
+                    }
+                    else
+                    {
+                        match = Regex.Match(plot, Globals.sp2Reg, RegexOptions.IgnoreCase);
+                        isMatch = match.Success;
+                    }
+                }
+                else
+                {
+                    if (String.Compare(plot, "outside_cp", true) == 0)
+                    {
+                        //check for which groups 'outside_cp' is allowed
+                        if (allowedOutside.Contains(group))
+                        {
+                            isMatch = true;
+                        }
+                    }
+                    else
+                    {
+                        isMatch = false;
+                    }
+                }
+            }
+            catch (Exception dd)
+            {
+                isMatch = false;
+            }
+
+            return isMatch;
+        }
+
         private static bool CountBoundedProps<T>(T model, int bound, params string[] vars)
         {
             Type myType = model.GetType();
@@ -640,5 +869,212 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
              return 0;
          }
         */
+
+        private static int ValidateGaiByMethod(GRP_GAI model,string ecosystem)
+        {
+            //clean all data not bound to selected method...best to do before validation???
+
+            bool checkCoordinates = false;
+            switch (model.GAI_METHOD.ToLower())
+            {
+                //can be used only for Forests
+
+                case "dhp":
+                    if (String.Compare(ecosystem, "Forest", true) != 0)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_DHP_ONLY_FOREST;
+                    }
+                    if (model.GAI_DHP_ID == null)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_DHP_MANDATORY_MISSING;
+                    }
+                    if (model.GAI_DHP_SLOPE == null)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_DHP_MANDATORY_MISSING;
+                    }
+                    if (model.GAI_DHP_ASPECT == null)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_DHP_MANDATORY_MISSING;
+                    }
+                    if (model.GAI_PLOT.StartsWith("CP"))
+                    {
+                        if (model.GAI_DHP_EASTWARD_DIST == null && model.GAI_DHP_NORTHWARD_DIST == null
+                            && model.GAI_DHP_DISTANCE_POLAR == null && model.GAI_DHP_ANGLE_POLAR == null)
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_DHP_MISSING_COORDINATES;
+                        }
+                        else
+                        {
+                            checkCoordinates = true;
+                        }
+                    }
+                    else
+                    {
+                        if (model.GAI_DHP_EASTWARD_DIST != null || model.GAI_DHP_NORTHWARD_DIST != null
+                            || model.GAI_DHP_DISTANCE_POLAR != null || model.GAI_DHP_ANGLE_POLAR != null)
+                        {
+                            checkCoordinates = true;
+                        }
+                    }
+                    if (checkCoordinates)
+                    {
+                        if (Globals.IsValidCoordinateSystem<decimal?>(model.GAI_DHP_EASTWARD_DIST, model.GAI_DHP_NORTHWARD_DIST, model.GAI_DHP_DISTANCE_POLAR, model.GAI_DHP_ANGLE_POLAR) > 0)
+                        {
+                            return (int)Globals.ErrorValidationCodes.INVALID_COORDINATE_SYSTEM;
+                        }
+                    }
+
+
+                    break;
+                case "destructive":
+                    if (String.Compare(ecosystem, "Grassland", true) == 0)
+                    {
+                        if (model.GAI == null)
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_MISSING_GRASSLAND;
+                        }
+                        if (model.GAI_AREA == null)
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_AREA_MISSING_GRASSLAND;
+                        }
+                        if (String.IsNullOrEmpty(model.GAI_PLOT_TYPE))
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_PLOT_TYPE_MISSING_GRASSLAND;
+                        }
+                        if (!String.IsNullOrEmpty(model.GAI_PTYPE))
+                        {
+                            if (model.GAI_PTYPE.ToLower() == "weed" && model.GAI_PTYPE.ToLower() == "crop")
+                            {
+                                return (int)Globals.ErrorValidationCodes.GAI_PTYPE_WEED_CROP_INVALID_GRASSLAND;
+                            }
+                        }
+                    }
+                    else if (String.Compare(ecosystem, "Cropland", true) == 0)
+                    {
+                        if (model.GAI == null)
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_MISSING_GRASSLAND; ;
+                        }
+                        if (model.GAI_AREA == null)
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_AREA_MISSING_GRASSLAND;
+                        }
+                        if (model.GAI_LOCATION == null)
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_LOCATION_MISSING_CROPLAND;
+                        }
+                        if (String.IsNullOrEmpty(model.GAI_PTYPE))
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_PTYPE_MISSING_CROPLAND;
+                        }
+                        else
+                        {
+                            if (model.GAI_PTYPE.ToLower() != "weed" && model.GAI_PTYPE.ToLower() != "crop")
+                            {
+                                return (int)Globals.ErrorValidationCodes.GAI_PTYPE_WEED_CROP_INVALID_CROPLAND;
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(model.GAI_SPP))
+                        {
+                            if (model.GAI_PTYPE.ToLower() != "crop")
+                            {
+                                return (int)Globals.ErrorValidationCodes.GAI_SPP_CROP_CROPLAND;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //return 1011;
+                    }
+                    break;
+                case "visual estimation":
+                case "modified vga":
+                    //only for Mires, who the f*** knows what they are...
+                    if (String.Compare(ecosystem, "Grassland", true) == 0 || String.Compare(ecosystem, "Cropland", true) == 0 || String.Compare(ecosystem, "Forest", true) == 0)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_ONLY_MIRES;
+                    }
+                    if (model.GAI == null)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_MISSING_SPECTRAL_REF;
+                    }
+                    if (String.IsNullOrEmpty(model.GAI_SPP))
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_SPP_MISSING_MIRES;
+                    }
+                    break;
+                case "spectral reflectance":
+                    if (model.GAI == null)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_MISSING_SPECTRAL_REF;
+                    }
+                    break;
+                case "accupar":
+                    if (String.Compare(ecosystem, "Grassland", true) != 0 && String.Compare(ecosystem, "Cropland", true) != 0)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_ACCUPAR;
+                    }
+                    if (String.Compare(ecosystem, "Grassland", true) == 0)
+                    {
+                        if (String.IsNullOrEmpty(model.GAI_PLOT_TYPE))
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_PLOT_TYPE_ACCUPAR_GRASSLAND_MANDATORY;
+                        }
+                    }
+                    break;
+                case "sunscan":
+                    if (String.Compare(ecosystem, "Forest", true) == 0)
+                    {
+                        if (model.GAI_PLOT.StartsWith("CP"))
+                        {
+                            if (model.GAI_CEPT_EASTWARD_DIST == null && model.GAI_CEPT_NORTHWARD_DIST == null
+                                && model.GAI_CEPT_DISTANCE_POLAR == null && model.GAI_CEPT_ANGLE_POLAR == null)
+                            {
+                                return (int)Globals.ErrorValidationCodes.GAI_CEPT_MANDATORY_MISSING;
+                            }
+                            else
+                            {
+                                checkCoordinates = true;
+                            }
+                            if (model.GAI_CEPT_ID == null)
+                            {
+                                return (int)Globals.ErrorValidationCodes.GAI_CEPT_ID_MANDATORY_MISSING;
+                            }
+                        }
+                        else
+                        {
+                            if (model.GAI_CEPT_EASTWARD_DIST != null || model.GAI_CEPT_NORTHWARD_DIST != null
+                                || model.GAI_CEPT_DISTANCE_POLAR != null || model.GAI_CEPT_ANGLE_POLAR != null)
+                            {
+                                checkCoordinates = true;
+                            }
+                        }
+                        if (checkCoordinates)
+                        {
+                            if (Globals.IsValidCoordinateSystem<decimal?>(model.GAI_CEPT_EASTWARD_DIST, model.GAI_CEPT_NORTHWARD_DIST, model.GAI_CEPT_DISTANCE_POLAR, model.GAI_CEPT_ANGLE_POLAR) > 0)
+                            {
+                                return (int)Globals.ErrorValidationCodes.INVALID_COORDINATE_SYSTEM;
+                            }
+                        }
+                    }
+                    else if (String.Compare(ecosystem, "Grassland", true) == 0)
+                    {
+                        if (String.IsNullOrEmpty(model.GAI_PLOT_TYPE))
+                        {
+                            return (int)Globals.ErrorValidationCodes.GAI_PLOT_TYPE_SUNSCAN;
+                        }
+                    }
+                    else if (String.Compare(ecosystem, "Cropland", true) == 0)
+                    {
+
+                    }
+                    else
+                    {
+                        return (int)Globals.ErrorValidationCodes.GAI_SUNSCAN_ECOSYSTEMS;
+                    }
+                    break;
+            }
+            return 0;
+        }
     }
 }

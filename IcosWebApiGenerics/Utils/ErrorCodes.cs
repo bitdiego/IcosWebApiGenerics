@@ -98,7 +98,42 @@ namespace IcosWebApiGenerics.Utils
             {9,"Error: Wrong format for SOSM_SAMPLE_ID: must be in the format CC-Xxx_YYYYMMDD_NN-MM_(O|Oa|Oe|Oi)_BB when SOSM_PLOT_ID is of type SP-II and SOSM_SAMPLE_MAT is in (O, Oi, Oa, Oe)"},
         };
 
-        //
+        public static Dictionary<int, string> GrpDhpErrors = new Dictionary<int, string>
+        {
+            {1,"Error: DHP_OC_COL cannot be less than DHP_OC_ROW"}
+        };
+
+        public static Dictionary<int, string> GrpGaiErrors = new Dictionary<int, string>
+        {
+            {1,"Error: PLOT_ID string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V0$"},
+            {58,@"Error: for GRP_PLOT you have to submit either PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR or PLOT_LOCATION_LAT <---> PLOT_LOCATION_LONG."+
+                  Environment.NewLine + "These couples of information are mutually exclusive"},
+            {63,"Error: GAI_SPP is mandatory for Mires Ecosystem and Visual estimation and Modified VGA GAI_METHODs"},
+            {64,"Error: Visual estimation and Modified VGA GAI_METHODs can be used only for Mires Ecosystem"},
+            {65,"Error: GAI_PLOT_TYPE is mandatory when GAI_METHOD is Accupar for Grassland Ecosystem"},
+            {66,"Error: DHP GAI_METHOD is allowed only for Forest Ecosystem"},
+            {67,"Error: GAI_SPP can be reported only when GAI_PTYPE is Crop for Cropland Ecosystem when GAI_METHOD is Destructive"},
+            {68,"Error: GAI_PTYPE for Cropland Ecosystem must be Weed or Crop when GAI_METHOD is Destructive"},
+            {69,"Error: GAI_LOCATION is required for Cropland Ecosystem when GAI_METHOD is Destructive"},
+            {70,"Error: GAI_PTYPE is required for Cropland Ecosystem when GAI_METHOD is Destructive"},
+            {71,"Error: GAI_PTYPE Crop and Weed are not allowed for Grassland Ecosystem when GAI_METHOD is Destructive"},
+            {72,"Error: GAI_PLOT_TYPE is mandatory for Grassland Ecosystem when GAI_METHOD is Destructive"},
+            {73,"Error: GAI_AREA is mandatory for Grassland or Cropland Ecosystem when GAI_METHOD is Destructive"},
+            {74,"Error: GAI_DHP_ID, GAI_DHP_SLOPE, GAI_DHP_ASPECT are mandatory for Forest Ecosystem when GAI_METHOD is DHP"},
+            {75,"Error: GAI_DHP_EASTWARD_DIST<--->GAI_DHP_NORTHWARD_DIST and GAI_DHP_DISTANCE_POLAR<---->GAI_DHP_ANGLE_POLAR are mutually exclusive and are mandatory for forest ecosystems when GAI_METHOD is DHP and GAI_PLOT is CP"},
+            {76,"Error: GAI_DHP_EASTWARD_DIST<--->GAI_DHP_NORTHWARD_DIST and GAI_DHP_DISTANCE_POLAR<---->GAI_DHP_ANGLE_POLAR are mutually exclusive and are possible for forest ecosystems when GAI_METHOD is DHP and GAI_PLOT is CP"},
+            {77,"Error: GAI is mandatory for Visual estimation, Modified VGA or Spectral reflectance GAI_METHODs"},
+            {78,"Error: GAI is mandatory for Grassland or Cropland ecosystem and GAI_METHOD is Destructive"},
+            {80,"Error: GAI_METHOD Accupar is allowed only for Grassland or Cropland ecosystems"},
+            {81,"Error: GAI_CEPT_EASTWARD_DIST<--->GAI_CEPT_NORTHWARD_DIST and GAI_CEPT_DISTANCE_POLAR<---->GAI_CEPT_ANGLE_POLAR are mutually exclusive and are mandatory for forest ecosystems when GAI_METHOD is SUNSCAN and GAI_PLOT is CP"},
+            {82,"Error: GAI_CEPT_ID is mandatory for forest ecosystems when GAI_METHOD is SUNSCAN and GAI_PLOT is SP"},
+            {83,"Error: GAI_PLOT_TYPE is mandatory for Grassland ecosystems when GAI_METHOD is SUNSCAN"},
+            {84,"Error: SUNSCAN GAI_METHOD is allowed only for Forest, Grassland and Cropland ecosystems"},
+            {4,"Error: GAI_DHP_EASTWARD_DIST<--->GAI_DHP_NORTHWARD_DIST or GAI_DHP_DISTANCE_POLAR<---->GAI_DHP_ANGLE_POLAR are mandatory and mutually exclusive for forest ecosystems when GAI_METHOD is DHP and GAI_PLOT is CP"},
+
+        };
+
+        //{19,"ERROR - Cell $CELL$; PLOT_ID string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V0$"}, 
 
         /*
         public static Dictionary<int, string> ErrorsList = new Dictionary<int, string>
