@@ -23,6 +23,7 @@ namespace IcosWebApiGenerics.Data
         public DbSet<GRP_TOWER> GRP_TOWER { get; set; }
         public DbSet<GRP_CLIM_AVG> GRP_CLIM_AVG { get; set; }
         public DbSet<GRP_DM> GRP_DM { get; set; }
+        public DbSet<GRP_PLOT> GRP_PLOT { get; set; }
         /*public DbSet<GRP_INST> GRP_INST { get; set; }
         public DbSet<GRP_LOGGER> GRP_LOGGER { get; set; }
         public DbSet<GRP_FILE> GRP_FILE { get; set; }

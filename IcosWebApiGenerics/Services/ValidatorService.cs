@@ -110,6 +110,19 @@ namespace IcosWebApiGenerics.Services
                     GRP_SPPS spps = t as GRP_SPPS;
                     response = GrpValidator.ValidateSppsResponse(spps, _context);
                     break;
+                case (int)Globals.Groups.GRP_TREE:
+                    GRP_TREE dSnow = t as GRP_TREE;
+                    response = GrpValidator.ValidateTreeResponse(dSnow, _context);
+                    break;
+
+                case (int)Globals.Groups.GRP_WTDPNT:
+                    GRP_WTDPNT wtdPnt = t as GRP_WTDPNT;
+                    response = GrpValidator.ValidateWtdPntResponse(wtdPnt, _context);
+                    break;
+                case (int)Globals.Groups.GRP_D_SNOW:
+                    GRP_D_SNOW d_Snow = t as GRP_D_SNOW;
+                    response = GrpValidator.ValidateDSnowResponse(d_Snow, _context);
+                    break;
             }
             return response;
         }

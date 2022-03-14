@@ -275,7 +275,7 @@ namespace IcosWebApiGenerics.Utils
             GAI_PLOT_TYPE_SUNSCAN,
             GAI_SUNSCAN_ECOSYSTEMS,
             CEPT_FIRST_LAST,
-            TREE_PLOT_NOT_FOUND,
+            PLOT_ID_NOT_FOUND,
             TREE_ID_MANDATORY_CP,
             TREE_MANDATORY_VARIABLES,
             SPPS_PLOT_NOT_FOUND,

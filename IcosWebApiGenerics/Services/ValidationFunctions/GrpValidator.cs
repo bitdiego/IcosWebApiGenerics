@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using IcosWebApiGenerics.Data;
 using IcosWebApiGenerics.Models.BADM;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 
 namespace IcosWebApiGenerics.Services.ValidationFunctions
 {
@@ -167,6 +168,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        
+
         //seems OK
         public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme, IcosDbContext db)
         {
@@ -277,6 +280,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         public static Response ValidateFlsmResponse(GRP_FLSM flsm, IcosDbContext db)
         {
             //to do::: FLSM_PLOT_ID present in GRP_PLOT
+            errorCode = ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
+            if (errorCode > 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PLOT_ID");
+            }
+
             errorCode = MissingMandatoryData<string>(flsm.FLSM_DATE, "FLSM_DATE", "GRP_FLSM");
             if (errorCode != 0)
             {
@@ -333,9 +343,16 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        public static Response ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext context)
+        public static Response ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext db)
         {
             //to do::: SOSM_PLOT_ID present in GRP_PLOT
+            errorCode = ItemInSamplingPointGroupAsync(sosm.SOSM_PLOT_ID, sosm.SOSM_DATE, sosm.SiteId, db);
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_PLOT_ID");
+            }
+
             errorCode = MissingMandatoryData<string>(sosm.SOSM_DATE, "SOSM_DATE", "GRP_SOSM");
             if (errorCode != 0)
             {
@@ -698,7 +715,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 {
                     errorCode = 10;
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT", "$V0$", "BULKH_PLOT", "$V1$", spps.SPPS_PLOT);
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT", "$V0$", "SPPS_PLOT", "$V1$", spps.SPPS_PLOT);
+                }
+                //Here?
+                errorCode = ItemInSamplingPointGroupAsync(spps.SPPS_PLOT, spps.SPPS_DATE, spps.SiteId, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT");
                 }
             }
 
@@ -707,7 +731,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             {
                 errorCode = 2;
                 response.Code += errorCode;
-                response.FormatError(ErrorCodes.GrpSpsErrors[errorCode], "SPPS_LOCATION_LAT");
+                response.FormatError(ErrorCodes.GrpSppsErrors[errorCode], "SPPS_LOCATION_LAT");
             }
 
             if (spps.SPPS_LOCATION_LAT != null && spps.SPPS_LOCATION_LON != null)
@@ -762,6 +786,121 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             return response;
         }
+
+        public static Response ValidateTreeResponse(GRP_TREE tree, IcosDbContext db)
+        {
+            if (tree.TREE_PLOT.ToLower().StartsWith("cp") || tree.TREE_PLOT.ToLower().EndsWith("cp"))
+            {
+                if (tree.TREE_ID == null)
+                {
+                    errorCode = MissingMandatoryData<decimal?>(tree.TREE_DBH, "TREE_PLOT", "GRP_TREE");
+                    if (errorCode != 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_PLOT", "$V0$", "TREE_PLOT", "$GRP$", "GRP_TREE");
+                    }
+                    else
+                    {
+                        errorCode = ItemInSamplingPointGroupAsync(tree.TREE_PLOT, tree.TREE_DATE, tree.SiteId, db);
+                        if (errorCode != 0)
+                        {
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_PLOT");
+                        }
+                    }
+                }
+            }
+
+            errorCode = MissingMandatoryData<decimal?>(tree.TREE_DBH, "TREE_DBH", "GRP_TREE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_DBH", "$V0$", "TREE_DBH", "$GRP$", "GRP_TREE");
+            }
+
+            errorCode = MissingMandatoryData<string>(tree.TREE_SPP, "TREE_SPP", "GRP_TREE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_SPP", "$V0$", "TREE_SPP", "$GRP$", "GRP_TREE");
+            }
+
+            errorCode = MissingMandatoryData<string>(tree.TREE_STATUS, "TREE_STATUS", "GRP_TREE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_STATUS", "$V0$", "TREE_STATUS", "$GRP$", "GRP_TREE");
+            }
+
+
+            if (Globals.IsValidCoordinateSystem(tree.TREE_EASTWARD_DIST, tree.TREE_NORTHWARD_DIST, tree.TREE_DISTANCE_POLAR, tree.TREE_ANGLE_POLAR) > 0)
+            {
+                errorCode = 2;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpTreeErrors[errorCode], "TREE_EASTWARD_DIST");
+            }
+            return response;
+        }
+
+        public static Response ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db)
+        {
+            if (Globals.IsValidCoordinateSystem(dSnow.D_SNOW_EASTWARD_DIST, dSnow.D_SNOW_NORTHWARD_DIST,
+                                                dSnow.D_SNOW_DISTANCE_POLAR, dSnow.D_SNOW_ANGLE_POLAR) > 0)
+            {
+                errorCode = 2;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpD_SnowErrors[errorCode], "D_SNOW_EASTWARD_DIST");
+            }
+            if (!XORNull<string>(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_VARMAP))
+            {
+                errorCode = (int)Globals.ErrorValidationCodes.D_SNOW_PLOT_VARMAP;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpD_SnowErrors[errorCode], "D_SNOW_PLOT");
+            }
+
+            if (!String.IsNullOrEmpty(dSnow.D_SNOW_PLOT))
+            {
+                errorCode = ItemInSamplingPointGroupAsync(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_DATE, dSnow.SiteId, db);
+                if (errorCode != 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_PLOT");
+                }
+            }
+            return response;
+        }
+
+        public static Response ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db)
+        {
+
+            if (Globals.IsValidCoordinateSystem(wtdPnt.WTDPNT_EASTWARD_DIST, wtdPnt.WTDPNT_NORTHWARD_DIST,
+                                                wtdPnt.WTDPNT_DISTANCE_POLAR, wtdPnt.WTDPNT_ANGLE_POLAR) > 0)
+            {
+                errorCode = (int)Globals.ErrorValidationCodes.INVALID_COORDINATE_SYSTEM;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpWtdPntErrors[errorCode], "WTDPNT_EASTWARD_DIST");
+            }
+
+            if (!XORNull<string>(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_VARMAP))
+            {
+                errorCode = (int)Globals.ErrorValidationCodes.WTDPNT_PLOT_VARMAP;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpWtdPntErrors[errorCode], "WTDPNT_PLOT");
+            }
+
+            if (!String.IsNullOrEmpty(wtdPnt.WTDPNT_PLOT))
+            {
+                errorCode = ItemInSamplingPointGroupAsync(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_DATE, wtdPnt.SiteId, db);
+                if (errorCode != 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_PLOT");
+                }
+            }
+
+            return response;
+        }
+
         /////////////////////////////////
         ///
 
@@ -1021,40 +1160,31 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return (countValue == 0) || (countValue == bound);
         }
 
-        /* public async Task<int> FlsmPlotIdInSamplingPointGroupAsync(GRP_FLSM model, int siteId, IcosDbContext _context)
-         {
-             var item = await _context.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
-                                                 String.Compare(plot.PLOT_ID, model.FLSM_PLOT_ID) == 0 &&
-                                                 String.Compare(plot.PLOT_DATE, model.FLSM_DATE) <= 0).FirstOrDefaultAsync();
-             if (item == null)
-             {
-                 return (int)Globals.ErrorValidationCodes.FLSM_PLOT_ID_NOT_FOUND;
-             }
-             return 0;
-         }
-
-          public async Task<int> SosmPlotIdInSamplingPointGroupAsync(GRP_SOSM model, int siteId)
-         {
-             var item = await _context.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
-                                                 String.Compare(plot.PLOT_ID, model.SOSM_PLOT_ID) == 0 &&
-                                                 String.Compare(plot.PLOT_DATE, model.SOSM_DATE) <= 0).FirstOrDefaultAsync();
-             if (item == null)
-             {
-                 return (int)Globals.ErrorValidationCodes.SOSM_PLOT_ID_NOT_FOUND;
-             }
-             return 0;
-         }
-        public async Task<int> SppsPlotExistsAsync(string plotSpp, int siteId)
+        private static int ItemInSamplingPointGroupAsync(string modelPlotId, string modelDate, int siteId, IcosDbContext db)
         {
-            var item = await _context.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
-                                                String.Compare(plot.PLOT_ID, plotSpp) == 0).FirstOrDefaultAsync();
+            if (String.Compare(modelPlotId, "Outside_CP", true) == 0) return 0;
+            var item = db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+                                                String.Compare(plot.PLOT_ID, modelPlotId) == 0 &&
+                                                String.Compare(plot.PLOT_DATE, modelDate) <= 0).FirstOrDefault();
             if (item == null)
             {
-                return (int)Globals.ErrorValidationCodes.SPPS_PLOT_NOT_FOUND;
+                return (int)Globals.ErrorValidationCodes.PLOT_ID_NOT_FOUND;
             }
             return 0;
         }
-        */
+
+        /*
+        public async Task<int> ItemInSamplingPointGroupAsync(string modelPlotId, string modelDate, int siteId, IcosDbContext db)
+        {
+            var item = await db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+                                                String.Compare(plot.PLOT_ID, modelPlotId) == 0 &&
+                                                String.Compare(plot.PLOT_DATE, modelDate) <= 0).FirstOrDefaultAsync();
+            if (item == null)
+            {
+                return (int)Globals.ErrorValidationCodes.TREE_PLOT_NOT_FOUND;
+            }
+            return 0;
+        }*/
 
         private static int ValidateGaiByMethod(GRP_GAI model,string ecosystem)
         {

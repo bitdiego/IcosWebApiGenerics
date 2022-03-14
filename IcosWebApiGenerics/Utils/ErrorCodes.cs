@@ -19,6 +19,7 @@ namespace IcosWebApiGenerics.Utils
             { 8, "Negative number not allowed for variable $V0$. Found $V1$"},
             { 9, "You have to submit at least one variable"},
             {10,"Error: $V0$ string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V1$"},
+            {86,"Error: entered plot ID not found in GRP_PLOT"},
         };
 
         public static Dictionary<int, string> GrpLocationErrors = new Dictionary<int, string>
@@ -136,13 +137,38 @@ namespace IcosWebApiGenerics.Utils
 
         };
 
-        public static Dictionary<int, string> GrpSpsErrors = new Dictionary<int, string>
+        public static Dictionary<int, string> GrpSppsErrors = new Dictionary<int, string>
         {
             {2,@"Error: for GRP_SPPS you have to submit either SPPS_LOCATION_LAT <---> SPPS_LOCATION_LON, or SPPS_LOCATION_DIST <---> SPPS_LOCATION_ANG"+
                   Environment.NewLine + "These couples of information are mutually exclusive"},
             {90,"Error: Either (SPPS_LOCATION, SPPS_LOCATION_LAT, SPPS_LOCATION_LON) or (SPPS_LOCATION, SPPS_LOCATION_DIST, SPPS_LOCATION_ANG) must  be submitted together for Inaccessible Mires"},
             {91,"Error: SPPS_PTYPE is allowed only for CP SPPS_PLOT and for Mires"},
         };
+
+        public static Dictionary<int, string> GrpTreeErrors = new Dictionary<int, string>
+        {
+            {2,@"Error: for GRP_TREE you have to submit either TREE_EASTWARD_DIST<--->TREE_NORTHWARD_DIST, or TREE_DISTANCE_POLAR<--->TREE_ANGLE_POLAR."+
+                  Environment.NewLine + "These couples of information are mutually exclusive"},
+            {91,"Error: SPPS_PTYPE is allowed only for CP SPPS_PLOT and for Mires"},
+        };
+
+        public static Dictionary<int, string> GrpWtdPntErrors = new Dictionary<int, string>
+        {
+            {2,@"Error: for GRP_WTDPNT you have to submit either WTDPNT_EASTWARD_DIST<--->WTDPNT_NORTHWARD_DIST, or WTDPNT_DISTANCE_POLAR <--->WTD_ANGLE_POLAR."+
+                  Environment.NewLine + "These couples of information are mutually exclusive"},
+            {137,"Error: entered WTDPNT_PLOT not found in GRP_PLOT"},
+            {138,"Error: either WTDPNT_PLOT or WTDPNT_VARMAP must be submitted"},
+        };
+
+        public static Dictionary<int, string> GrpD_SnowErrors = new Dictionary<int, string>
+        {
+            {2,@"Error: for GRP_WTDPNT you have to submit either D_SNOW_EASTWARD_DIST<--->D_SNOW_NORTHWARD_DIST, or D_SNOW_DISTANCE_POLAR <--->D_SNOW_ANGLE_POLAR."+
+                  Environment.NewLine + "These couples of information are mutually exclusive"},
+            {140,"Error: either D_SNOW_PLOT or D_SNOW_VARMAP must be submitted"},
+        };
+
+
+
 
         //{19,"ERROR - Cell $CELL$; PLOT_ID string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V0$"}, 
 
