@@ -100,6 +100,8 @@ namespace IcosWebApiGenerics.Utils
             {9,"Error: Wrong format for SOSM_SAMPLE_ID: must be in the format CC-Xxx_YYYYMMDD_NN-MM_(O|Oa|Oe|Oi)_BB when SOSM_PLOT_ID is of type SP-II and SOSM_SAMPLE_MAT is in (O, Oi, Oa, Oe)"},
         };
 
+        
+
         public static Dictionary<int, string> GrpDhpErrors = new Dictionary<int, string>
         {
             {1,"Error: DHP_OC_COL cannot be less than DHP_OC_ROW"}
@@ -132,6 +134,14 @@ namespace IcosWebApiGenerics.Utils
             {84,"Error: SUNSCAN GAI_METHOD is allowed only for Forest, Grassland and Cropland ecosystems"},
             {4,"Error: GAI_DHP_EASTWARD_DIST<--->GAI_DHP_NORTHWARD_DIST or GAI_DHP_DISTANCE_POLAR<---->GAI_DHP_ANGLE_POLAR are mandatory and mutually exclusive for forest ecosystems when GAI_METHOD is DHP and GAI_PLOT is CP"},
 
+        };
+
+        public static Dictionary<int, string> GrpSpsErrors = new Dictionary<int, string>
+        {
+            {2,@"Error: for GRP_SPPS you have to submit either SPPS_LOCATION_LAT <---> SPPS_LOCATION_LON, or SPPS_LOCATION_DIST <---> SPPS_LOCATION_ANG"+
+                  Environment.NewLine + "These couples of information are mutually exclusive"},
+            {90,"Error: Either (SPPS_LOCATION, SPPS_LOCATION_LAT, SPPS_LOCATION_LON) or (SPPS_LOCATION, SPPS_LOCATION_DIST, SPPS_LOCATION_ANG) must  be submitted together for Inaccessible Mires"},
+            {91,"Error: SPPS_PTYPE is allowed only for CP SPPS_PLOT and for Mires"},
         };
 
         //{19,"ERROR - Cell $CELL$; PLOT_ID string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V0$"}, 

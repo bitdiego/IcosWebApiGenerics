@@ -106,6 +106,10 @@ namespace IcosWebApiGenerics.Services
                     GRP_BULKH bulkh = t as GRP_BULKH;
                     response = GrpValidator.ValidateBulkhResponse(bulkh, _context);
                     break;
+                case (int)Globals.Groups.GRP_SPPS:
+                    GRP_SPPS spps = t as GRP_SPPS;
+                    response = GrpValidator.ValidateSppsResponse(spps, _context);
+                    break;
             }
             return response;
         }

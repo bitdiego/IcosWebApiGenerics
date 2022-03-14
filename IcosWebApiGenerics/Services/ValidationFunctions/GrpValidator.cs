@@ -671,7 +671,97 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        public static Response ValidateSppsResponse(GRP_SPPS spps, IcosDbContext db)
+        {
+            errorCode = MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_DATE", "$V0$", "SPPS_DATE", "$GRP$", "GRP_SPPS");
+            }
+            errorCode = IsoDateCheck(spps.SPPS_DATE, "SPPS_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_DATE", "$V0$", "SPPS_DATE", "$V1$", spps.SPPS_DATE);
+            }
 
+            errorCode = MissingMandatoryData<string>(spps.SPPS_PLOT, "SPPS_PLOT", "GRP_SPPS");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT", "$V0$", "SPPS_PLOT", "$GRP$", "GRP_SPPS");
+            }
+            else
+            {
+                if (!IsValidPlotString(spps.SPPS_PLOT, spps.GroupId))
+                {
+                    errorCode = 10;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT", "$V0$", "BULKH_PLOT", "$V1$", spps.SPPS_PLOT);
+                }
+            }
+
+            bool isBound = false;
+            if (Globals.IsValidCoordinateSystem<decimal?>(spps.SPPS_LOCATION_LAT, spps.SPPS_LOCATION_LON, spps.SPPS_LOCATION_DIST, spps.SPPS_LOCATION_ANG) > 0)
+            {
+                errorCode = 2;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpSpsErrors[errorCode], "SPPS_LOCATION_LAT");
+            }
+
+            if (spps.SPPS_LOCATION_LAT != null && spps.SPPS_LOCATION_LON != null)
+            {
+                isBound = CountBoundedProps<GRP_SPPS>(spps, 3, "SPPS_LOCATION_LAT", "SPPS_LOCATION_LON", "SPPS_LOCATION");
+            }
+            else
+            {
+                isBound = CountBoundedProps<GRP_SPPS>(spps, 3, "SPPS_LOCATION_DIST", "SPPS_LOCATION_ANG", "SPPS_LOCATION");
+            }
+            if (!isBound)
+            {
+                errorCode = (int)Globals.ErrorValidationCodes.SPPS_LOCATION_BOUND;
+                response.Code += errorCode;
+            }
+            if (!String.IsNullOrEmpty(spps.SPPS_PTYPE))
+            {
+                if (!spps.SPPS_PLOT.ToLower().StartsWith("cp"))
+                {
+
+                    errorCode = (int)Globals.ErrorValidationCodes.SPPS_PTYPE_CP_ALLOWED;
+                    response.Code += errorCode;
+                }
+            }
+
+
+            //Only for mires!!! wtf are they??????????
+            if (spps.SPPS_PERC_COVER != null)
+            {
+
+            }
+
+            if (!String.IsNullOrEmpty(spps.SPPS_TWSP_PCT))
+            {
+                errorCode = ItemInBadmList(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_TWSP_PCT", "$V0$", spps.SPPS_TWSP_PCT, "$V1$", "SPPS_TWSP_PCT", "$GRP$", "GRP_SPPS");
+                }
+            }
+
+            if (!String.IsNullOrEmpty(spps.SPPS_PTYPE))
+            {
+                errorCode = ItemInBadmList(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PTYPE", "$V0$", spps.SPPS_PTYPE, "$V1$", "SPPS_PTYPE", "$GRP$", "GRP_SPPS");
+                }
+            }
+
+            return response;
+        }
         /////////////////////////////////
         ///
 
@@ -954,6 +1044,16 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
              }
              return 0;
          }
+        public async Task<int> SppsPlotExistsAsync(string plotSpp, int siteId)
+        {
+            var item = await _context.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+                                                String.Compare(plot.PLOT_ID, plotSpp) == 0).FirstOrDefaultAsync();
+            if (item == null)
+            {
+                return (int)Globals.ErrorValidationCodes.SPPS_PLOT_NOT_FOUND;
+            }
+            return 0;
+        }
         */
 
         private static int ValidateGaiByMethod(GRP_GAI model,string ecosystem)
