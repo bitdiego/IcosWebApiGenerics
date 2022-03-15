@@ -114,7 +114,18 @@ namespace IcosWebApiGenerics.Services
                     GRP_TREE dSnow = t as GRP_TREE;
                     response = GrpValidator.ValidateTreeResponse(dSnow, _context);
                     break;
-
+                case (int)Globals.Groups.GRP_AGB:
+                    GRP_AGB agb = t as GRP_AGB;
+                    response = GrpValidator.ValidateAgbResponse(agb, _context);
+                    break;
+                case (int)Globals.Groups.GRP_LITTERPNT:
+                    GRP_LITTERPNT litterPnt = t as GRP_LITTERPNT;
+                    response = GrpValidator.ValidateLitterPntResponse(litterPnt, _context);
+                    break;
+                case (int)Globals.Groups.GRP_ALLOM:
+                    GRP_ALLOM allom = t as GRP_ALLOM;
+                    response = GrpValidator.ValidateAllomResponse(allom, _context);
+                    break;
                 case (int)Globals.Groups.GRP_WTDPNT:
                     GRP_WTDPNT wtdPnt = t as GRP_WTDPNT;
                     response = GrpValidator.ValidateWtdPntResponse(wtdPnt, _context);

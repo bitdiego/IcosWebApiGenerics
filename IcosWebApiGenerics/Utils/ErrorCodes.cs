@@ -152,6 +152,25 @@ namespace IcosWebApiGenerics.Utils
             {91,"Error: SPPS_PTYPE is allowed only for CP SPPS_PLOT and for Mires"},
         };
 
+        public static Dictionary<int, string> GrpAgbErrors = new Dictionary<int, string>
+        {
+            {106, "Error: for GRP_AGB and Cropland Ecosysten the following variables are all mandatory:"+Environment.NewLine+
+                  "AGB, AGB_LOCATION, AGB_AREA, AGB_PHEN, AGB_PTYPE"},
+            {107, "Error: for GRP_AGB and Grassland Ecosysten the following variables are all mandatory:"+Environment.NewLine+
+                "AGB, AGB_AREA, AGB_PHEN, AGB_PLOT_TYPE"},
+            {108, "Error: AGB_PTYPE is mandatory for GRP_AGB and Forest Ecosystem"},
+            {109, "Error: AGB_LOCATION is mandatory for Forest Ecosystem whe AGB_PTYPE = Moss"},
+            {110, "Error: AGB and AGB_NPP_MOSS are mutually exclusive for GRP_AGB for Forest Ecosystem when AGB_PTYPE = Moss"},
+            {111, "Error: AGB_PHEN is mandatory for Forest Ecosystem whe AGB_PTYPE = Moss and AGB is provided (not allowed if AGB_NPP_MOSS is submitted)"},
+            {112, "Error: for GRP_AGB and Forest Ecosysten and for AGB_PTYPE=Sapling, the following variables are all mandatory:"+Environment.NewLine+
+                          "AGB, AGB_LOCATION, AGB_AREA, AGB_SPP, AGB_PTYPE"},
+            {113, "Error: for GRP_AGB and Forest Ecosysten and for AGB_PTYPE in (Ferns, Herb, Shrub), the following variables are all mandatory:"+Environment.NewLine+
+                          "AGB, AGB_LOCATION, AGB_AREA, AGB_PHEN, AGB_PTYPE"},
+            {114, "Error: for GRP_AGB and Mires Ecosysten, AGB_SPP is mandatory"},
+            {115, "Error: AGB and AGB_NPP_MOSS are mutually exclusive for GRP_AGB for Mires Ecosystem"},
+            {116, "Error: AGB_ORGAN is allowed in case of AGB_PTYPE is on woody species for Mires Ecosystem"},
+        };
+
         public static Dictionary<int, string> GrpWtdPntErrors = new Dictionary<int, string>
         {
             {2,@"Error: for GRP_WTDPNT you have to submit either WTDPNT_EASTWARD_DIST<--->WTDPNT_NORTHWARD_DIST, or WTDPNT_DISTANCE_POLAR <--->WTD_ANGLE_POLAR."+
@@ -167,10 +186,32 @@ namespace IcosWebApiGenerics.Utils
             {140,"Error: either D_SNOW_PLOT or D_SNOW_VARMAP must be submitted"},
         };
 
+        public static Dictionary<int, string> GrpLitterPntErrors = new Dictionary<int, string>
+        {
+            {85,@"ERROR - Cell $CELL$; LITTERPNT_EASTWARD_DIST<--->LITTERPNT_NORTHWARD_DIST, or LITTERPNT_DISTANCE_POLAR <---> LITTERPNT_ANGLE_POLAR 
+                 are possible only for forests if LITTERPNT_TYPE is non-woody, not possible for all the other cases"},
+            {128,"Error: entered LITTERPNT_PLOT not found in GRP_PLOT"},
+            {129,"Error: LITTERPNT and LITTERPNT_AREA are mandatory for Grassland ecosystem"},
+            {130,"Error: for GRP_LITTERPNT and Cropland Ecosysten and for LITTERPNT_TYPE=Natural, the following variables are all mandatory:"+Environment.NewLine+
+                 "LITTERPNT, LITTERPNT_ID, LITTERPNT_AREA, LITTERPNT_FRACTION"},
+            {131,"Error: LITTERPNT_TYPE is not allowed for Grassland and Cropland Ecosystems"},
+            {132,"Error: for GRP_LITTERPNT and Cropland Ecosysten and for LITTERPNT_TYPE=Residual, the following variables are all mandatory:"+Environment.NewLine+
+                 "LITTERPNT, LITTERPNT_AREA, LITTERPNT_FRACTION"},
+            {133,"Error: for GRP_LITTERPNT and Forest Ecosysten and for LITTERPNT_TYPE=Coarse, the following variables are all mandatory:"+Environment.NewLine+
+                 "LITTERPNT_COARSE_DIAM, LITTERPNT_COARSE_LENGTH, LITTERPNT_COARSE_ANGLE, LITTERPNT_COARSE_DECAY, LITTERPNT_ID"},
+            {134,"Error: for GRP_LITTERPNT and Forest Ecosysten and for LITTERPNT_TYPE=Fine-woody, the following variables are all mandatory:"+Environment.NewLine+
+                 "LITTERPNT_AREA, LITTERPNT"},
+            {135,"Error: for GRP_LITTERPNT and Forest Ecosysten and for LITTERPNT_TYPE=Non-woody, the following variables are all mandatory:"+Environment.NewLine+
+                 "LITTERPNT_AREA, LITTERPNT, LITTERPNT_ID, LITTERPNT_FRACTION"},
+            {136,"Error: for GRP_LITTERPNT and Forest Ecosysten and for LITTERPNT_TYPE=Non-woody and LITTERPNT_FRACTION=Leaves, the following variables are all mandatory:"+Environment.NewLine+
+                 "LITTERPNT_AREA, LITTERPNT, LITTERPNT_ID, LITTERPNT_FRACTION, LITTERPNT_SPP"},
+        };
 
-
-
-        //{19,"ERROR - Cell $CELL$; PLOT_ID string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V0$"}, 
+        public static Dictionary<int, string> GrpAllomErrors = new Dictionary<int, string>
+        {
+            {1,@"Error: for GRP_ALLOM and Cropland Ecosysten the following variables are all mandatory:"+Environment.NewLine+
+                  "ALLOM_DBH, ALLOM_HEIGHT, ALLOM_SPP, ALLOM_STEM_BIOM, ALLOM_BRANCHES_BIOM"},
+        };
 
         /*
         public static Dictionary<int, string> ErrorsList = new Dictionary<int, string>
