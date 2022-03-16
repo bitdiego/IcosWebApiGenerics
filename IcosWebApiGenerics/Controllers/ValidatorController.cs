@@ -48,7 +48,7 @@ namespace IcosWebApiGenerics.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Post([FromBody] T model)
         {
-            Response response = _service.Validate(model);
+            Response response =  await _service.Validate(model);
             if (response.Code != 0)
             {
                 return Ok(response);
@@ -74,7 +74,7 @@ namespace IcosWebApiGenerics.Controllers
         {
             BaseClass bb = _mapper.MapToObject(vg);
             T baseObj = _mapper.MapToObject(vg) as T;
-            Response response = _service.Validate(bb as T);
+            Response response = await _service.Validate(bb as T);
             /*Response response = _service.Validate(model);
             if (response.Code != 0)
             {

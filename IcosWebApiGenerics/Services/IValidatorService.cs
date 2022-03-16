@@ -19,7 +19,7 @@ namespace IcosWebApiGenerics
         Task<IQueryable<string>> GetBadmListDataAsync(int dataId);
         IQueryable<string> GetBadmListData(int dataId);*/
         //int ValidateModel(T t);
-        Response Validate(T t);
+        Task<Response> Validate(T t);
         Response ItemInBadmList(string value, int cvIndex);
 
     }

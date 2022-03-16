@@ -213,6 +213,14 @@ namespace IcosWebApiGenerics.Utils
                   "ALLOM_DBH, ALLOM_HEIGHT, ALLOM_SPP, ALLOM_STEM_BIOM, ALLOM_BRANCHES_BIOM"},
         };
 
+        public static Dictionary<int, string> GrpInstErrors = new Dictionary<int, string>
+        {
+            {34,"Entered instrument has not been found. Please enter a Purchase INST_FACTORY value first."},
+            {35,"Error: found an INST_FACTORY date prior to Purchase date."},
+            {79,"Entered instrument does not have a Purchase entry for INST_FACTORY variable or operation date is prior to instrument purchase date"},
+            {123,"Entered instrument is already registered with Purchase factory operation"},
+        };
+
         /*
         public static Dictionary<int, string> ErrorsList = new Dictionary<int, string>
         {

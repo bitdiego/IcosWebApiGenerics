@@ -1235,8 +1235,138 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        //add the SN format validation
+        public static async Task<Response> ValidateInstResponseAsync(GRP_INST inst, IcosDbContext db)
+        {
+            errorCode = MissingMandatoryData<string>(inst.INST_MODEL, "INST_MODEL", "GRP_INST");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_MODEL", "$V0$", "INST_MODEL", "$GRP$", "GRP_INST");
+            }
+            else
+            {
+                errorCode = ItemInBadmList(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_MODEL", "$V0$", inst.INST_MODEL, "$V1$", "INST_MODEL", "$GRP$", "GRP_INST");
+                }
+            }
+
+            
+            errorCode = MissingMandatoryData<string>(inst.INST_SN, "INST_SN", "GRP_INST");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_SN", "$V0$", "INST_SN", "$GRP$", "GRP_INST");
+            }
+            else
+            {
+                //add validation of sn based on inst...
+            }
+
+            errorCode = MissingMandatoryData<string>(inst.INST_FACTORY, "INST_FACTORY", "GRP_INST");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_FACTORY", "$V0$", "INST_FACTORY", "$GRP$", "GRP_INST");
+            }
+            else
+            {
+                errorCode = ItemInBadmList(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_FACTORY", "$V0$", inst.INST_MODEL, "$V1$", "INST_FACTORY", "$GRP$", "GRP_INST");
+                }
+            }
+
+            errorCode = MissingMandatoryData<string>(inst.INST_DATE, "INST_DATE", "GRP_INST");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_DATE", "$V0$", "INST_DATE", "$GRP$", "GRP_INST");
+            }
+            errorCode = IsoDateCheck(inst.INST_DATE, "INST_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_DATE", "$V0$", "INST_DATE", "$V1$", inst.INST_DATE);
+            }
+
+            errorCode = await InstrumentInGrpInst(inst, inst.SiteId, db);
+            if (errorCode > 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
+            }
+
+            errorCode = await LastExpectedOpByDateAsync(inst, db);
+            if (errorCode > 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
+            }
+            return response;
+        }
+
         /////////////////////////////////
-        ///
+        private static async Task<int> InstrumentInGrpInst(GRP_INST model, int siteId, IcosDbContext db)
+        {
+            int resp = 0;
+            if (String.Compare(model.INST_FACTORY.ToLower(), "purchase") == 0)
+            {
+                return 0;
+            }
+            var inst = await db.GRP_INST.Where(md => md.INST_MODEL == model.INST_MODEL && md.INST_SN == model.INST_SN && md.SiteId == siteId && md.INST_FACTORY.ToLower() == "purchase")
+                                              .OrderBy(md => md.INST_DATE).FirstOrDefaultAsync();
+            if (inst == null)
+            {
+                resp = (int)Globals.ErrorValidationCodes.NOT_IN_GRP_INST;
+            }
+            else
+            {
+                string _iDate = inst.INST_DATE;
+                if (String.Compare(_iDate, model.INST_DATE) > 0)
+                {
+                    resp = (int)Globals.ErrorValidationCodes.INST_PURCHASE_DATE_GREATER_THAN_INST_OP_DATE;
+                }
+            }
+            return resp;
+        }
+
+        private static async Task<int> LastExpectedOpByDateAsync(GRP_INST inst, IcosDbContext db)
+        {
+
+            if (String.Compare(inst.INST_MODEL, "purchase", true) == 0)
+            {
+                if (await db.GRP_INST.AnyAsync(xinst => xinst.INST_FACTORY.ToLower() == "purchase" && String.Compare(xinst.INST_MODEL, inst.INST_MODEL, true)==0
+                                                    && String.Compare(xinst.INST_SN, inst.INST_SN, true)==0 && xinst.SiteId == inst.SiteId && xinst.DataStatus==0))
+                {
+                    return (int)Globals.ErrorValidationCodes.GRP_INST_ALREADY_PURCHASED;
+                }
+            }
+            else
+            {
+                var item = await db.GRP_INST.FirstOrDefaultAsync(xinst => (string.Compare(xinst.INST_FACTORY, "purchase", true) == 0)
+                                                                        && (string.Compare(xinst.INST_MODEL, inst.INST_MODEL, true) == 0)
+                                                                        && (string.Compare(xinst.INST_SN, inst.INST_SN, true) == 0) && xinst.SiteId == inst.SiteId);
+                if (item == null)
+                {
+                    return (int)Globals.ErrorValidationCodes.GRP_INST_NOT_PURCHASE;
+                }
+                else
+                {
+                    if (String.Compare(inst.INST_DATE, item.INST_DATE) < 0)
+                    {
+                        return (int)Globals.ErrorValidationCodes.GRP_INST_NOT_PURCHASE;
+                    }
+                }
+            }
+
+            return 0;
+        }
 
         private static int ItemInBadmList(string value, int cvIndex, IcosDbContext db)
         {
@@ -1429,7 +1559,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 return true;
             }
             */
-        int[] allowedOutside = { 10, 17, 19, 21, 22 };
+            int[] allowedOutside = { 10, 17, 19, 21, 22 };
             List<int> notSP_II_Valid = new List<int>() { 21, 22 };
             bool isMatch = true;
             try

@@ -50,7 +50,7 @@ namespace IcosWebApiGenerics.Services
             return response;
         }
 
-        public Response Validate(T t)
+        public async Task<Response> Validate(T t)
         {
             switch (t.GroupId)
             {
@@ -133,6 +133,10 @@ namespace IcosWebApiGenerics.Services
                 case (int)Globals.Groups.GRP_D_SNOW:
                     GRP_D_SNOW d_Snow = t as GRP_D_SNOW;
                     response = GrpValidator.ValidateDSnowResponse(d_Snow, _context);
+                    break;
+                case (int)Globals.Groups.GRP_INST:
+                    GRP_INST inst = t as GRP_INST;
+                    response = await GrpValidator.ValidateInstResponseAsync(inst, _context);
                     break;
             }
             return response;
