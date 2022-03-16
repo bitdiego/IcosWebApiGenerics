@@ -24,6 +24,19 @@ namespace IcosWebApiGenerics.Utils
         public static string wtdPattern = @"^(WTD)_([1-9]|[1][0-9]|20)_([1-9]|[1][0-9]|20)_([1-9]|[1][0-9]|20)$";
         public static string dsnowPattern = @"^(D_SNOW)_([1-9]|[1][0-9]|20)_([1-9]|[1][0-9]|20)_([1-9]|[1][0-9]|20)$";
 
+        public static Dictionary<string, string> regulars = new Dictionary<string, string>
+        {
+            { "ga_aiu-li-cor li-7550", @"^(AIU)-\d{4}$" },  ///^(AIU)-\d{4}$/
+            { "ga_cp-li-cor li-7200", @"^(72H)-\d{4}$" },   ////^(72H)-\d{4}$/;
+            { "ga_cp-li-cor li-7200rs", @"^(72H)-\d{4}$" },
+            {"sa-gill hs-100",@"^H\d{6}$"},                ////^H\d{6}$/;
+            {"sa-gill hs-50",@"^H\d{6}$"},
+            {"rad_4c-k&z cnr1",@"^\d{6}$"},               ////RAD_4C-K&Z CNR4 RAD_4C-K&Z CNR1  rad_4c-k&z cnr1
+            {"rad_4c-k&z cnr4",@"^\d{6}$"},
+            {"ga_cp-li-cor li-7000",  @"^(IRG4)-\d{4}$"},
+            {"dl-li-cor sflux2", @"^(SMART2)\-[0-9]{5}$"}
+        };
+
         public static readonly decimal MIN_UTC_OFFSET_VAL = -12;
         public static readonly decimal MAX_UTC_OFFSET_VAL = 14;
         public static readonly decimal MAX_LONGITUDE_VALUE = 180;

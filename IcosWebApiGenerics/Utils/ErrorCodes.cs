@@ -20,6 +20,7 @@ namespace IcosWebApiGenerics.Utils
             { 9, "You have to submit at least one variable"},
             {10,"Error: $V0$ string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V1$"},
             {86,"Error: entered plot ID not found in GRP_PLOT"},
+            {118,"Serial number wrong format. Correct format: $V0$, where X is a digit. Found value: $V1$"},
         };
 
         public static Dictionary<int, string> GrpLocationErrors = new Dictionary<int, string>

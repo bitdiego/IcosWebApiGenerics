@@ -1235,7 +1235,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        //add the SN format validation
         public static async Task<Response> ValidateInstResponseAsync(GRP_INST inst, IcosDbContext db)
         {
             errorCode = MissingMandatoryData<string>(inst.INST_MODEL, "INST_MODEL", "GRP_INST");
@@ -1263,7 +1262,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                //add validation of sn based on inst...
+                errorCode = SerialNumberCheck(inst.INST_MODEL, inst.INST_SN);
+                if (errorCode != 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_SN", "$V0$", "INST_SN", "$GRP$", "GRP_INST");
+                }
             }
 
             errorCode = MissingMandatoryData<string>(inst.INST_FACTORY, "INST_FACTORY", "GRP_INST");
@@ -1864,5 +1868,17 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return 0;
         }
+        private static int SerialNumberCheck(string instModel, string instSn)
+        {
+            if (!Globals.regulars.ContainsKey(instModel.ToLower())) return 0;
+            string instReg = Globals.regulars[instModel.ToLower()];
+            Match instMatch = Regex.Match(instSn, instReg, RegexOptions.IgnoreCase);
+            if (!instMatch.Success)
+            {
+                return (int)Globals.ErrorValidationCodes.WRONG_SERIALNUMBER_FORMAT;
+            }
+            return 0;
+        }
+
     }
 }
