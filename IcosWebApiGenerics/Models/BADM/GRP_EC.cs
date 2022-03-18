@@ -1,4 +1,5 @@
-﻿using IcosWebApiGenerics.Utils;
+﻿using IcosWebApiGenerics.ControllerFactory;
+using IcosWebApiGenerics.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace IcosWebApiGenerics.Models.BADM
 {
+    [GeneratedController("api/eddycov")]
     public class GRP_EC : BaseClass
     {
         public GRP_EC() { GroupId = (int)Globals.Groups.GRP_EC; }
