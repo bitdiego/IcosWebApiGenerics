@@ -31,12 +31,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         //OK
         public static Response ValidateLocationResponse(GRP_LOCATION location)
         {
-            errorCode =  MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
             if (errorCode != 0)
             {
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOCATION_DATE", "$V0$", "LOCATION_DATE", "$GRP$", "GRP_LOCATION");
             }
-            errorCode = IsoDateCheck(location.LOCATION_DATE, "LOCATION_DATE");
+            errorCode = DatesValidator.IsoDateCheck(location.LOCATION_DATE, "LOCATION_DATE");
             if (errorCode != 0)
             {
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOCATION_DATE", "$V0$", "LOCATION_DATE", "$V1$", location.LOCATION_DATE);
@@ -60,7 +60,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         //OK
         public static Response ValidateUtcResponse(GRP_UTC_OFFSET utc)
         {
-            errorCode = IsoDateCheck(utc.UTC_OFFSET_DATE_START, "UTC_OFFSET_DATE_START");
+            errorCode = DatesValidator.IsoDateCheck(utc.UTC_OFFSET_DATE_START, "UTC_OFFSET_DATE_START");
             if (errorCode != 0)
             {
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "UTC_OFFSET_DATE_START", "$V0$", "UTC_OFFSET_DATE_START", "$V1$", utc.UTC_OFFSET_DATE_START);
@@ -79,7 +79,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         {
             if (!String.IsNullOrEmpty(land.LAND_DATE))
             {
-                errorCode = IsoDateCheck(land.LAND_DATE, "LAND_DATE");
+                errorCode = DatesValidator.IsoDateCheck(land.LAND_DATE, "LAND_DATE");
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
@@ -89,7 +89,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(land.LAND_OWNERSHIP))
             {
-                errorCode = ItemInBadmList(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
+                errorCode = GeneralValidation.ItemInBadmList(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_OWNERSHIP", "$V0$", land.LAND_OWNERSHIP, "$V1$", "LAND_OWNERSHIP", "$GRP$", "GRP_LAND_OWNERSHIP");
             }
             return response;
@@ -98,12 +98,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         
         public static Response ValidateTowerResponse(GRP_TOWER tower, IcosDbContext db)
         {
-            MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
-            IsoDateCheck( tower.TOWER_DATE, "TOWER_DATE");
-            ItemInBadmList( tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
-            ItemInBadmList( tower.TOWER_ACCESS,  (int)Globals.CvIndexes.TOWER_ACCESS, db);
-            ItemInBadmList( tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
-            ItemInBadmList( tower.TOWER_DATATRAN,  (int)Globals.CvIndexes.TOWER_DATATRAN, db);
+            GeneralValidation.MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
+            DatesValidator.IsoDateCheck( tower.TOWER_DATE, "TOWER_DATE");
+            GeneralValidation.ItemInBadmList( tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
+            GeneralValidation.ItemInBadmList( tower.TOWER_ACCESS,  (int)Globals.CvIndexes.TOWER_ACCESS, db);
+            GeneralValidation.ItemInBadmList( tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
+            GeneralValidation.ItemInBadmList( tower.TOWER_DATATRAN,  (int)Globals.CvIndexes.TOWER_DATATRAN, db);
             return response;
         }
 
@@ -112,8 +112,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         public static Response ValidateClimateAvgResponse(GRP_CLIM_AVG climateAvg)
         {
             //MissingDate(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
-            MissingMandatoryData<string>(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
-            IsoDateCheck(climateAvg.MAC_DATE, "MAC_DATE");
+            GeneralValidation.MissingMandatoryData<string>(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
+            DatesValidator.IsoDateCheck(climateAvg.MAC_DATE, "MAC_DATE");
             //check if MAP, MAR, MAS, MAC_YEARS must only be positive
             return response;
         }
@@ -121,9 +121,9 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         //to do
         public static Response ValidateDistManResponse(GRP_DM distMan, IcosDbContext db)
         {
-            IsoDateCheck(distMan.DM_DATE, "DM_DATE");
-            IsoDateCheck(distMan.DM_DATE_START, "DM_DATE_START");
-            IsoDateCheck(distMan.DM_DATE_END, "DM_DATE_END");
+            DatesValidator.IsoDateCheck(distMan.DM_DATE, "DM_DATE");
+            DatesValidator.IsoDateCheck(distMan.DM_DATE_START, "DM_DATE_START");
+            DatesValidator.IsoDateCheck(distMan.DM_DATE_END, "DM_DATE_END");
             if(!String.IsNullOrEmpty(distMan.DM_DATE)&& !String.IsNullOrEmpty(distMan.DM_DATE_START) && !String.IsNullOrEmpty(distMan.DM_DATE_END))
             {
                 errorCode = 4;
@@ -144,22 +144,22 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
             /*
-            ItemInBadmList("DM_ENCROACH", distMan.DM_ENCROACH, "GRP_DM", (int)Globals.CvIndexes.DM_ENCROACH, db);
-            ItemInBadmList("DM_AGRICULTURE", distMan.DM_AGRICULTURE, "GRP_DM", (int)Globals.CvIndexes.DM_AGRICULTURE, db);
-            ItemInBadmList("DM_EXT_WEATHER", distMan.DM_EXT_WEATHER, "GRP_DM", (int)Globals.CvIndexes.DM_EXT_WEATHER, db);
-            ItemInBadmList("DM_FERT_M", distMan.DM_FERT_M, "GRP_DM", (int)Globals.CvIndexes.DM_FERT_M, db);
-            ItemInBadmList("DM_FERT_O", distMan.DM_FERT_M, "DM_FERT_O", (int)Globals.CvIndexes.DM_FERT_O, db); 
-            ItemInBadmList("DM_FIRE", distMan.DM_FERT_M, "DM_FIRE", (int)Globals.CvIndexes.DM_FIRE, db);
-            ItemInBadmList("DM_FORESTRY", distMan.DM_FERT_M, "DM_FORESTRY", (int)Globals.CvIndexes.DM_FORESTRY, db);
-            ItemInBadmList("DM_GRAZE", distMan.DM_FERT_M, "DM_GRAZE", (int)Globals.CvIndexes.DM_GRAZE, db);
-            ItemInBadmList("DM_INS_PATH", distMan.DM_FERT_M, "DM_INS_PATH", (int)Globals.CvIndexes.DM_INS_PATH, db);
-            ItemInBadmList("DM_PESTICIDE", distMan.DM_FERT_M, "DM_PESTICIDE", (int)Globals.CvIndexes.DM_PESTICIDE, db);
-            ItemInBadmList("DM_PLANTING", distMan.DM_FERT_M, "DM_PLANTING", (int)Globals.CvIndexes.DM_PLANTING, db);
-            ItemInBadmList("DM_TILL", distMan.DM_FERT_M, "DM_TILL", (int)Globals.CvIndexes.DM_TILL, db); 
-            ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
-            ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
+            GeneralValidation.ItemInBadmList("DM_ENCROACH", distMan.DM_ENCROACH, "GRP_DM", (int)Globals.CvIndexes.DM_ENCROACH, db);
+            GeneralValidation.ItemInBadmList("DM_AGRICULTURE", distMan.DM_AGRICULTURE, "GRP_DM", (int)Globals.CvIndexes.DM_AGRICULTURE, db);
+            GeneralValidation.ItemInBadmList("DM_EXT_WEATHER", distMan.DM_EXT_WEATHER, "GRP_DM", (int)Globals.CvIndexes.DM_EXT_WEATHER, db);
+            GeneralValidation.ItemInBadmList("DM_FERT_M", distMan.DM_FERT_M, "GRP_DM", (int)Globals.CvIndexes.DM_FERT_M, db);
+            GeneralValidation.ItemInBadmList("DM_FERT_O", distMan.DM_FERT_M, "DM_FERT_O", (int)Globals.CvIndexes.DM_FERT_O, db); 
+            GeneralValidation.ItemInBadmList("DM_FIRE", distMan.DM_FERT_M, "DM_FIRE", (int)Globals.CvIndexes.DM_FIRE, db);
+            GeneralValidation.ItemInBadmList("DM_FORESTRY", distMan.DM_FERT_M, "DM_FORESTRY", (int)Globals.CvIndexes.DM_FORESTRY, db);
+            GeneralValidation.ItemInBadmList("DM_GRAZE", distMan.DM_FERT_M, "DM_GRAZE", (int)Globals.CvIndexes.DM_GRAZE, db);
+            GeneralValidation.ItemInBadmList("DM_INS_PATH", distMan.DM_FERT_M, "DM_INS_PATH", (int)Globals.CvIndexes.DM_INS_PATH, db);
+            GeneralValidation.ItemInBadmList("DM_PESTICIDE", distMan.DM_FERT_M, "DM_PESTICIDE", (int)Globals.CvIndexes.DM_PESTICIDE, db);
+            GeneralValidation.ItemInBadmList("DM_PLANTING", distMan.DM_FERT_M, "DM_PLANTING", (int)Globals.CvIndexes.DM_PLANTING, db);
+            GeneralValidation.ItemInBadmList("DM_TILL", distMan.DM_FERT_M, "DM_TILL", (int)Globals.CvIndexes.DM_TILL, db); 
+            GeneralValidation.ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
+            GeneralValidation.ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
             */
-            if (!IsAnyPropNotNull<GRP_DM>(distMan))
+            if (!GeneralValidation.IsAnyPropNotNull<GRP_DM>(distMan))
             {
                 errorCode = 9;
                 response.Code += errorCode;
@@ -172,20 +172,20 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         //seems OK
         public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$GRP$", "GRP_PLOT");
             }
-            errorCode = IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
+            errorCode = DatesValidator.IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$V1$", samplingScheme.PLOT_DATE);
             }
 
-            errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -193,7 +193,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                if(!IsValidPlotString(samplingScheme.PLOT_ID, samplingScheme.GroupId))
+                if(!GeneralValidation.IsValidPlotString(samplingScheme.PLOT_ID, samplingScheme.GroupId))
                 {
                     errorCode = 10;
                     response.Code += errorCode;
@@ -201,7 +201,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(samplingScheme.PLOT_TYPE, "PLOT_TYPE", "GRP_PLOT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_TYPE, "PLOT_TYPE", "GRP_PLOT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -210,7 +210,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //check if plot_type in controlled vocabulary
-                errorCode = ItemInBadmList( samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                errorCode = GeneralValidation.ItemInBadmList( samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -240,7 +240,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
             {
                 //check if plot_type in controlled vocabulary
-                errorCode = ItemInBadmList(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
+                errorCode = GeneralValidation.ItemInBadmList(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -279,27 +279,27 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         public static Response ValidateFlsmResponse(GRP_FLSM flsm, IcosDbContext db)
         {
             //to do::: FLSM_PLOT_ID present in GRP_PLOT
-            errorCode = ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
+            errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
             if (errorCode > 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PLOT_ID");
             }
 
-            errorCode = MissingMandatoryData<string>(flsm.FLSM_DATE, "FLSM_DATE", "GRP_FLSM");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(flsm.FLSM_DATE, "FLSM_DATE", "GRP_FLSM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_DATE", "$V0$", "FLSM_DATE", "$GRP$", "GRP_FLSM");
             }
-            errorCode = IsoDateCheck(flsm.FLSM_DATE, "FLSM_DATE");
+            errorCode = DatesValidator.IsoDateCheck(flsm.FLSM_DATE, "FLSM_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_DATE", "$V0$", "FLSM_DATE", "$V1$", flsm.FLSM_DATE);
             }
 
-            errorCode = MissingMandatoryData<string>(flsm.FLSM_SAMPLE_TYPE, "FLSM_SAMPLE_TYPE", "GRP_FLSM");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(flsm.FLSM_SAMPLE_TYPE, "FLSM_SAMPLE_TYPE", "GRP_FLSM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -307,7 +307,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else 
             {
-                errorCode=ItemInBadmList(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                errorCode=GeneralValidation.ItemInBadmList(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -315,14 +315,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<int>(flsm.FLSM_SAMPLE_ID, "FLSM_SAMPLE_ID", "GRP_FLSM");
+            errorCode = GeneralValidation.MissingMandatoryData<int>(flsm.FLSM_SAMPLE_ID, "FLSM_SAMPLE_ID", "GRP_FLSM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_ID", "$V0$", "FLSM_SAMPLE_ID", "$GRP$", "GRP_FLSM");
             }
 
-            if (!XORNull<string>(flsm.FLSM_SPP, flsm.FLSM_PTYPE))
+            if (!GeneralValidation.XORNull<string>(flsm.FLSM_SPP, flsm.FLSM_PTYPE))
             {
                 errorCode = 1;
                 response.Code += errorCode;
@@ -331,7 +331,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(flsm.FLSM_PTYPE))
             {
-                errorCode = ItemInBadmList(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                errorCode = GeneralValidation.ItemInBadmList(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -345,20 +345,20 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         public static Response ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext db)
         {
             //to do::: SOSM_PLOT_ID present in GRP_PLOT
-            errorCode = ItemInSamplingPointGroupAsync(sosm.SOSM_PLOT_ID, sosm.SOSM_DATE, sosm.SiteId, db);
+            errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(sosm.SOSM_PLOT_ID, sosm.SOSM_DATE, sosm.SiteId, db);
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_PLOT_ID");
             }
 
-            errorCode = MissingMandatoryData<string>(sosm.SOSM_DATE, "SOSM_DATE", "GRP_SOSM");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(sosm.SOSM_DATE, "SOSM_DATE", "GRP_SOSM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_DATE", "$V0$", "SOSM_DATE", "$GRP$", "GRP_SOSM");
             }
-            errorCode = IsoDateCheck(sosm.SOSM_DATE, "SOSM_DATE");
+            errorCode = DatesValidator.IsoDateCheck(sosm.SOSM_DATE, "SOSM_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -382,7 +382,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_UD");
                 }
-                if (!IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiSosmM))
+                if (!GeneralValidation.IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiSosmM))
                 {
                     errorCode = 7;
                     response.Code += errorCode;
@@ -399,13 +399,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                         response.Code += errorCode;
                         response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_UD");
                     }
-                    if (!CountBoundedProps<GRP_SOSM>(sosm, 2, "SOSM_AREA", "SOSM_VOLUME"))
+                    if (!GeneralValidation.CountBoundedProps<GRP_SOSM>(sosm, 2, "SOSM_AREA", "SOSM_VOLUME"))
                     {
                         errorCode = 2;
                         response.Code += errorCode;
                         response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_UD");
                     }
-                    if (!IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiiSosmM))
+                    if (!GeneralValidation.IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiiSosmM))
                     {
                         errorCode = 8;
                         response.Code += errorCode;
@@ -415,13 +415,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 else
                 {
                     //O, Oi, Oa, Oe
-                    if (!CountBoundedProps<GRP_SOSM>(sosm, 3, "SOSM_THICKNESS", "SOSM_AREA", "SOSM_VOLUME"))
+                    if (!GeneralValidation.CountBoundedProps<GRP_SOSM>(sosm, 3, "SOSM_THICKNESS", "SOSM_AREA", "SOSM_VOLUME"))
                     {
                         errorCode = 5;
                         response.Code += errorCode;
                         response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_SAMPLE_ID");
                     }
-                    if (!IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiiSosmOrganic))
+                    if (!GeneralValidation.IsValidPattern(sosm.SOSM_SAMPLE_ID, Globals.spiiSosmOrganic))
                     {
                         errorCode = 9;
                         response.Code += errorCode;
@@ -441,7 +441,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateDhpResponse(GRP_DHP dhp, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<int>(dhp.DHP_ID, "DHP_ID", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_ID, "DHP_ID", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -452,7 +452,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 //must be integer value...
             }
 
-            errorCode = MissingMandatoryData<string>(dhp.DHP_CAMERA, "DHP_CAMERA", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_CAMERA, "DHP_CAMERA", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -461,7 +461,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be in badmlist
-                errorCode = ItemInBadmList(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
+                errorCode = GeneralValidation.ItemInBadmList(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -469,14 +469,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(dhp.DHP_CAMERA_SN, "DHP_CAMERA_SN", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_CAMERA_SN, "DHP_CAMERA_SN", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA_SN", "$V0$", "DHP_CAMERA_SN", "$GRP$", "GRP_DHP");
             }
 
-            errorCode = MissingMandatoryData<string>(dhp.DHP_LENS, "DHP_LENS", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_LENS, "DHP_LENS", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -485,7 +485,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be in badmlist
-                errorCode = ItemInBadmList(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
+                errorCode = GeneralValidation.ItemInBadmList(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -493,7 +493,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(dhp.DHP_LENS_SN, "DHP_LENS_SN", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_LENS_SN, "DHP_LENS_SN", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -501,7 +501,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
 
             bool isRowCol = true;
-            errorCode = MissingMandatoryData<int>(dhp.DHP_OC_ROW, "DHP_OC_ROW", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_OC_ROW, "DHP_OC_ROW", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -513,7 +513,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 //must be integer value...
             }
 
-            errorCode = MissingMandatoryData<int>(dhp.DHP_OC_COL, "DHP_OC_COL", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_OC_COL, "DHP_OC_COL", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -536,20 +536,20 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
              
             }
 
-            errorCode = MissingMandatoryData<decimal>(dhp.DHP_RADIUS, "DHP_RADIUS", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(dhp.DHP_RADIUS, "DHP_RADIUS", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_RADIUS", "$V0$", "DHP_RADIUS", "$GRP$", "GRP_DHP");
             }
 
-            errorCode = MissingMandatoryData<string>(dhp.DHP_DATE, "DHP_DATE", "GRP_DHP");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_DATE, "DHP_DATE", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_DATE", "$V0$", "DHP_DATE", "$GRP$", "GRP_DHP");
             }
-            errorCode = IsoDateCheck(dhp.DHP_DATE, "DHP_DATE");
+            errorCode = DatesValidator.IsoDateCheck(dhp.DHP_DATE, "DHP_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -561,7 +561,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateGaiResponse(GRP_GAI gai, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(gai.GAI_PLOT, "GAI_PLOT", "GRP_GAI");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_PLOT, "GAI_PLOT", "GRP_GAI");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -570,7 +570,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //validation of plot reg ex
-                if(!IsValidPlotString(gai.GAI_PLOT, gai.GroupId))
+                if(!GeneralValidation.IsValidPlotString(gai.GAI_PLOT, gai.GroupId))
                 {
                     errorCode = 10;
                     response.Code += errorCode;
@@ -578,7 +578,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(gai.GAI_METHOD, "GAI_METHOD", "GRP_GAI");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_METHOD, "GAI_METHOD", "GRP_GAI");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -587,7 +587,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //in badm list
-                errorCode = ItemInBadmList(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
+                errorCode = GeneralValidation.ItemInBadmList(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -595,13 +595,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(gai.GAI_DATE, "GAI_DATE", "GRP_GAI");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_DATE, "GAI_DATE", "GRP_GAI");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_DATE", "$V0$", "GAI_DATE", "$GRP$", "GRP_GAI");
             }
-            errorCode = IsoDateCheck(gai.GAI_DATE, "GAI_DATE");
+            errorCode = DatesValidator.IsoDateCheck(gai.GAI_DATE, "GAI_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -615,13 +615,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateCeptResponse(GRP_CEPT cept)
         {
-            errorCode = MissingMandatoryData<string>(cept.CEPT_DATE, "CEPT_DATE", "GRP_CEPT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(cept.CEPT_DATE, "CEPT_DATE", "GRP_CEPT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "CEPT_DATE", "$V0$", "CEPT_DATE", "$GRP$", "GRP_CEPT");
             }
-            errorCode = IsoDateCheck(cept.CEPT_DATE, "CEPT_DATE");
+            errorCode = DatesValidator.IsoDateCheck(cept.CEPT_DATE, "CEPT_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -633,20 +633,20 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateBulkhResponse(GRP_BULKH bulkh, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(bulkh.BULKH_DATE, "BULKH_DATE", "GRP_BULKH");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(bulkh.BULKH_DATE, "BULKH_DATE", "GRP_BULKH");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_DATE", "$V0$", "BULKH_DATE", "$GRP$", "GRP_BULKH");
             }
-            errorCode = IsoDateCheck(bulkh.BULKH_DATE, "BULKH_DATE");
+            errorCode = DatesValidator.IsoDateCheck(bulkh.BULKH_DATE, "BULKH_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_DATE", "$V0$", "BULKH_DATE", "$V1$", bulkh.BULKH_DATE);
             }
 
-            errorCode = MissingMandatoryData<string>(bulkh.BULKH_PLOT, "BULKH_PLOT", "GRP_BULKH");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(bulkh.BULKH_PLOT, "BULKH_PLOT", "GRP_BULKH");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -654,7 +654,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                if (!IsValidPlotString(bulkh.BULKH_PLOT, bulkh.GroupId))
+                if (!GeneralValidation.IsValidPlotString(bulkh.BULKH_PLOT, bulkh.GroupId))
                 {
                     errorCode = 10;
                     response.Code += errorCode;
@@ -662,7 +662,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(bulkh.BULKH_PLOT_TYPE, "BULKH_PLOT_TYPE", "GRP_BULKH");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(bulkh.BULKH_PLOT_TYPE, "BULKH_PLOT_TYPE", "GRP_BULKH");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -670,7 +670,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = ItemInBadmList(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                errorCode = GeneralValidation.ItemInBadmList(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -678,7 +678,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<decimal>(bulkh.BULKH, "BULKH", "GRP_BULKH");
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(bulkh.BULKH, "BULKH", "GRP_BULKH");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -689,20 +689,20 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateSppsResponse(GRP_SPPS spps, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_DATE", "$V0$", "SPPS_DATE", "$GRP$", "GRP_SPPS");
             }
-            errorCode = IsoDateCheck(spps.SPPS_DATE, "SPPS_DATE");
+            errorCode = DatesValidator.IsoDateCheck(spps.SPPS_DATE, "SPPS_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_DATE", "$V0$", "SPPS_DATE", "$V1$", spps.SPPS_DATE);
             }
 
-            errorCode = MissingMandatoryData<string>(spps.SPPS_PLOT, "SPPS_PLOT", "GRP_SPPS");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_PLOT, "SPPS_PLOT", "GRP_SPPS");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -710,14 +710,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                if (!IsValidPlotString(spps.SPPS_PLOT, spps.GroupId))
+                if (!GeneralValidation.IsValidPlotString(spps.SPPS_PLOT, spps.GroupId))
                 {
                     errorCode = 10;
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT", "$V0$", "SPPS_PLOT", "$V1$", spps.SPPS_PLOT);
                 }
                 //Here?
-                errorCode = ItemInSamplingPointGroupAsync(spps.SPPS_PLOT, spps.SPPS_DATE, spps.SiteId, db);
+                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(spps.SPPS_PLOT, spps.SPPS_DATE, spps.SiteId, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -735,11 +735,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (spps.SPPS_LOCATION_LAT != null && spps.SPPS_LOCATION_LON != null)
             {
-                isBound = CountBoundedProps<GRP_SPPS>(spps, 3, "SPPS_LOCATION_LAT", "SPPS_LOCATION_LON", "SPPS_LOCATION");
+                isBound = GeneralValidation.CountBoundedProps<GRP_SPPS>(spps, 3, "SPPS_LOCATION_LAT", "SPPS_LOCATION_LON", "SPPS_LOCATION");
             }
             else
             {
-                isBound = CountBoundedProps<GRP_SPPS>(spps, 3, "SPPS_LOCATION_DIST", "SPPS_LOCATION_ANG", "SPPS_LOCATION");
+                isBound = GeneralValidation.CountBoundedProps<GRP_SPPS>(spps, 3, "SPPS_LOCATION_DIST", "SPPS_LOCATION_ANG", "SPPS_LOCATION");
             }
             if (!isBound)
             {
@@ -765,7 +765,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(spps.SPPS_TWSP_PCT))
             {
-                errorCode = ItemInBadmList(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
+                errorCode = GeneralValidation.ItemInBadmList(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -775,7 +775,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(spps.SPPS_PTYPE))
             {
-                errorCode = ItemInBadmList(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
+                errorCode = GeneralValidation.ItemInBadmList(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -788,13 +788,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateTreeResponse(GRP_TREE tree, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(tree.TREE_DATE, "TREE_DATE", "GRP_TREE");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(tree.TREE_DATE, "TREE_DATE", "GRP_TREE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_DATE", "$V0$", "TREE_DATE", "$GRP$", "GRP_TREE");
             }
-            errorCode = IsoDateCheck(tree.TREE_DATE, "TREE_DATE");
+            errorCode = DatesValidator.IsoDateCheck(tree.TREE_DATE, "TREE_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -805,7 +805,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             {
                 if (tree.TREE_ID == null)
                 {
-                    errorCode = MissingMandatoryData<decimal?>(tree.TREE_DBH, "TREE_PLOT", "GRP_TREE");
+                    errorCode = GeneralValidation.MissingMandatoryData<decimal?>(tree.TREE_DBH, "TREE_PLOT", "GRP_TREE");
                     if (errorCode != 0)
                     {
                         response.Code += errorCode;
@@ -813,7 +813,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     }
                     else
                     {
-                        errorCode = ItemInSamplingPointGroupAsync(tree.TREE_PLOT, tree.TREE_DATE, tree.SiteId, db);
+                        errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(tree.TREE_PLOT, tree.TREE_DATE, tree.SiteId, db);
                         if (errorCode != 0)
                         {
                             response.Code += errorCode;
@@ -823,21 +823,21 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<decimal?>(tree.TREE_DBH, "TREE_DBH", "GRP_TREE");
+            errorCode = GeneralValidation.MissingMandatoryData<decimal?>(tree.TREE_DBH, "TREE_DBH", "GRP_TREE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_DBH", "$V0$", "TREE_DBH", "$GRP$", "GRP_TREE");
             }
 
-            errorCode = MissingMandatoryData<string>(tree.TREE_SPP, "TREE_SPP", "GRP_TREE");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(tree.TREE_SPP, "TREE_SPP", "GRP_TREE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_SPP", "$V0$", "TREE_SPP", "$GRP$", "GRP_TREE");
             }
 
-            errorCode = MissingMandatoryData<string>(tree.TREE_STATUS, "TREE_STATUS", "GRP_TREE");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(tree.TREE_STATUS, "TREE_STATUS", "GRP_TREE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -856,7 +856,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateAgbResponse(GRP_AGB agb, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(agb.AGB_PLOT, "AGB_PLOT", "GRP_AGB");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(agb.AGB_PLOT, "AGB_PLOT", "GRP_AGB");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -864,14 +864,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                if (!IsValidPlotString(agb.AGB_PLOT, agb.GroupId))
+                if (!GeneralValidation.IsValidPlotString(agb.AGB_PLOT, agb.GroupId))
                 {
                     errorCode = 10;
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "AGB_PLOT", "$V0$", "AGB_PLOT", "$V1$", agb.AGB_PLOT);
                 }
 
-                errorCode = ItemInSamplingPointGroupAsync(agb.AGB_PLOT, agb.AGB_DATE, agb.SiteId, db);
+                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(agb.AGB_PLOT, agb.AGB_DATE, agb.SiteId, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -882,7 +882,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             switch (Ecosystem.ToLower())
             {
                 case "cropland":
-                    if (FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_LOCATION", "AGB_AREA", "AGB_PHEN", "AGB_PTYPE"))
+                    if (GeneralValidation.FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_LOCATION", "AGB_AREA", "AGB_PHEN", "AGB_PTYPE"))
                     {
                         errorCode =  (int)Globals.ErrorValidationCodes.AGB_CROPLAND_MANDATORY;
                         response.Code += errorCode;
@@ -890,7 +890,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     }
                     break;
                 case "grassland":
-                    if (FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_AREA", "AGB_PHEN", "AGB_PLOT_TYPE"))
+                    if (GeneralValidation.FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_AREA", "AGB_PHEN", "AGB_PLOT_TYPE"))
                     {
                         errorCode = (int)Globals.ErrorValidationCodes.AGB_GRASSLAND_MANDATORY;
                         response.Code += errorCode;
@@ -942,7 +942,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                                 }
                                 break;
                             case "sapling":
-                                if (FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_AREA", "AGB_LOCATION", "AGB_SPP", "AGB_PTYPE"))
+                                if (GeneralValidation.FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_AREA", "AGB_LOCATION", "AGB_SPP", "AGB_PTYPE"))
                                 {
                                     errorCode = (int)Globals.ErrorValidationCodes.AGB_FOREST_SAPLING_MANDATORY;
                                     response.Code += errorCode;
@@ -952,7 +952,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                             case "ferns":
                             case "herb":
                             case "shrub":
-                                if (FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_AREA", "AGB_LOCATION", "AGB_PHEN", "AGB_PTYPE"))
+                                if (GeneralValidation.FindMandatoryNull<GRP_AGB>(agb, "AGB", "AGB_AREA", "AGB_LOCATION", "AGB_PHEN", "AGB_PTYPE"))
                                 {
                                     errorCode = (int)Globals.ErrorValidationCodes.AGB_FOREST_FHS_MANDATORY;
                                     response.Code += errorCode;
@@ -993,7 +993,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateLitterPntResponse(GRP_LITTERPNT litterPnt, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(litterPnt.LITTERPNT_PLOT, "LITTERPNT_PLOT", "GRP_LITTERPNT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(litterPnt.LITTERPNT_PLOT, "LITTERPNT_PLOT", "GRP_LITTERPNT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1001,14 +1001,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                if (!IsValidPlotString(litterPnt.LITTERPNT_PLOT, litterPnt.GroupId))
+                if (!GeneralValidation.IsValidPlotString(litterPnt.LITTERPNT_PLOT, litterPnt.GroupId))
                 {
                     errorCode = 10;
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LITTERPNT_PLOT", "$V0$", "LITTERPNT_PLOT", "$V1$", litterPnt.LITTERPNT_PLOT);
                 }
 
-                errorCode = ItemInSamplingPointGroupAsync(litterPnt.LITTERPNT_PLOT, litterPnt.LITTERPNT_DATE, litterPnt.SiteId, db);
+                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(litterPnt.LITTERPNT_PLOT, litterPnt.LITTERPNT_DATE, litterPnt.SiteId, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -1016,13 +1016,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(litterPnt.LITTERPNT_DATE, "LITTERPNT_DATE", "GRP_LITTERPNT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(litterPnt.LITTERPNT_DATE, "LITTERPNT_DATE", "GRP_LITTERPNT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LITTERPNT_DATE", "$V0$", "LITTERPNT_DATE", "$GRP$", "GRP_LITTERPNT");
             }
-            errorCode = IsoDateCheck(litterPnt.LITTERPNT_DATE, "LITTERPNT_DATE");
+            errorCode = DatesValidator.IsoDateCheck(litterPnt.LITTERPNT_DATE, "LITTERPNT_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1035,7 +1035,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 case "forest":
                     if (String.Compare(litterType, "coarse") == 0)
                     {
-                        if (!FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT_COARSE_DIAM", "LITTERPNT_ID", "LITTERPNT_COARSE_LENGTH", "LITTERPNT_COARSE_ANGLE", "LITTERPNT_COARSE_DECAY"))
+                        if (!GeneralValidation.FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT_COARSE_DIAM", "LITTERPNT_ID", "LITTERPNT_COARSE_LENGTH", "LITTERPNT_COARSE_ANGLE", "LITTERPNT_COARSE_DECAY"))
                         {
                             errorCode = (int)Globals.ErrorValidationCodes.LITTERPNT_FOREST_COARSE_MANDATORY;
                             response.Code += errorCode;
@@ -1044,7 +1044,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     }
                     else if (String.Compare(litterType, "fine-woody") == 0)
                     {
-                        if (!FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_AREA"))
+                        if (!GeneralValidation.FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_AREA"))
                         {
                             errorCode = (int)Globals.ErrorValidationCodes.LITTERPNT_FOREST_FINE_WOODY_MANDATORY;
                             response.Code += errorCode;
@@ -1053,7 +1053,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     }
                     else if (String.Compare(litterType, "non-woody") == 0)
                     {
-                        if (!FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_AREA", "LITTERPNT_ID", "LITTERPNT_FRACTION"))
+                        if (!GeneralValidation.FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_AREA", "LITTERPNT_ID", "LITTERPNT_FRACTION"))
                         {
                             errorCode = (int)Globals.ErrorValidationCodes.LITTERPNT_FOREST_NON_WOODY_MANDATORY;
                             response.Code += errorCode;
@@ -1068,7 +1068,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                                 response.FormatError(ErrorCodes.GrpLitterPntErrors[errorCode], "LITTERPNT_SPP");
                             }
                         }
-                        if (IsAnyPropNotNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT_EASTWARD_DIST", "LITTERPNT_NORTHWARD_DIST", "LITTERPNT_DISTANCE_POLAR", "LITTERPNT_ANGLE_POLAR"))
+                        if (GeneralValidation.IsAnyPropNotNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT_EASTWARD_DIST", "LITTERPNT_NORTHWARD_DIST", "LITTERPNT_DISTANCE_POLAR", "LITTERPNT_ANGLE_POLAR"))
                         {
                             int coo = Globals.IsValidCoordinateSystem(litterPnt.LITTERPNT_EASTWARD_DIST, litterPnt.LITTERPNT_NORTHWARD_DIST,
                                                                       litterPnt.LITTERPNT_DISTANCE_POLAR, litterPnt.LITTERPNT_ANGLE_POLAR);
@@ -1084,7 +1084,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 case "cropland":
                     if (String.Compare(litterType, "natural") == 0)
                     {
-                        if (!FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_ID", "LITTERPNT_AREA", "LITTERPNT_FRACTION"))
+                        if (!GeneralValidation.FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_ID", "LITTERPNT_AREA", "LITTERPNT_FRACTION"))
                         {
                             errorCode = (int)Globals.ErrorValidationCodes.LITTERPNT_CROP_NATURAL_MANDATORY;
                             response.Code += errorCode;
@@ -1093,7 +1093,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     }
                     else if (String.Compare(litterType, "residual") == 0)
                     {
-                        if (!FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_AREA", "LITTERPNT_FRACTION"))
+                        if (!GeneralValidation.FindMandatoryNull<GRP_LITTERPNT>(litterPnt, "LITTERPNT", "LITTERPNT_AREA", "LITTERPNT_FRACTION"))
                         {
                             errorCode = (int)Globals.ErrorValidationCodes.LITTERPNT_CROP_RESIDUAL_MANDATORY;
                             response.Code += errorCode;
@@ -1128,20 +1128,20 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateAllomResponse(GRP_ALLOM allom, IcosDbContext context)
         {
-            errorCode = MissingMandatoryData<string>(allom.ALLOM_DATE, "ALLOM_DATE", "GRP_ALLOM");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(allom.ALLOM_DATE, "ALLOM_DATE", "GRP_ALLOM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DATE", "$V0$", "ALLOM_DATE", "$GRP$", "GRP_ALLOM");
             }
-            errorCode = IsoDateCheck(allom.ALLOM_DATE, "ALLOM_DATE");
+            errorCode = DatesValidator.IsoDateCheck(allom.ALLOM_DATE, "ALLOM_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DATE", "$V0$", "ALLOM_DATE", "$V1$", allom.ALLOM_DATE);
             }
 
-            if (FindMandatoryNull<GRP_ALLOM>(allom, "ALLOM_DBH", "ALLOM_HEIGHT", "ALLOM_SPP", "ALLOM_STEM_BIOM", "ALLOM_BRANCHES_BIOM"))
+            if (GeneralValidation.FindMandatoryNull<GRP_ALLOM>(allom, "ALLOM_DBH", "ALLOM_HEIGHT", "ALLOM_SPP", "ALLOM_STEM_BIOM", "ALLOM_BRANCHES_BIOM"))
             {
                 errorCode = 1;
                 response.Code += errorCode;
@@ -1153,13 +1153,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_DATE", "$V0$", "D_SNOW_DATE", "$GRP$", "GRP_D_SNOW");
             }
-            errorCode = IsoDateCheck(dSnow.D_SNOW_DATE, "D_SNOW_DATE");
+            errorCode = DatesValidator.IsoDateCheck(dSnow.D_SNOW_DATE, "D_SNOW_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1173,7 +1173,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpD_SnowErrors[errorCode], "D_SNOW_EASTWARD_DIST");
             }
-            if (!XORNull<string>(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_VARMAP))
+            if (!GeneralValidation.XORNull<string>(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_VARMAP))
             {
                 errorCode = (int)Globals.ErrorValidationCodes.D_SNOW_PLOT_VARMAP;
                 response.Code += errorCode;
@@ -1182,7 +1182,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(dSnow.D_SNOW_PLOT))
             {
-                errorCode = ItemInSamplingPointGroupAsync(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_DATE, dSnow.SiteId, db);
+                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_DATE, dSnow.SiteId, db);
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
@@ -1194,13 +1194,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static Response ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_DATE", "$V0$", "WTDPNT_DATE", "$GRP$", "GRP_WTDPNT");
             }
-            errorCode = IsoDateCheck(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE");
+            errorCode = DatesValidator.IsoDateCheck(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1215,7 +1215,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.FormatError(ErrorCodes.GrpWtdPntErrors[errorCode], "WTDPNT_EASTWARD_DIST");
             }
 
-            if (!XORNull<string>(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_VARMAP))
+            if (!GeneralValidation.XORNull<string>(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_VARMAP))
             {
                 errorCode = (int)Globals.ErrorValidationCodes.WTDPNT_PLOT_VARMAP;
                 response.Code += errorCode;
@@ -1224,7 +1224,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(wtdPnt.WTDPNT_PLOT))
             {
-                errorCode = ItemInSamplingPointGroupAsync(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_DATE, wtdPnt.SiteId, db);
+                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_DATE, wtdPnt.SiteId, db);
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
@@ -1237,7 +1237,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static async Task<Response> ValidateInstResponseAsync(GRP_INST inst, IcosDbContext db)
         {
-            errorCode = MissingMandatoryData<string>(inst.INST_MODEL, "INST_MODEL", "GRP_INST");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_MODEL, "INST_MODEL", "GRP_INST");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1245,7 +1245,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = ItemInBadmList(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
+                errorCode = GeneralValidation.ItemInBadmList(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -1254,7 +1254,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
 
             
-            errorCode = MissingMandatoryData<string>(inst.INST_SN, "INST_SN", "GRP_INST");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_SN, "INST_SN", "GRP_INST");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1262,7 +1262,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = SerialNumberCheck(inst.INST_MODEL, inst.INST_SN);
+                errorCode = InstrumentsValidation.SerialNumberCheck(inst.INST_MODEL, inst.INST_SN);
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
@@ -1270,7 +1270,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(inst.INST_FACTORY, "INST_FACTORY", "GRP_INST");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_FACTORY, "INST_FACTORY", "GRP_INST");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -1278,7 +1278,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = ItemInBadmList(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
+                errorCode = GeneralValidation.ItemInBadmList(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -1286,27 +1286,27 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            errorCode = MissingMandatoryData<string>(inst.INST_DATE, "INST_DATE", "GRP_INST");
+            errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_DATE, "INST_DATE", "GRP_INST");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_DATE", "$V0$", "INST_DATE", "$GRP$", "GRP_INST");
             }
-            errorCode = IsoDateCheck(inst.INST_DATE, "INST_DATE");
+            errorCode = DatesValidator.IsoDateCheck(inst.INST_DATE, "INST_DATE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_DATE", "$V0$", "INST_DATE", "$V1$", inst.INST_DATE);
             }
 
-            errorCode = await InstrumentInGrpInst(inst, inst.SiteId, db);
+            errorCode = await InstrumentsValidation.InstrumentInGrpInst(inst, inst.SiteId, db);
             if (errorCode > 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
             }
 
-            errorCode = await LastExpectedOpByDateAsync(inst, db);
+            errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
             if (errorCode > 0)
             {
                 response.Code += errorCode;
@@ -1315,353 +1315,55 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+        public static async Task<Response> ValidateEcResponseAsync(GRP_EC ecInst, IcosDbContext db)
+        {
+
+            errorCode = GeneralValidation.MissingMandatoryData<string>(ecInst.EC_MODEL, "EC_MODEL", "GRP_EC");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_MODEL", "$V0$", "EC_MODEL", "$GRP$", "GRP_EC");
+            }
+
+            errorCode = GeneralValidation.MissingMandatoryData<string>(ecInst.EC_SN, "EC_SN", "GRP_EC");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_SN", "$V0$", "EC_SN", "$GRP$", "GRP_EC");
+            }
+
+            errorCode = GeneralValidation.MissingMandatoryData<string>(ecInst.EC_TYPE, "EC_TYPE", "GRP_EC");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_TYPE", "$V0$", "EC_TYPE", "$GRP$", "GRP_EC");
+            }
+
+            //ec sensor present in GRP_INST
+            if(!String.IsNullOrEmpty(ecInst.EC_DATE) || !String.IsNullOrEmpty(ecInst.EC_DATE_START))
+            {
+                string dateToCheck = String.IsNullOrEmpty(ecInst.EC_DATE) ? ecInst.EC_DATE_START : ecInst.EC_DATE;
+                errorCode = await InstrumentsValidation.SensorInGrpInst(ecInst.EC_MODEL, ecInst.EC_SN, dateToCheck, ecInst.SiteId, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "EC_MODEL");
+                }
+            }
+
+            //check dates constraints
+            errorCode = DatesValidator.IsoDateCompare(ecInst.EC_DATE, ecInst.EC_DATE_START, ecInst.EC_DATE_END);
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_DATE", "$V0$", "EC_DATE", "$V1$", "EC_DATE_START", "$V2$", "EC_DATE_END", "$GRP$", "GRP_EC");
+            }
+
+            return response;
+        }
+
         /////////////////////////////////
-        private static async Task<int> InstrumentInGrpInst(GRP_INST model, int siteId, IcosDbContext db)
-        {
-            int resp = 0;
-            if (String.Compare(model.INST_FACTORY.ToLower(), "purchase") == 0)
-            {
-                return 0;
-            }
-            var inst = await db.GRP_INST.Where(md => md.INST_MODEL == model.INST_MODEL && md.INST_SN == model.INST_SN && md.SiteId == siteId && md.INST_FACTORY.ToLower() == "purchase")
-                                              .OrderBy(md => md.INST_DATE).FirstOrDefaultAsync();
-            if (inst == null)
-            {
-                resp = (int)Globals.ErrorValidationCodes.NOT_IN_GRP_INST;
-            }
-            else
-            {
-                string _iDate = inst.INST_DATE;
-                if (String.Compare(_iDate, model.INST_DATE) > 0)
-                {
-                    resp = (int)Globals.ErrorValidationCodes.INST_PURCHASE_DATE_GREATER_THAN_INST_OP_DATE;
-                }
-            }
-            return resp;
-        }
-
-        private static async Task<int> LastExpectedOpByDateAsync(GRP_INST inst, IcosDbContext db)
-        {
-
-            if (String.Compare(inst.INST_MODEL, "purchase", true) == 0)
-            {
-                if (await db.GRP_INST.AnyAsync(xinst => xinst.INST_FACTORY.ToLower() == "purchase" && String.Compare(xinst.INST_MODEL, inst.INST_MODEL, true)==0
-                                                    && String.Compare(xinst.INST_SN, inst.INST_SN, true)==0 && xinst.SiteId == inst.SiteId && xinst.DataStatus==0))
-                {
-                    return (int)Globals.ErrorValidationCodes.GRP_INST_ALREADY_PURCHASED;
-                }
-            }
-            else
-            {
-                var item = await db.GRP_INST.FirstOrDefaultAsync(xinst => (string.Compare(xinst.INST_FACTORY, "purchase", true) == 0)
-                                                                        && (string.Compare(xinst.INST_MODEL, inst.INST_MODEL, true) == 0)
-                                                                        && (string.Compare(xinst.INST_SN, inst.INST_SN, true) == 0) && xinst.SiteId == inst.SiteId);
-                if (item == null)
-                {
-                    return (int)Globals.ErrorValidationCodes.GRP_INST_NOT_PURCHASE;
-                }
-                else
-                {
-                    if (String.Compare(inst.INST_DATE, item.INST_DATE) < 0)
-                    {
-                        return (int)Globals.ErrorValidationCodes.GRP_INST_NOT_PURCHASE;
-                    }
-                }
-            }
-
-            return 0;
-        }
-
-        private static int ItemInBadmList(string value, int cvIndex, IcosDbContext db)
-        {
-            string bmList = db.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefault();
-            var res = db.BADMList.Where(item => item.cv_index == cvIndex)
-                                 .Any(item => (String.Compare(item.shortname, value, true) == 0));
-            if (!res)
-            {
-                return 7;
-            }
-            return 0;
-        }
-
-        public static int MissingMandatoryData<T>(T value, string name, string groupName)
-        {
-            if (value == null)
-            {
-               return 1;
-            }
-            return 0;
-        }
-
-        private static int IsoDateCheck(string dateValue, string name)
-        {
-            if (String.IsNullOrEmpty(dateValue))
-            {
-                return 0;
-            }
-            errorCode = ValidateIsoDate(dateValue);
-            if (errorCode > 0)
-            {
-                return 2;
-            }
-            return 0;
-        }
-
-        private static int ValidateIsoDate(string input)
-        {
-            int currentYear = DateTime.Now.Year;
-
-            string numReg = "^[0-9]+$";
-            int[] daysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-            if ((input.Length) % 2 > 0 || input.Length > 12)
-            {
-                return 2;
-            }
-            Match match = Regex.Match(input, numReg, RegexOptions.IgnoreCase);
-            if (!match.Success) return 2;
-            else
-            {
-                string subYear = input.Substring(0, 4);
-                string subMonth = "";
-                string subDay = "";
-                string subHour = "";
-                string subMins = "";
-                ////////////////
-                int iYear = 0;
-                iYear = int.Parse(subYear);
-
-                var iMonth = 0;
-                var iDay = 0;
-                var iHour = 0;
-                var iMins = 0;
-                if (iYear < 1800 || iYear > (currentYear + 2))
-                {
-                    return 3;
-                }
-                if (input.Length > 4)
-                {
-                    subMonth = input.Substring(4, 2);
-                    iMonth = int.Parse(subMonth);
-                    if (iMonth < 1 || iMonth > 12)
-                    {
-                        return 2;
-                    }
-                }
-                if (input.Length > 6)
-                {
-                    subDay = input.Substring(6, 2);
-                    iDay = int.Parse(subDay);
-                    if (iMonth != 2)
-                    {
-
-                        if (iDay > daysInMonth[iMonth - 1])
-                        {
-                            return 2;
-                        }
-
-                    }
-                    else
-                    {
-                        if (isLeap(iYear))
-                        {
-                            if (iDay > 29)
-                            {
-                                return 2;
-                            }
-                        }
-                        else
-                        {
-                            if (iDay > 28)
-                            {
-                                return 2;
-                            }
-                        }
-                    }
-                }
-                if (input.Length > 8)
-                {
-                    subHour = input.Substring(8, 2);
-                    iHour = int.Parse(subHour);
-                    if (iHour >= 24)
-                    {
-                        return 2;
-                    }
-                }
-                if (input.Length > 10)
-                {
-                    subMins = input.Substring(10, 2);
-                    iMins = int.Parse(subMins);
-                    if (iMins > 59)
-                    {
-                        return 2;
-                    }
-                }
-
-            }
-            return 0;
-        }
-
-        private static bool isLeap(int yy)
-        {
-            if ((yy % 400 == 0 || yy % 100 != 0) && (yy % 4 == 0))
-            {
-                return true;
-
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-        private static bool IsAnyPropNotNull<T>(T model)
-        {
-            Type myType = model.GetType();
-            IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
-
-            var subList = props.Where(item => !item.Name.Contains("_DATE") &&
-                                               !item.Name.Contains("COMMENT") &&
-                                               item.Name != "Id" &&
-                                               item.Name != "DataStatus" &&
-                                               !item.Name.Contains("UserId") &&
-                                               !item.Name.Contains("Date") &&
-                                               !item.Name.Contains("SiteId") &&
-                                               !item.Name.Contains("GroupId") &&
-                                               !item.Name.Contains("DataOrigin")).ToList();
-
-            var isAnyVAlue = subList.Any(item => item.GetValue(model, null) != null);
-
-            return isAnyVAlue;
-        }
-
-        private static bool XORNull<T>(string obja, string objb) where T : IComparable<T>
-        {
-            if (String.IsNullOrEmpty(obja) && !String.IsNullOrEmpty(objb))
-            {
-                return true;
-            }
-            if (!String.IsNullOrEmpty(obja) && String.IsNullOrEmpty(objb))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private static bool IsValidPattern(string pattern, string regex)
-        {
-            Match match = Regex.Match(pattern, regex);
-            return match.Success;
-        }
-
-        private static bool IsValidPlotString(string plot, int group)
-        {
-            /*
-            if (String.Compare(plot, "outside_cp", true) == 0)
-            {
-                return true;
-            }
-            */
-            int[] allowedOutside = { 10, 17, 19, 21, 22 };
-            List<int> notSP_II_Valid = new List<int>() { 21, 22 };
-            bool isMatch = true;
-            try
-            {
-                Match match;
-
-                if (plot.ToLower().StartsWith("cp"))
-                {
-                    match = Regex.Match(plot, Globals.cpReg, RegexOptions.IgnoreCase);
-                    isMatch = match.Success;
-                }
-                else if (plot.ToLower().StartsWith("sp-i_"))
-                {
-                    match = Regex.Match(plot, Globals.sp1Reg, RegexOptions.IgnoreCase);
-                    isMatch = match.Success;
-                }
-                else if (plot.ToLower().StartsWith( "sp-ii"))
-                {
-                    if (notSP_II_Valid.Any(id => id == group))
-                    {
-                        isMatch = false;
-                    }
-                    else
-                    {
-                        match = Regex.Match(plot, Globals.sp2Reg, RegexOptions.IgnoreCase);
-                        isMatch = match.Success;
-                    }
-                }
-                else
-                {
-                    if (String.Compare(plot, "outside_cp", true) == 0)
-                    {
-                        //check for which groups 'outside_cp' is allowed
-                        if (allowedOutside.Contains(group))
-                        {
-                            isMatch = true;
-                        }
-                    }
-                    else
-                    {
-                        isMatch = false;
-                    }
-                }
-            }
-            catch (Exception dd)
-            {
-                isMatch = false;
-            }
-
-            return isMatch;
-        }
-
-        private static bool CountBoundedProps<T>(T model, int bound, params string[] vars)
-        {
-            Type myType = model.GetType();
-            IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
-
-            var subList = props.Where(item => vars.Contains(item.Name)).ToList();
-
-            var countValue = subList.Count(item => item.GetValue(model, null) != null);
-
-            return (countValue == 0) || (countValue == bound);
-        }
-
-        private static int ItemInSamplingPointGroupAsync(string modelPlotId, string modelDate, int siteId, IcosDbContext db)
-        {
-            if (String.Compare(modelPlotId, "Outside_CP", true) == 0) return 0;
-            var item = db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
-                                                String.Compare(plot.PLOT_ID, modelPlotId) == 0 &&
-                                                String.Compare(plot.PLOT_DATE, modelDate) <= 0).FirstOrDefault();
-            if (item == null)
-            {
-                return (int)Globals.ErrorValidationCodes.PLOT_ID_NOT_FOUND;
-            }
-            return 0;
-        }
-
-        private static bool FindMandatoryNull<T>(T model, params string[] vars)
-        {
-            Type myType = model.GetType();
-            IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
-
-            var subList = props.Where(item => vars.Contains(item.Name)).ToList();
-
-            var isAnyVAlue = subList.Any(item => item.GetValue(model, null) == null);
-
-            return isAnyVAlue;
-        }
-        private static bool IsAnyPropNotNull<T>(T model, params string[] vars)
-        {
-            Type myType = model.GetType();
-            IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
-            var subList = props.Where(item => vars.Contains(item.Name)).ToList();
-            var isAnyVAlue = subList.Any(item => item.GetValue(model, null) != null);
-
-            return isAnyVAlue;
-        }
-
+        
         private static int ValidateGaiByMethod(GRP_GAI model,string ecosystem)
         {
             //clean all data not bound to selected method...best to do before validation???
@@ -1868,17 +1570,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return 0;
         }
-        private static int SerialNumberCheck(string instModel, string instSn)
-        {
-            if (!Globals.regulars.ContainsKey(instModel.ToLower())) return 0;
-            string instReg = Globals.regulars[instModel.ToLower()];
-            Match instMatch = Regex.Match(instSn, instReg, RegexOptions.IgnoreCase);
-            if (!instMatch.Success)
-            {
-                return (int)Globals.ErrorValidationCodes.WRONG_SERIALNUMBER_FORMAT;
-            }
-            return 0;
-        }
-
+        
     }
 }

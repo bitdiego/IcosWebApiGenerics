@@ -138,6 +138,10 @@ namespace IcosWebApiGenerics.Services
                     GRP_INST inst = t as GRP_INST;
                     response = await GrpValidator.ValidateInstResponseAsync(inst, _context);
                     break;
+                case (int)Globals.Groups.GRP_EC:
+                    GRP_EC ecInst = t as GRP_EC;
+                    response = await GrpValidator.ValidateEcResponseAsync(ecInst, _context);
+                    break;
             }
             return response;
         }

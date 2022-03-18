@@ -21,6 +21,11 @@ namespace IcosWebApiGenerics.Utils
             {10,"Error: $V0$ string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V1$"},
             {86,"Error: entered plot ID not found in GRP_PLOT"},
             {118,"Serial number wrong format. Correct format: $V0$, where X is a digit. Found value: $V1$"},
+            {200,"Error; Missing $V0$, $V1$ and $V2$ variables. Please, enter either $V0$ or $V1$/$V2$"},
+            {201,"Error; Found $V0$ together with $V1$ and/or $V2$ variables. Please, enter either $V0$ or $V1$/$V2$"},
+            {202,"Error; DATE_END is missing. Please, enter either DATE or DATE_START / DATE_END"},
+            {203,"Error; DATE_START is missing. Please, enter DATE_START value"},
+            {204,"Error; DATE_END must be greater than DATE_START"},
         };
 
         public static Dictionary<int, string> GrpLocationErrors = new Dictionary<int, string>
@@ -220,6 +225,17 @@ namespace IcosWebApiGenerics.Utils
             {35,"Error: found an INST_FACTORY date prior to Purchase date."},
             {79,"Entered instrument does not have a Purchase entry for INST_FACTORY variable or operation date is prior to instrument purchase date"},
             {123,"Entered instrument is already registered with Purchase factory operation"},
+        };
+
+        public static Dictionary<int, string> GrpEcErrors = new Dictionary<int, string>
+        {
+            {34,"Entered instrument has not been found in GRP_INST. Please insert item with Purchase INST_FACTORY first."},
+            {35,"Error: operation date results prior to Purchase date of entered sensor."},
+            {223, "Error: Trying to install Instrument $V0$, serial $V1$ which is already installed"},
+            {224, @"Error: Trying to install Instrument $V0$, serial $V1$ on date $V2$ which is already installed and was not removed first.
+                    Please choose another $OP$ operation or check operation dates"},
+            {225, "Error: Trying to perform operation $OP$ on an instrument which does not result to be installed. Please choose another EC_TYPE operation or check operation dates"},
+            {226, "Error: Trying to remove Instrument $V0$, serial $V1$ which has been already removed and not reinstalled"},
         };
 
         /*
