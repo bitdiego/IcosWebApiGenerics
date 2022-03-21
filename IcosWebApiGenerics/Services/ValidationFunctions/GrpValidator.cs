@@ -75,7 +75,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         }
 
         //OK
-        public static Response ValidateLandOwnerResponse(GRP_LAND_OWNERSHIP land, IcosDbContext db)
+        public static async Task<Response> ValidateLandOwnerResponseAsync(GRP_LAND_OWNERSHIP land, IcosDbContext db)
         {
             if (!String.IsNullOrEmpty(land.LAND_DATE))
             {
@@ -89,21 +89,21 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(land.LAND_OWNERSHIP))
             {
-                errorCode = GeneralValidation.ItemInBadmList(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_OWNERSHIP", "$V0$", land.LAND_OWNERSHIP, "$V1$", "LAND_OWNERSHIP", "$GRP$", "GRP_LAND_OWNERSHIP");
             }
             return response;
         }
 
         
-        public static Response ValidateTowerResponse(GRP_TOWER tower, IcosDbContext db)
+        public static async Task<Response> ValidateTowerResponseAsync(GRP_TOWER tower, IcosDbContext db)
         {
             GeneralValidation.MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
             DatesValidator.IsoDateCheck( tower.TOWER_DATE, "TOWER_DATE");
-            GeneralValidation.ItemInBadmList( tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
-            GeneralValidation.ItemInBadmList( tower.TOWER_ACCESS,  (int)Globals.CvIndexes.TOWER_ACCESS, db);
-            GeneralValidation.ItemInBadmList( tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
-            GeneralValidation.ItemInBadmList( tower.TOWER_DATATRAN,  (int)Globals.CvIndexes.TOWER_DATATRAN, db);
+            await GeneralValidation.ItemInBadmListAsync( tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
+            await GeneralValidation.ItemInBadmListAsync( tower.TOWER_ACCESS,  (int)Globals.CvIndexes.TOWER_ACCESS, db);
+            await GeneralValidation.ItemInBadmListAsync( tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
+            await GeneralValidation.ItemInBadmListAsync( tower.TOWER_DATATRAN,  (int)Globals.CvIndexes.TOWER_DATATRAN, db);
             return response;
         }
 
@@ -169,8 +169,9 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
+
         //seems OK
-        public static Response ValidateSamplingSchemeResponse(GRP_PLOT samplingScheme, IcosDbContext db)
+        public static async Task<Response> ValidateSamplingSchemeResponseAsync(GRP_PLOT samplingScheme, IcosDbContext db)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
             if (errorCode != 0)
@@ -210,7 +211,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //check if plot_type in controlled vocabulary
-                errorCode = GeneralValidation.ItemInBadmList( samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync( samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -240,7 +241,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
             {
                 //check if plot_type in controlled vocabulary
-                errorCode = GeneralValidation.ItemInBadmList(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -276,7 +277,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         }
 
         //validate also numeric values...
-        public static Response ValidateFlsmResponse(GRP_FLSM flsm, IcosDbContext db)
+        public static async Task<Response> ValidateFlsmResponseAsync(GRP_FLSM flsm, IcosDbContext db)
         {
             //to do::: FLSM_PLOT_ID present in GRP_PLOT
             errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
@@ -307,7 +308,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else 
             {
-                errorCode=GeneralValidation.ItemInBadmList(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                errorCode= await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -331,7 +332,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(flsm.FLSM_PTYPE))
             {
-                errorCode = GeneralValidation.ItemInBadmList(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -439,7 +440,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        public static Response ValidateDhpResponse(GRP_DHP dhp, IcosDbContext db)
+        public static async Task<Response> ValidateDhpResponseAsync(GRP_DHP dhp, IcosDbContext db)
         {
             errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_ID, "DHP_ID", "GRP_DHP");
             if (errorCode != 0)
@@ -461,7 +462,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be in badmlist
-                errorCode = GeneralValidation.ItemInBadmList(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -485,7 +486,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be in badmlist
-                errorCode = GeneralValidation.ItemInBadmList(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -559,7 +560,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        public static Response ValidateGaiResponse(GRP_GAI gai, IcosDbContext db)
+        public static async Task<Response> ValidateGaiResponseAsync(GRP_GAI gai, IcosDbContext db)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_PLOT, "GAI_PLOT", "GRP_GAI");
             if (errorCode != 0)
@@ -587,7 +588,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //in badm list
-                errorCode = GeneralValidation.ItemInBadmList(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -631,7 +632,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         }
 
 
-        public static Response ValidateBulkhResponse(GRP_BULKH bulkh, IcosDbContext db)
+        public static async Task<Response> ValidateBulkhResponseAsync(GRP_BULKH bulkh, IcosDbContext db)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(bulkh.BULKH_DATE, "BULKH_DATE", "GRP_BULKH");
             if (errorCode != 0)
@@ -670,7 +671,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = GeneralValidation.ItemInBadmList(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -687,7 +688,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        public static Response ValidateSppsResponse(GRP_SPPS spps, IcosDbContext db)
+        public static async Task<Response> ValidateSppsResponseAsync(GRP_SPPS spps, IcosDbContext db)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
             if (errorCode != 0)
@@ -765,7 +766,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(spps.SPPS_TWSP_PCT))
             {
-                errorCode = GeneralValidation.ItemInBadmList(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -775,7 +776,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(spps.SPPS_PTYPE))
             {
-                errorCode = GeneralValidation.ItemInBadmList(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -1245,7 +1246,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = GeneralValidation.ItemInBadmList(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -1278,7 +1279,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = GeneralValidation.ItemInBadmList(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -1312,6 +1313,64 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
             }
+            return response;
+        }
+        public static async Task<Response> ValidateLoggerResponseAsync(GRP_LOGGER logger, IcosDbContext db)
+        {
+            errorCode = GeneralValidation.MissingMandatoryData<string>(logger.LOGGER_MODEL, "LOGGER_MODEL", "GRP_LOGGER");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_MODEL", "$V0$", "LOGGER_MODEL", "$GRP$", "GRP_LOGGER");
+            }
+            else
+            {
+                errorCode = await GeneralValidation.ItemInBadmListAsync(logger.LOGGER_MODEL, (int)Globals.CvIndexes.LOGGER_MODEL, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_MODEL", "$V0$", logger.LOGGER_MODEL, "$V1$", "LOGGER_MODEL", "$GRP$", "GRP_LOGGER");
+                }
+            }
+
+            errorCode = GeneralValidation.MissingMandatoryData<string>(logger.LOGGER_SN, "LOGGER_SN", "GRP_LOGGER");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_SN", "$V0$", "LOGGER_SN", "$GRP$", "GRP_LOGGER");
+            }
+            else
+            {
+                errorCode = InstrumentsValidation.SerialNumberCheck(logger.LOGGER_MODEL, logger.LOGGER_SN);
+                if (errorCode != 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_SN", "$V0$", "LOGGER_SN", "$GRP$", "GRP_LOGGER");
+                }
+            }
+
+            errorCode = GeneralValidation.MissingMandatoryData<int>(logger.LOGGER_ID, "LOGGER_ID", "GRP_LOGGER");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_ID", "$V0$", "LOGGER_ID", "$GRP$", "GRP_LOGGER");
+            }
+            
+            errorCode = GeneralValidation.MissingMandatoryData<string>(logger.LOGGER_DATE, "LOGGER_DATE", "GRP_LOGGER");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_DATE", "$V0$", "LOGGER_DATE", "$GRP$", "GRP_LOGGER");
+            }
+            errorCode = DatesValidator.IsoDateCheck(logger.LOGGER_DATE, "LOGGER_DATE");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_DATE", "$V0$", "LOGGER_DATE", "$V1$", logger.LOGGER_DATE);
+            }
+
+
+
             return response;
         }
 
@@ -1570,6 +1629,123 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return 0;
         }
-        
+
+
+        public int CheckFileFormat(string fileFormat, string fileExt, int siteId)
+        {
+            int res = 0;
+            if (fileFormat == null && fileExt == null)
+            {
+                return 0;
+            }
+            if ((fileFormat != null && fileExt == null) || (fileFormat == null && fileExt != null))
+            {
+                return (int)Globals.ErrorValidationCodes.FILE_FORMAT_FILEXT;
+            }
+            switch (fileFormat.ToLower())
+            {
+                case "binary":
+                    if (String.Compare(fileExt.ToLower(), ".csv", true) == 0)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.CSV_NOT_ALLOWED_FOR_BINARY;
+                    }
+                    break;
+                case "ascii":
+                    if (String.Compare(fileExt.ToLower(), ".bin", true) == 0)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.BIN_NOT_ALLOWED_FOR_ASCII;
+                    }
+                    break;
+            }
+            return res;
+        }
+        public int CheckHeadConstraints(string fileFormat, int? fileHeadNum, int? fileHeadVars, int? fileHeadType)
+        {
+            int res = 0;
+            if (fileFormat == null)
+            {
+                if (fileHeadNum == null && fileHeadVars == null && fileHeadType == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 555;
+                }
+            }
+            if (String.Compare(fileFormat.ToLower(), "binary", true) == 0)
+            {
+                
+                if (fileHeadNum == null && fileHeadVars == null && fileHeadType == null)
+                {
+                    return 0;
+                }
+                if (fileHeadType == null && fileHeadNum != null && fileHeadVars != null)
+                {
+                    if (fileHeadNum != 0)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.FILE_HEAD_VARS_TYPE_MISSING_BINARY;
+                    }
+                    else if (fileHeadType == null && fileHeadNum == null && fileHeadVars != null)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.FILE_HEAD_NUM_TYPE_MISSING_BINARY;
+                    }
+                    else if (fileHeadType != null && fileHeadNum == null && fileHeadVars == null)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.FILE_HEAD_NUM_VARS_MISSING_BINARY;
+                    }
+                    else
+                    {
+
+                        if (fileHeadVars > fileHeadNum)
+                        {
+                            res = (int)Globals.ErrorValidationCodes.FILE_HEAD_VARS_GT_FILE_HEAD_NUM;
+                        }
+                        if (fileHeadType > fileHeadNum)
+                        {
+                            res = (int)Globals.ErrorValidationCodes.FILE_HEAD_TYPE_GT_FILE_HEAD_NUM;
+                        }
+                        if (fileHeadVars == fileHeadType && fileHeadNum != 0)
+                        {
+                            res = (int)Globals.ErrorValidationCodes.FILE_HEAD_TYPE_GT_FILE_HEAD_VARS;
+                        }
+                    }
+                }
+            }
+            else //ASCII
+            {
+                if (fileHeadNum != null && fileHeadVars == null)
+                {
+                    if (fileHeadNum != 0)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.FILE_HEAD_VARS_MISSING;
+                    }
+
+                }
+                else if (fileHeadNum != null && fileHeadVars == null)
+                {
+                    //OK....
+                }
+                else if (fileHeadNum == null && fileHeadVars != null)
+                {
+                    res = (int)Globals.ErrorValidationCodes.FILE_HEAD_NUM_MISSING;
+                }
+                else
+                {
+
+
+                    if (fileHeadVars != null && fileHeadVars > fileHeadNum)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.FILE_HEAD_VARS_GT_FILE_HEAD_NUM;
+                    }
+                    if (fileHeadVars == fileHeadType && fileHeadNum != 0)
+                    {
+                        res = (int)Globals.ErrorValidationCodes.FILE_HEAD_TYPE_EQ_FILE_HEAD_VARS;
+                    }
+                }
+            }
+            return res;
+        }
+
     }
 }

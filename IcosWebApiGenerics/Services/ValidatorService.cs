@@ -64,11 +64,11 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_LAND_OWNERSHIP:
                     GRP_LAND_OWNERSHIP land = t as GRP_LAND_OWNERSHIP;
-                    response = GrpValidator.ValidateLandOwnerResponse(land, _context);
+                    response = await GrpValidator.ValidateLandOwnerResponseAsync(land, _context);
                     break;
                 case (int)Globals.Groups.GRP_TOWER:
                     GRP_TOWER tower = t as GRP_TOWER;
-                    response = GrpValidator.ValidateTowerResponse(tower, _context);
+                    response = await GrpValidator.ValidateTowerResponseAsync(tower, _context);
                     break;
                 case (int)Globals.Groups.GRP_CLIM_AVG:
                     GRP_CLIM_AVG climAvg = t as GRP_CLIM_AVG;
@@ -80,11 +80,11 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_PLOT:
                     GRP_PLOT samplingScheme = t as GRP_PLOT;
-                    response = GrpValidator.ValidateSamplingSchemeResponse(samplingScheme, _context);
+                    response = await GrpValidator.ValidateSamplingSchemeResponseAsync(samplingScheme, _context);
                     break;
                 case (int)Globals.Groups.GRP_FLSM:
                     GRP_FLSM flsm = t as GRP_FLSM;
-                    response = GrpValidator.ValidateFlsmResponse(flsm, _context);
+                    response = await GrpValidator.ValidateFlsmResponseAsync(flsm, _context);
                     break;
                 case (int)Globals.Groups.GRP_SOSM:
                     GRP_SOSM sosm = t as GRP_SOSM;
@@ -92,11 +92,11 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_DHP:
                     GRP_DHP dhp = t as GRP_DHP;
-                    response = GrpValidator.ValidateDhpResponse(dhp, _context);
+                    response = await GrpValidator.ValidateDhpResponseAsync(dhp, _context);
                     break;
                 case (int)Globals.Groups.GRP_GAI:
                     GRP_GAI gai = t as GRP_GAI;
-                    response = GrpValidator.ValidateGaiResponse(gai, _context);
+                    response = await GrpValidator.ValidateGaiResponseAsync(gai, _context);
                     break;
                 case (int)Globals.Groups.GRP_CEPT:
                     GRP_CEPT cept = t as GRP_CEPT;
@@ -104,11 +104,11 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_BULKH:
                     GRP_BULKH bulkh = t as GRP_BULKH;
-                    response = GrpValidator.ValidateBulkhResponse(bulkh, _context);
+                    response = await GrpValidator.ValidateBulkhResponseAsync(bulkh, _context);
                     break;
                 case (int)Globals.Groups.GRP_SPPS:
                     GRP_SPPS spps = t as GRP_SPPS;
-                    response = GrpValidator.ValidateSppsResponse(spps, _context);
+                    response = await GrpValidator.ValidateSppsResponseAsync(spps, _context);
                     break;
                 case (int)Globals.Groups.GRP_TREE:
                     GRP_TREE dSnow = t as GRP_TREE;
@@ -137,6 +137,10 @@ namespace IcosWebApiGenerics.Services
                 case (int)Globals.Groups.GRP_INST:
                     GRP_INST inst = t as GRP_INST;
                     response = await GrpValidator.ValidateInstResponseAsync(inst, _context);
+                    break;
+                case (int)Globals.Groups.GRP_LOGGER:
+                    GRP_LOGGER logger = t as GRP_LOGGER;
+                    response = await GrpValidator.ValidateLoggerResponseAsync(logger, _context);
                     break;
                 case (int)Globals.Groups.GRP_EC:
                     GRP_EC ecInst = t as GRP_EC;

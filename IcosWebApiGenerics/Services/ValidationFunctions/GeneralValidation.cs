@@ -1,5 +1,6 @@
 ﻿using IcosWebApiGenerics.Data;
 using IcosWebApiGenerics.Utils;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,11 +117,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return 0;
         }
 
-        public static int ItemInBadmList(string value, int cvIndex, IcosDbContext db)
+        public static async Task<int> ItemInBadmListAsync(string value, int cvIndex, IcosDbContext db)
         {
-            string bmList = db.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefault();
-            var res = db.BADMList.Where(item => item.cv_index == cvIndex)
-                                 .Any(item => (String.Compare(item.shortname, value, true) == 0));
+            string bmList = await db.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefaultAsync();
+
+            var res = await db.BADMList.Where(item => item.cv_index == cvIndex)
+                                 .AnyAsync(item => (String.Compare(item.shortname, value, true) == 0));
             if (!res)
             {
                 return 7;
