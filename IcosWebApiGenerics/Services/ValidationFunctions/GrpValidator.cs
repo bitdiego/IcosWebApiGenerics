@@ -238,41 +238,47 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_EASTWARD_DIST");
             }
 
-            if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
+            //to be testes only if PLOT_ID != null
+            if (samplingScheme.PLOT_ID != null)
             {
-                //check if plot_type in controlled vocabulary
-                errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
-                if (errorCode > 0)
+                if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
                 {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_REFERENCE_POINT", "$V0$", samplingScheme.PLOT_REFERENCE_POINT, "$V1$", "PLOTREF", "$GRP$", "GRP_PLOT");
-                }
-                if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
-                {
-                    errorCode = 3;
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
-                }
-                if (samplingScheme.PLOT_LOCATION_LAT != null && samplingScheme.PLOT_LOCATION_LONG != null)
-                {
-                    errorCode = 4;
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
-                }
-            }
-            else
-            {
-                if (samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
-                {
-                    if ((samplingScheme.PLOT_ANGLE_POLAR != null && samplingScheme.PLOT_DISTANCE_POLAR != null) ||
-                    (samplingScheme.PLOT_EASTWARD_DIST != null && samplingScheme.PLOT_NORTHWARD_DIST != null))
+                    //check if plot_type in controlled vocabulary
+                    errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
+                    if (errorCode > 0)
                     {
-                        errorCode = 5;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_REFERENCE_POINT", "$V0$", samplingScheme.PLOT_REFERENCE_POINT, "$V1$", "PLOTREF", "$GRP$", "GRP_PLOT");
+                    }
+                    if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                    {
+                        errorCode = 3;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                    }
+                    if (samplingScheme.PLOT_LOCATION_LAT != null && samplingScheme.PLOT_LOCATION_LONG != null)
+                    {
+                        errorCode = 4;
                         response.Code += errorCode;
                         response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
                     }
                 }
+                else
+                {
+
+                    if (samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                    {
+                        if ((samplingScheme.PLOT_ANGLE_POLAR != null && samplingScheme.PLOT_DISTANCE_POLAR != null) ||
+                        (samplingScheme.PLOT_EASTWARD_DIST != null && samplingScheme.PLOT_NORTHWARD_DIST != null))
+                        {
+                            errorCode = 5;
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                        }
+                    }
+                }
             }
+            
             return response;
         }
 
