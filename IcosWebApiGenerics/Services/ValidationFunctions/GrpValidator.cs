@@ -29,7 +29,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         }
 
         //OK
-        public static Response ValidateLocationResponse(GRP_LOCATION location)
+        /*public static Response ValidateLocationResponse(GRP_LOCATION location)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
             if (errorCode != 0)
@@ -56,7 +56,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return response;
         }
-
+        
         //OK
         public static Response ValidateUtcResponse(GRP_UTC_OFFSET utc)
         {
@@ -143,7 +143,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     //Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
                 }
             }
-            /*
+            
             GeneralValidation.ItemInBadmList("DM_ENCROACH", distMan.DM_ENCROACH, "GRP_DM", (int)Globals.CvIndexes.DM_ENCROACH, db);
             GeneralValidation.ItemInBadmList("DM_AGRICULTURE", distMan.DM_AGRICULTURE, "GRP_DM", (int)Globals.CvIndexes.DM_AGRICULTURE, db);
             GeneralValidation.ItemInBadmList("DM_EXT_WEATHER", distMan.DM_EXT_WEATHER, "GRP_DM", (int)Globals.CvIndexes.DM_EXT_WEATHER, db);
@@ -158,7 +158,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             GeneralValidation.ItemInBadmList("DM_TILL", distMan.DM_FERT_M, "DM_TILL", (int)Globals.CvIndexes.DM_TILL, db); 
             GeneralValidation.ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
             GeneralValidation.ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
-            */
+            
             if (!GeneralValidation.IsAnyPropNotNull<GRP_DM>(distMan))
             {
                 errorCode = 9;
@@ -167,6 +167,16 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
 
             return response;
+        }
+        */
+        public static Task<Response> ValidateFileResponseAsync(GRP_FILE file, IcosDbContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Task<Response> ValidateEcSysResponseAsync(GRP_ECSYS ecSys, IcosDbContext context)
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -566,7 +576,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return response;
         }
 
-        public static async Task<Response> ValidateGaiResponseAsync(GRP_GAI gai, IcosDbContext db)
+       /*public static async Task<Response> ValidateGaiResponseAsync(GRP_GAI gai, IcosDbContext db)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_PLOT, "GAI_PLOT", "GRP_GAI");
             if (errorCode != 0)
@@ -692,7 +702,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH", "$V0$", "BULKH", "$GRP$", "GRP_BULKH");
             }
             return response;
-        }
+        }*/
 
         public static async Task<Response> ValidateSppsResponseAsync(GRP_SPPS spps, IcosDbContext db)
         {

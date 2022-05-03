@@ -43,6 +43,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return match.Success;
         }
 
+        /*
+         * 10	GRP_FLSM
+17	GRP_TREE
+19	GRP_LITTERPNT
+21	GRP_WTDPNT
+22	GRP_D_SNOW
+        */
         public static bool IsValidPlotString(string plot, int group)
         {
             /*
@@ -51,8 +58,9 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 return true;
             }
             */
-            int[] allowedOutside = { 10, 17, 19, 21, 22 };
-            List<int> notSP_II_Valid = new List<int>() { 21, 22 };
+        int[] allowedOutside = { (int)Globals.Groups.GRP_FLSM, (int)Globals.Groups.GRP_TREE, (int)Globals.Groups.GRP_LITTERPNT, 
+                                 (int)Globals.Groups.GRP_WTDPNT, (int)Globals.Groups.GRP_D_SNOW };
+            List<int> notSP_II_Valid = new List<int>() { (int)Globals.Groups.GRP_WTDPNT, (int)Globals.Groups.GRP_D_SNOW };
             bool isMatch = true;
             try
             {
