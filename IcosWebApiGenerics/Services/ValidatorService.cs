@@ -9,6 +9,10 @@ using IcosWebApiGenerics.Data;
 using IcosWebApiGenerics.Models.BADM;
 using IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidation;
+using IcosWebApiGenerics.Services.ValidationFunctions.ECValidation;
+using IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation;
+using IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation;
+using IcosWebApiGenerics.Services.ValidationFunctions.STALValidation;
 
 namespace IcosWebApiGenerics.Services
 {
@@ -82,15 +86,15 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_PLOT:
                     GRP_PLOT samplingScheme = t as GRP_PLOT;
-                    response = await GrpValidator.ValidateSamplingSchemeResponseAsync(samplingScheme, _context);
+                    response = await SamplingValidation.ValidateSamplingSchemeResponseAsync(samplingScheme, _context);
                     break;
                 case (int)Globals.Groups.GRP_FLSM:
                     GRP_FLSM flsm = t as GRP_FLSM;
-                    response = await GrpValidator.ValidateFlsmResponseAsync(flsm, _context);
+                    response = await SamplingValidation.ValidateFlsmResponseAsync(flsm, _context);
                     break;
                 case (int)Globals.Groups.GRP_SOSM:
                     GRP_SOSM sosm = t as GRP_SOSM;
-                    response = GrpValidator.ValidateSosmResponse(sosm, _context);
+                    response = SamplingValidation.ValidateSosmResponse(sosm, _context);
                     break;
                 case (int)Globals.Groups.GRP_DHP:
                     GRP_DHP dhp = t as GRP_DHP;
@@ -110,23 +114,23 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_SPPS:
                     GRP_SPPS spps = t as GRP_SPPS;
-                    response = await GrpValidator.ValidateSppsResponseAsync(spps, _context);
+                    response = await STALValidation.ValidateSppsResponseAsync(spps, _context);
                     break;
                 case (int)Globals.Groups.GRP_TREE:
                     GRP_TREE dSnow = t as GRP_TREE;
-                    response = GrpValidator.ValidateTreeResponse(dSnow, _context);
+                    response = STALValidation.ValidateTreeResponse(dSnow, _context);
                     break;
                 case (int)Globals.Groups.GRP_AGB:
                     GRP_AGB agb = t as GRP_AGB;
-                    response = GrpValidator.ValidateAgbResponse(agb, _context);
+                    response = STALValidation.ValidateAgbResponse(agb, _context);
                     break;
                 case (int)Globals.Groups.GRP_LITTERPNT:
                     GRP_LITTERPNT litterPnt = t as GRP_LITTERPNT;
-                    response = GrpValidator.ValidateLitterPntResponse(litterPnt, _context);
+                    response = STALValidation.ValidateLitterPntResponse(litterPnt, _context);
                     break;
                 case (int)Globals.Groups.GRP_ALLOM:
                     GRP_ALLOM allom = t as GRP_ALLOM;
-                    response = GrpValidator.ValidateAllomResponse(allom, _context);
+                    response = STALValidation.ValidateAllomResponse(allom, _context);
                     break;
                 case (int)Globals.Groups.GRP_WTDPNT:
                     GRP_WTDPNT wtdPnt = t as GRP_WTDPNT;
@@ -142,19 +146,23 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_LOGGER:
                     GRP_LOGGER logger = t as GRP_LOGGER;
-                    response = await GrpValidator.ValidateLoggerResponseAsync(logger, _context);
+                    response = await DataRecordValidation.ValidateLoggerResponseAsync(logger, _context);
                     break;
                 case (int)Globals.Groups.GRP_FILE:
                     GRP_FILE _file = t as GRP_FILE;
-                    response = await GrpValidator.ValidateFileResponseAsync(_file, _context);
+                    response = await DataRecordValidation.ValidateFileResponseAsync(_file, _context);
                     break;
                 case (int)Globals.Groups.GRP_EC:
                     GRP_EC ecInst = t as GRP_EC;
-                    response = await GrpValidator.ValidateEcResponseAsync(ecInst, _context);
+                    response = await ECValidation.ValidateEcResponseAsync(ecInst, _context);
                     break;
                 case (int)Globals.Groups.GRP_ECSYS:
                     GRP_ECSYS ecSys = t as GRP_ECSYS;
-                    response = await GrpValidator.ValidateEcSysResponseAsync(ecSys, _context);
+                    response = await ECValidation.ValidateEcSysResponseAsync(ecSys, _context);
+                    break;
+                case (int)Globals.Groups.GRP_ECWEXCL:
+                    GRP_ECWEXCL ecWexcl = t as GRP_ECWEXCL;
+                    response = await ECValidation.ValidateEcWexclResponseAsync(ecWexcl, _context);
                     break;
             }
             return response;
