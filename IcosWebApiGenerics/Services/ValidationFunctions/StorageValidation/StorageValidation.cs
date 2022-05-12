@@ -32,7 +32,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StorageValidation
                     }
                 }
             }
-            throw new NotImplementedException();
+            return ResponseWrapper.GetResponse();
         }
     }
 }
