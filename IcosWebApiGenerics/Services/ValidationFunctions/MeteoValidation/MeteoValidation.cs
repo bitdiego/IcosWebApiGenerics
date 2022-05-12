@@ -12,8 +12,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation
     public class MeteoValidation
     {
         private static int errorCode = 0;
-
-        public object ValidationUtils { get; private set; }
+       // public object ValidationUtils { get; private set; }
 
         public static async Task<Response> ValidateBmResponseAsync(GRP_BM bmInst, IcosDbContext db)
         {

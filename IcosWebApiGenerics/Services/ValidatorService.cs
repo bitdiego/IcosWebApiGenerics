@@ -13,6 +13,8 @@ using IcosWebApiGenerics.Services.ValidationFunctions.ECValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.STALValidation;
+using IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation;
+using IcosWebApiGenerics.Services.ValidationFunctions.StorageValidation;
 
 namespace IcosWebApiGenerics.Services
 {
@@ -163,6 +165,14 @@ namespace IcosWebApiGenerics.Services
                 case (int)Globals.Groups.GRP_ECWEXCL:
                     GRP_ECWEXCL ecWexcl = t as GRP_ECWEXCL;
                     response = await ECValidation.ValidateEcWexclResponseAsync(ecWexcl, _context);
+                    break;
+                case (int)Globals.Groups.GRP_BM:
+                    GRP_BM bmModel = t as GRP_BM;
+                    response = await MeteoValidation.ValidateBmResponseAsync(bmModel, _context);
+                    break;
+                case (int)Globals.Groups.GRP_STO:
+                    GRP_STO stModel = t as GRP_STO;
+                    response = await StorageValidation.ValidateStorageResponseAsync(stModel, _context);
                     break;
             }
             return response;
