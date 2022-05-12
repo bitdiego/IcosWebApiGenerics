@@ -40,12 +40,10 @@ namespace IcosWebApiGenerics.Data
         public DbSet<GRP_INST> GRP_INST { get; set; }
         public DbSet<GRP_LOGGER> GRP_LOGGER { get; set; }
         public DbSet<GRP_EC> GRP_EC { get; set; }
-        /*
-        public DbSet<GRP_FILE> GRP_FILE { get; set; }
-        
         public DbSet<GRP_ECSYS> GRP_ECSYS { get; set; }
         public DbSet<GRP_ECWEXCL> GRP_ECWEXCL { get; set; }
         public DbSet<GRP_BM> GRP_BM { get; set; }
-        public DbSet<GRP_STO> GRP_STO { get; set; }*/
+        public DbSet<GRP_FILE> GRP_FILE { get; set; }
+        public DbSet<GRP_STO> GRP_STO { get; set; }
     }
 }

@@ -55,14 +55,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return 0;
         }
 
-        public async Task<int> LastExpectedOpByDateAsync(GRP_EC model, int siteId, IcosDbContext _context)
+        public static async Task<int> LastExpectedOpByDateAsync(GRP_EC model, IcosDbContext _context)
         {
             int result = 0;
             var modelEcType = model.EC_TYPE;
             GRP_EC lastRecord = null;
             string cDate = String.IsNullOrEmpty(model.EC_DATE) ? model.EC_DATE_START : model.EC_DATE;
             //is there any previous sensor??
-            var isAnyEcModel = await _context.GRP_EC.AnyAsync(ec => ec.SiteId == siteId);
+            var isAnyEcModel = await _context.GRP_EC.AnyAsync(ec => ec.SiteId == model.SiteId);
             if (!isAnyEcModel)
             {
                 if (String.Compare(model.EC_TYPE, "installation", true) != 0)
@@ -77,7 +77,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     bool bDateCompareResult = false;
 
                     var pp = await _context.GRP_EC.Where(item => item.EC_MODEL == model.EC_MODEL && item.EC_SN == model.EC_SN
-                    && (item.EC_TYPE == "Removal" || item.EC_TYPE == "Installation") && item.SiteId == siteId)
+                    && (item.EC_TYPE == "Removal" || item.EC_TYPE == "Installation") && item.SiteId == model.SiteId)
                     .OrderByDescending(ec => ec.EC_DATE).ToListAsync();
 
                     lastRecord = pp.FirstOrDefault(item => String.Compare(item.EC_DATE, cDate) < 0);
@@ -268,6 +268,83 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
+            return result;
+        }
+
+        public static async Task<int> LastExpectedOpByDateAsync(GRP_BM model, IcosDbContext _context)
+        {
+            int result = 0;
+            string bmType = model.BM_TYPE.ToLower();
+            string bmDate = (String.IsNullOrEmpty(model.BM_DATE)) ? model.BM_DATE_START : model.BM_DATE;
+            string lastOpToSearch = (bmType == "installation") ? "removal" : "installation";
+
+            /////step 0
+            ///check if passed op date is prior to purchase inst date
+            var beforePurchase = await _context.GRP_INST.Where(inst => inst.INST_DATE.CompareTo(bmDate) < 0).FirstOrDefaultAsync();
+            if (beforePurchase == null)
+            {
+                return (int)Globals.ErrorValidationCodes.INST_PURCHASE_DATE_GREATER_THAN_INST_OP_DATE;
+            }
+            ////First check if sensor has been first installed (for any op != installation)
+            ///or removed or empty (if op==installation)
+
+            var foundBm = await _context.GRP_BM.Where(bm => ((bm.BM_TYPE.ToLower() == "installation") || (bm.BM_TYPE.ToLower() == "removal"))
+                                                                   && bm.DataStatus == 0 && bm.SiteId == model.SiteId
+                                                                   && model.BM_MODEL == bm.BM_MODEL && model.BM_SN == bm.BM_SN)
+                                               .OrderByDescending(bm => bm.BM_DATE)
+                                               .ToListAsync();
+            GRP_BM _bmItem = null;
+            if (foundBm != null)
+            {
+                _bmItem = foundBm.FirstOrDefault(item => String.Compare(item.BM_DATE, bmDate) < 0);
+            }
+            //                                   
+
+            if (_bmItem == null)
+            {
+                if (bmType == "installation")
+                {
+                    result = 0;
+                }
+                else
+                {
+                    result = (int)Globals.ErrorValidationCodes.BM_SENSOR_NOT_INSTALLED;
+                }
+            }
+            else
+            {
+                if (bmType == "installation")
+                {
+                    if (_bmItem.BM_TYPE.ToLower().CompareTo("removal") != 0)
+                    {
+                        result = (int)Globals.ErrorValidationCodes.BM_SENSOR_NOT_REMOVED;
+                    }
+                }
+                else
+                {
+                    if (_bmItem.BM_TYPE.ToLower().CompareTo("installation") != 0)
+                    {
+                        result = (int)Globals.ErrorValidationCodes.BM_SENSOR_NOT_INSTALLED;
+                    }
+                }
+            }
+            ///add a check also for the future
+            ///for example, if an installation or a removal is sent,
+            ///check if there are ops for dates >= passed date
+            ///raise error for this
+            /////DIEGO::: TO TEST!!!!
+            if (new string[] { "installation", "removal" }.Contains(bmType.ToLower()))
+            {
+                var noFuture = await _context.GRP_BM.Where(bm => bm.DataStatus == 0 && bm.SiteId == model.SiteId
+                                                && model.BM_MODEL == bm.BM_MODEL && model.BM_SN == bm.BM_SN &&
+                                                (String.Compare(bm.BM_DATE, bmDate) > 0 || String.Compare(bm.BM_DATE_START, bmDate) > 0))
+                                               .OrderBy(bm => bm.BM_DATE)
+                                               .FirstOrDefaultAsync();
+                if (noFuture != null)
+                {
+                    result = (int)Globals.ErrorValidationCodes.BM_SENSOR_FOLLOWING_OPERATION;
+                }
+            }
             return result;
         }
 

@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 {
+    /// <summary>
+    /// SPPS, TREE; ALLOM, LITTERPNT
+    /// </summary>
     public class STALValidation
     {
         private static Response response = null;
