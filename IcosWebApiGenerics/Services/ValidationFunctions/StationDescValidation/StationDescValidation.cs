@@ -11,22 +11,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
 {
     public class StationDescValidation
     {
-        private static Response response = null;
         private static string Err = "";
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static Response GetResponse()
-        {
-            if (response == null)
-            {
-                response = new Response();
-            }
-            return response;
-        }
-
+       
         //OK
-        public static Response ValidateLocationResponse(GRP_LOCATION location)
+        public static /*Response*/ void ValidateLocationResponse(GRP_LOCATION location, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
             if (errorCode != 0)
@@ -51,11 +42,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LONG", "$V0$", location.LOCATION_LONG.ToString());
             }
-            return response;
+            //return response;
         }
 
         //OK
-        public static Response ValidateUtcResponse(GRP_UTC_OFFSET utc)
+        public static void ValidateUtcResponse(GRP_UTC_OFFSET utc, Response response)
         {
             errorCode = DatesValidator.IsoDateCheck(utc.UTC_OFFSET_DATE_START, "UTC_OFFSET_DATE_START");
             if (errorCode != 0)
@@ -68,11 +59,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpUtcErrors[errorCode], "UTC_OFFSET", "$V0$", utc.UTC_OFFSET.ToString());
             }
-            return response;
+            //return response;
         }
 
         //OK
-        public static async Task<Response> ValidateLandOwnerResponseAsync(GRP_LAND_OWNERSHIP land, IcosDbContext db)
+        public static async Task ValidateLandOwnerResponseAsync(GRP_LAND_OWNERSHIP land, IcosDbContext db, Response response)
         {
             if (!String.IsNullOrEmpty(land.LAND_DATE))
             {
@@ -89,11 +80,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 errorCode = await GeneralValidation.ItemInBadmListAsync(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_OWNERSHIP", "$V0$", land.LAND_OWNERSHIP, "$V1$", "LAND_OWNERSHIP", "$GRP$", "GRP_LAND_OWNERSHIP");
             }
-            return response;
+            //return response;
         }
 
 
-        public static async Task<Response> ValidateTowerResponseAsync(GRP_TOWER tower, IcosDbContext db)
+        public static async Task ValidateTowerResponseAsync(GRP_TOWER tower, IcosDbContext db, Response response)
         {
             GeneralValidation.MissingMandatoryData<string>(tower.TOWER_DATE, "TOWER_DATE", "GRP_TOWER");
             DatesValidator.IsoDateCheck(tower.TOWER_DATE, "TOWER_DATE");
@@ -101,22 +92,22 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_ACCESS, (int)Globals.CvIndexes.TOWER_ACCESS, db);
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_DATATRAN, (int)Globals.CvIndexes.TOWER_DATATRAN, db);
-            return response;
+            //return response;
         }
 
 
         //to do
-        public static Response ValidateClimateAvgResponse(GRP_CLIM_AVG climateAvg)
+        public static void ValidateClimateAvgResponse(GRP_CLIM_AVG climateAvg, Response response)
         {
             //MissingDate(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
             GeneralValidation.MissingMandatoryData<string>(climateAvg.MAC_DATE, "MAC_DATE", "GRP_CLIM_AVG");
             DatesValidator.IsoDateCheck(climateAvg.MAC_DATE, "MAC_DATE");
             //check if MAP, MAR, MAS, MAC_YEARS must only be positive
-            return response;
+            //return response;
         }
 
         //to do
-        public static Response ValidateDistManResponse(GRP_DM distMan, IcosDbContext db)
+        public static Response ValidateDistManResponse(GRP_DM distMan, IcosDbContext db, Response response)
         {
             DatesValidator.IsoDateCheck(distMan.DM_DATE, "DM_DATE");
             DatesValidator.IsoDateCheck(distMan.DM_DATE_START, "DM_DATE_START");

@@ -64,27 +64,27 @@ namespace IcosWebApiGenerics.Services
             {
                 case (int)Globals.Groups.GRP_LOCATION:
                     GRP_LOCATION location = t as GRP_LOCATION;
-                    response = StationDescValidation.ValidateLocationResponse(location);
+                    StationDescValidation.ValidateLocationResponse(location, response);
                     break;
                 case (int)Globals.Groups.GRP_UTC_OFFSET:
                     GRP_UTC_OFFSET utc = t as GRP_UTC_OFFSET;
-                    response = StationDescValidation.ValidateUtcResponse(utc);
+                    StationDescValidation.ValidateUtcResponse(utc, response);
                     break;
                 case (int)Globals.Groups.GRP_LAND_OWNERSHIP:
                     GRP_LAND_OWNERSHIP land = t as GRP_LAND_OWNERSHIP;
-                    response = await StationDescValidation.ValidateLandOwnerResponseAsync(land, _context);
+                    await StationDescValidation.ValidateLandOwnerResponseAsync(land, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_TOWER:
                     GRP_TOWER tower = t as GRP_TOWER;
-                    response = await StationDescValidation.ValidateTowerResponseAsync(tower, _context);
+                    await StationDescValidation.ValidateTowerResponseAsync(tower, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_CLIM_AVG:
                     GRP_CLIM_AVG climAvg = t as GRP_CLIM_AVG;
-                    response = StationDescValidation.ValidateClimateAvgResponse(climAvg);
+                    StationDescValidation.ValidateClimateAvgResponse(climAvg, response);
                     break;
                 case (int)Globals.Groups.GRP_DM:
                     GRP_DM distManager = t as GRP_DM;
-                    response = StationDescValidation.ValidateDistManResponse(distManager, _context);
+                    StationDescValidation.ValidateDistManResponse(distManager, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_PLOT:
                     GRP_PLOT samplingScheme = t as GRP_PLOT;
