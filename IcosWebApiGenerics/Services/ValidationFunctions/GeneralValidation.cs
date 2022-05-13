@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IcosWebApiGenerics.Services.ValidationFunctions
 {
-    public class GeneralValidation
+    public static class GeneralValidation
     {
         public static bool CountBoundedProps<T>(T model, int bound, params string[] vars)
         {
@@ -52,13 +52,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         */
         public static bool IsValidPlotString(string plot, int group)
         {
-            /*
-            if (String.Compare(plot, "outside_cp", true) == 0)
-            {
-                return true;
-            }
-            */
-        int[] allowedOutside = { (int)Globals.Groups.GRP_FLSM, (int)Globals.Groups.GRP_TREE, (int)Globals.Groups.GRP_LITTERPNT, 
+            int[] allowedOutside = { (int)Globals.Groups.GRP_FLSM, (int)Globals.Groups.GRP_TREE, (int)Globals.Groups.GRP_LITTERPNT, 
                                  (int)Globals.Groups.GRP_WTDPNT, (int)Globals.Groups.GRP_D_SNOW };
             List<int> notSP_II_Valid = new List<int>() { (int)Globals.Groups.GRP_WTDPNT, (int)Globals.Groups.GRP_D_SNOW };
             bool isMatch = true;
@@ -138,26 +132,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return 0;
         }
 
-        /* public static bool IsAnyPropNotNull<T>(T model)
-         {
-             Type myType = model.GetType();
-             IList<PropertyInfo> props = new List<System.Reflection.PropertyInfo>(myType.GetProperties());
-
-             var subList = props.Where(item => !item.Name.Contains("_DATE") &&
-                                                !item.Name.Contains("COMMENT") &&
-                                                item.Name != "Id" &&
-                                                item.Name != "DataStatus" &&
-                                                !item.Name.Contains("UserId") &&
-                                                !item.Name.Contains("Date") &&
-                                                !item.Name.Contains("SiteId") &&
-                                                !item.Name.Contains("GroupId") &&
-                                                !item.Name.Contains("DataOrigin")).ToList();
-
-             var isAnyVAlue = subList.Any(item => item.GetValue(model, null) != null);
-
-             return isAnyVAlue;
-         }*/
-
         public static bool IsAnyPropNotNull<T>(T model, params string[] vars)
         {
             Type myType = model.GetType();
@@ -188,5 +162,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return 0;
         }
+
     }
 }
