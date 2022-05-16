@@ -14,21 +14,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
     /// </summary>
     public class STALValidation
     {
-        private static Response response = null;
-        private static string Err = "";
+      
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static Response GetResponse()
-        {
-            if (response == null)
-            {
-                response = new Response();
-            }
-            return response;
-        }
-
-        public static async Task<Response> ValidateSppsResponseAsync(GRP_SPPS spps, IcosDbContext db)
+        public static async Task ValidateSppsResponseAsync(GRP_SPPS spps, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
             if (errorCode != 0)
@@ -124,10 +114,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 }
             }
 
-            return response;
+           // return response;
         }
 
-        public static Response ValidateTreeResponse(GRP_TREE tree, IcosDbContext db)
+        public static void ValidateTreeResponse(GRP_TREE tree, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(tree.TREE_DATE, "TREE_DATE", "GRP_TREE");
             if (errorCode != 0)
@@ -192,10 +182,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpTreeErrors[errorCode], "TREE_EASTWARD_DIST");
             }
-            return response;
+            //return response;
         }
 
-        public static Response ValidateAllomResponse(GRP_ALLOM allom, IcosDbContext context)
+        public static void ValidateAllomResponse(GRP_ALLOM allom, IcosDbContext context, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(allom.ALLOM_DATE, "ALLOM_DATE", "GRP_ALLOM");
             if (errorCode != 0)
@@ -217,10 +207,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 response.FormatError(ErrorCodes.GrpAllomErrors[errorCode], "ALLOM_DBH");
             }
 
-            return response;
+            //return response;
         }
 
-        public static Response ValidateAgbResponse(GRP_AGB agb, IcosDbContext db)
+        public static void ValidateAgbResponse(GRP_AGB agb, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(agb.AGB_PLOT, "AGB_PLOT", "GRP_AGB");
             if (errorCode != 0)
@@ -354,10 +344,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                     }
                     break;
             }
-            return response;
+           // return response;
         }
 
-        public static Response ValidateLitterPntResponse(GRP_LITTERPNT litterPnt, IcosDbContext db)
+        public static void ValidateLitterPntResponse(GRP_LITTERPNT litterPnt, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(litterPnt.LITTERPNT_PLOT, "LITTERPNT_PLOT", "GRP_LITTERPNT");
             if (errorCode != 0)
@@ -489,7 +479,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 
                     break;
             }
-            return response;
+            //return response;
         }
     }
 }

@@ -371,7 +371,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return resp;
         }
-
         public static async Task<int> SensorInGrpInst(string model, string sn, string date, int siteId, IcosDbContext db)
         {
             int resp = 0;

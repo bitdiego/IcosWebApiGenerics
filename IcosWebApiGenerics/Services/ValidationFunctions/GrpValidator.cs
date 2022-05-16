@@ -14,21 +14,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 {
     public class GrpValidator
     {
-        private static Response response = null;
-        private static string Err = "";
+        private Response response;
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static Response GetResponse()
-        {
-            if (response == null)
-            {
-                response = new Response();
-            }
-            return response;
-        }
+        
 
-        public static async Task<Response> ValidateDhpResponseAsync(GRP_DHP dhp, IcosDbContext db)
+        public static async Task ValidateDhpResponseAsync(GRP_DHP dhp, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_ID, "DHP_ID", "GRP_DHP");
             if (errorCode != 0)
@@ -145,10 +137,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_DATE", "$V0$", "DHP_DATE", "$V1$", dhp.DHP_DATE);
             }
 
-            return response;
+            //return response;
         }
 
-        public static Response ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db)
+        public static void ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
             if (errorCode != 0)
@@ -186,10 +178,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_PLOT");
                 }
             }
-            return response;
+            //return response;
         }
 
-        public static Response ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db)
+        public static void ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
             if (errorCode != 0)
@@ -229,10 +221,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
             }
 
-            return response;
+            //return response;
         }
 
-        public static async Task<Response> ValidateInstResponseAsync(GRP_INST inst, IcosDbContext db)
+        public static async Task ValidateInstResponseAsync(GRP_INST inst, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_MODEL, "INST_MODEL", "GRP_INST");
             if (errorCode != 0)
@@ -309,7 +301,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
             }
-            return response;
+            //return response;
         }
         
         /////////////////////////////////

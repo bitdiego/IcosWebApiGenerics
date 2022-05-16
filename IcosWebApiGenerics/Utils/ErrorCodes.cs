@@ -19,6 +19,8 @@ namespace IcosWebApiGenerics.Utils
             { 8, "Negative number not allowed for variable $V0$. Found $V1$"},
             { 9, "You have to submit at least one variable"},
             {10,"Error: $V0$ string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V1$"},
+            {34,"Error: Instrument with serial number $V0$ is missing! Item must be added in GRP_INST group"},
+            {35,"Error: operation date for Instrument $V0$ with serial number $V0$ is less than purchase date in GRP_INST group"},
             {48,"Error: integer number expected; found $V0$ for variable $V1$"},
             {49,"Error: decimal number expected; found $V0$ for variable $V1$"},
             {86,"Error: entered plot ID not found in GRP_PLOT"},
@@ -238,6 +240,27 @@ namespace IcosWebApiGenerics.Utils
                     Please choose another $OP$ operation or check operation dates"},
             {225, "Error: Trying to perform operation $OP$ on an instrument which does not result to be installed. Please choose another EC_TYPE operation or check operation dates"},
             {226, "Error: Trying to remove Instrument $V0$, serial $V1$ which has been already removed and not reinstalled"},
+        };
+
+        public static Dictionary<int, string> GrpFileErrors = new Dictionary<int, string>
+        {
+            {126,"Error: entered FILE_LOGGER_ID does not match with LOGGER_ID registered for this site in GRP_LOGGER group"},
+            {234, "Error: .csv extension not allowed for binary files"},
+            {235, "Error: .bin extension not allowed for ASCII files"},
+            {236, "Error: FILE_HEAD_VARS for ASCII files must be specified if FILE_HEAD_NUM is entered"},
+            {237, "Error: FILE_HEAD_NUM for ASCII files must be specified if FILE_HEAD_VARS is entered"},
+            {238, "Error: FILE_HEAD_VARS cannot be greater than FILE_HEAD_NUM"},
+            {239, "Error: FILE_HEAD_TYPE must be different from FILE_HEAD_VARS"},
+            {240, "Error: FILE_HEAD_VARS and FILE_HEAD_TYPE for binary files must be specified if FILE_HEAD_NUM is entered"},
+            {241, "Error: FILE_HEAD_NUM and FILE_HEAD_TYPE for binary files must be specified if FILE_HEAD_VARS is entered"},
+            {242, "Error: FILE_HEAD_NUM and FILE_HEAD_VARS for binary files must be specified if FILE_HEAD_TYPE is entered"},
+            {243, "Error: FILE_HEAD_TYPE cannot be greater than FILE_HEAD_NUM"},
+            {244, "Error: FILE_HEAD_TYPE cannot be greater than FILE_HEAD_VARS"},
+            {245, "Error: FILE_FORMAT and FILE_EXT must be submitted together"},
+            /*{34,"Entered instrument has not been found. Please enter a Purchase INST_FACTORY value first."},
+            {35,"Error: found an INST_FACTORY date prior to Purchase date."},
+            {79,"Entered instrument does not have a Purchase entry for INST_FACTORY variable or operation date is prior to instrument purchase date"},
+            {123,"Entered instrument is already registered with Purchase factory operation"},*/
         };
 
         /*

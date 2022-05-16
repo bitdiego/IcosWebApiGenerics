@@ -11,21 +11,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidati
 {
     public class GreenAreaIndexValidation
     {
-        private static Response response = null;
-        private static string Err = "";
+       
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static Response GetResponse()
-        {
-            if (response == null)
-            {
-                response = new Response();
-            }
-            return response;
-        }
-
-        public static async Task<Response> ValidateGaiResponseAsync(GRP_GAI gai, IcosDbContext db)
+        public static async Task ValidateGaiResponseAsync(GRP_GAI gai, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_PLOT, "GAI_PLOT", "GRP_GAI");
             if (errorCode != 0)
@@ -76,10 +66,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidati
 
             //get by site id!!!
             errorCode = ValidateGaiByMethod(gai, Ecosystem);
-            return response;
+            //return response;
         }
 
-        public static Response ValidateCeptResponse(GRP_CEPT cept)
+        public static void ValidateCeptResponse(GRP_CEPT cept, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(cept.CEPT_DATE, "CEPT_DATE", "GRP_CEPT");
             if (errorCode != 0)
@@ -93,11 +83,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidati
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "CEPT_DATE", "$V0$", "CEPT_DATE", "$V1$", cept.CEPT_DATE);
             }
-            return response;
+           // return response;
         }
 
 
-        public static async Task<Response> ValidateBulkhResponseAsync(GRP_BULKH bulkh, IcosDbContext db)
+        public static async Task ValidateBulkhResponseAsync(GRP_BULKH bulkh, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(bulkh.BULKH_DATE, "BULKH_DATE", "GRP_BULKH");
             if (errorCode != 0)
@@ -150,7 +140,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidati
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH", "$V0$", "BULKH", "$GRP$", "GRP_BULKH");
             }
-            return response;
+           //return response;
         }
 
         ////////////////////////

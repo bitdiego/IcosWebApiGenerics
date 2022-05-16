@@ -11,21 +11,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
 {
     public class SamplingValidation
     {
-        private static Response response = null;
-        private static string Err = "";
+//        private static Response response = null;
+  //      private static string Err = "";
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static Response GetResponse()
-        {
-            if (response == null)
-            {
-                response = new Response();
-            }
-            return response;
-        }
 
-        public static async Task<Response> ValidateSamplingSchemeResponseAsync(GRP_PLOT samplingScheme, IcosDbContext db)
+        public static async Task ValidateSamplingSchemeResponseAsync(GRP_PLOT samplingScheme, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_DATE, "PLOT_DATE", "GRP_PLOT");
             if (errorCode != 0)
@@ -133,11 +125,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 }
             }
 
-            return response;
+            //return response;
         }
 
         //validate also numeric values...
-        public static async Task<Response> ValidateFlsmResponseAsync(GRP_FLSM flsm, IcosDbContext db)
+        public static async Task ValidateFlsmResponseAsync(GRP_FLSM flsm, IcosDbContext db, Response response)
         {
             //to do::: FLSM_PLOT_ID present in GRP_PLOT
             errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
@@ -200,10 +192,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 }
             }
 
-            return response;
+            //return response;
         }
 
-        public static Response ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext db)
+        public static void ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext db, Response response)
         {
             //to do::: SOSM_PLOT_ID present in GRP_PLOT
             errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(sosm.SOSM_PLOT_ID, sosm.SOSM_DATE, sosm.SiteId, db);
@@ -297,7 +289,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpSosmErrors[errorCode], "SOSM_PLOT_ID");
             }
-            return response;
+           // return response;
         }
     }
 }

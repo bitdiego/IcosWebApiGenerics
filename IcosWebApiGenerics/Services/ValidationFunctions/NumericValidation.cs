@@ -42,7 +42,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             bool success = int.TryParse(s, out num);
             if (success)
             {
-                success = num >= 0;
+                success = num > 0;
             }
             return success;
         }

@@ -14,45 +14,53 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation
         private static int errorCode = 0;
        // public object ValidationUtils { get; private set; }
 
-        public static async Task<Response> ValidateBmResponseAsync(GRP_BM bmInst, IcosDbContext db)
+        public static async Task ValidateBmResponseAsync(GRP_BM bmInst, IcosDbContext db, Response response)
         {
-            ResponseWrapper.SetResponse();
+            if (!String.IsNullOrEmpty(bmInst.BM_MODEL) || !String.IsNullOrEmpty(bmInst.BM_SN))
+            {
+                string dateToCheck = String.IsNullOrEmpty(bmInst.BM_DATE) ? bmInst.BM_DATE_START : bmInst.BM_DATE;
+                if (!String.IsNullOrEmpty(dateToCheck))
+                {
+                    errorCode = await InstrumentsValidation.SensorInGrpInst(bmInst.BM_MODEL, bmInst.BM_SN, dateToCheck, bmInst.SiteId, db);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BM_MODEL");
+                    }
+                }
+            }
+            //ResponseWrapper.SetResponse();
             errorCode = GeneralValidation.MissingMandatoryData<string>(bmInst.BM_MODEL, "BM_MODEL", "GRP_BM");
             if (errorCode != 0)
             {
-                ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_MODEL", "$V0$", "BM_MODEL", "$GRP$", "GRP_BM");
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BM_MODEL", "$V0$", "BM_MODEL", "$GRP$", "GRP_BM");
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(bmInst.BM_SN, "BM_SN", "GRP_BM");
             if (errorCode != 0)
             {
-                ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_SN", "$V0$", "BM_SN", "$GRP$", "GRP_BM");
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BM_SN", "$V0$", "BM_SN", "$GRP$", "GRP_BM");
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(bmInst.BM_TYPE, "BM_TYPE", "GRP_BM");
             if (errorCode != 0)
             {
-                ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_TYPE", "$V0$", "BM_TYPE", "$GRP$", "GRP_BM");
-            }
-
-            if (!String.IsNullOrEmpty(bmInst.BM_DATE) || !String.IsNullOrEmpty(bmInst.BM_DATE_START))
-            {
-                string dateToCheck = String.IsNullOrEmpty(bmInst.BM_DATE) ? bmInst.BM_DATE_START : bmInst.BM_DATE;
-                errorCode = await InstrumentsValidation.SensorInGrpInst(bmInst.BM_MODEL, bmInst.BM_SN, dateToCheck, bmInst.SiteId, db);
-                if (errorCode > 0)
-                {
-                    ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_MODEL");
-                }
+                //ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_TYPE", "$V0$", "BM_TYPE", "$GRP$", "GRP_BM");
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BM_TYPE", "$V0$", "BM_TYPE", "$GRP$", "GRP_BM");
             }
 
             errorCode = DatesValidator.IsoDateCompare(bmInst.BM_DATE, bmInst.BM_DATE_START, bmInst.BM_DATE_END);
             if (errorCode != 0)
             {
-                ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_DATE", "$V0$", "BM_DATE", "$V1$", "BM_DATE_START", "$V2$", "BM_DATE_END", "$GRP$", "GRP_BM");
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BM_DATE", "$V0$", "BM_DATE", "$V1$", "BM_DATE_START", "$V2$", "BM_DATE_END", "$GRP$", "GRP_BM");
             }
 
             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(bmInst, db);
-            return ResponseWrapper.GetResponse();
+            //return ResponseWrapper.GetResponse();
         }
 
         private int ValidateByBmType(GRP_BM model, IcosDbContext db)

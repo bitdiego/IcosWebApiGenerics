@@ -11,22 +11,25 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
 {
     public class ECValidation
     {
-        private static Response response = null;
-        private static string Err = "";
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static Response GetResponse()
+        public static async Task ValidateEcResponseAsync(GRP_EC ecInst, IcosDbContext db, Response response)
         {
-            if (response == null)
+            //ec sensor present in GRP_INST
+            if (!String.IsNullOrEmpty(ecInst.EC_MODEL) || !String.IsNullOrEmpty(ecInst.EC_SN))
             {
-                response = new Response();
+                string dateToCheck = String.IsNullOrEmpty(ecInst.EC_DATE) ? ecInst.EC_DATE_START : ecInst.EC_DATE;
+                if (!String.IsNullOrEmpty(dateToCheck))
+                {
+                    errorCode = await InstrumentsValidation.SensorInGrpInst(ecInst.EC_MODEL, ecInst.EC_SN, dateToCheck, ecInst.SiteId, db);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "EC_MODEL");
+                    }
+                }
             }
-            return response;
-        }
-
-        public static async Task<Response> ValidateEcResponseAsync(GRP_EC ecInst, IcosDbContext db)
-        {
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(ecInst.EC_MODEL, "EC_MODEL", "GRP_EC");
             if (errorCode != 0)
@@ -49,18 +52,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_TYPE", "$V0$", "EC_TYPE", "$GRP$", "GRP_EC");
             }
 
-            //ec sensor present in GRP_INST
-            if (!String.IsNullOrEmpty(ecInst.EC_DATE) || !String.IsNullOrEmpty(ecInst.EC_DATE_START))
-            {
-                string dateToCheck = String.IsNullOrEmpty(ecInst.EC_DATE) ? ecInst.EC_DATE_START : ecInst.EC_DATE;
-                errorCode = await InstrumentsValidation.SensorInGrpInst(ecInst.EC_MODEL, ecInst.EC_SN, dateToCheck, ecInst.SiteId, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "EC_MODEL");
-                }
-            }
-
             //check dates constraints
             errorCode = DatesValidator.IsoDateCompare(ecInst.EC_DATE, ecInst.EC_DATE_START, ecInst.EC_DATE_END);
             if (errorCode != 0)
@@ -70,7 +61,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
             }
 
             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(ecInst, db);
-            return response;
         }
 
         public static Task<Response> ValidateEcSysResponseAsync(GRP_ECSYS ecSys, IcosDbContext context)
