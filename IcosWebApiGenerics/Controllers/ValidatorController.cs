@@ -62,7 +62,7 @@ namespace IcosWebApiGenerics.Controllers
             if (!result)
             {
                 response.Code = 500;
-                //response.Messages = "An error occurred in saving data. Please contact info@icos-etc.eu";
+                response.Messages.Add("Fatal error","An error occurred in saving data. Please contact info@icos-etc.eu");
             }
             else
             {

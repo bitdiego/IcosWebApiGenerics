@@ -71,8 +71,12 @@ namespace IcosWebApiGenerics.Models.BADM
                     || prop.Name == "InsertDate" || prop.Name == "DeletedDate" || prop.Name == "DeleteUserId") continue;
                 var val1 = prop.GetValue(other, null);
                 var val2 = this.GetType().GetProperty(prop.Name).GetValue(this, null);
-                res = res && Object.Equals(prop.GetValue(other, null), this.GetType().GetProperty(prop.Name).GetValue(this, null));
-                if (!res) break;
+                res = res && Object.Equals(val1, val2);
+                //res = res && Object.Equals(prop.GetValue(other, null), this.GetType().GetProperty(prop.Name).GetValue(this, null));
+                if (!res)
+                {
+                    break;
+                }
             }
             return res;
         }

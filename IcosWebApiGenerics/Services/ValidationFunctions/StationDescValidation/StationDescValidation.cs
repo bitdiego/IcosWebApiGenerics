@@ -45,6 +45,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LONG", "$V0$", location.LOCATION_LONG.ToString());
             }
             //return response;
+
         }
 
         //OK

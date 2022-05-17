@@ -17,11 +17,16 @@ namespace IcosWebApiGenerics.Services
         }
         public async Task<T> ItemInDbAsync(T t, int siteId)
         {
+            
             int res = 0;
             dynamic xitem = null;
+            Type xt=t.GetType();
+            string xs = xt.ToString();
+
+
             switch (t.GroupId)
             {
-            case (int)Globals.Groups.GRP_LOCATION:
+                case (int)Globals.Groups.GRP_LOCATION:
                     GRP_LOCATION loc = t as GRP_LOCATION;
                     var iteml = await _context.GRP_LOCATION.FirstOrDefaultAsync(l => l.SiteId == loc.SiteId && l.DataStatus == 0);
 
@@ -30,8 +35,21 @@ namespace IcosWebApiGenerics.Services
                         bool qq = iteml == loc;
                         xitem = iteml;
                     }
+                break;
+                case (int)Globals.Groups.GRP_INST:
+                    GRP_INST inst = t as GRP_INST;
+                    var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
+                    if (_item != null)
+                    {
+                        bool qq = _item == inst;
+                        if (qq)
+                        {
+                            xitem = _item;
+                            res = 0;
+                        }
+                    }
                     break;
-                    /*
+                /*
                 case (int)Globals.Groups.GRP_DM:
                     GRP_DM dm = t as GRP_DM;
                     
