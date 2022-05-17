@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Results;
+//using System.Web.Mvc;
 
 namespace IcosWebApiGenerics.Controllers
 {
@@ -46,12 +48,15 @@ namespace IcosWebApiGenerics.Controllers
         // POST: ValidatorController/Create
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> Post([FromBody] T model)
+        // public async Task<ActionResult> Post([FromBody] T model)
+        public async Task<JsonResult> Post([FromBody] T model)
+           // JsonResult<WebAgent>
         {
             Response response =  await _service.Validate(model);
             if (response.Code != 0)
             {
-                return Ok(response);
+                return Json(response);
+                //return Ok(response);
             }
             bool result = await _saveData.SaveItemAsync(model, model.InsertUserId, model.SiteId);
             if (!result)
@@ -64,7 +69,8 @@ namespace IcosWebApiGenerics.Controllers
                 //....????....
                 //response.Message = "Data succesfully saved in db";
             }
-            return Ok(response);
+            return Json(response);
+            //return Ok(response);
             //int res = _service.ValidateModel(model);
 
         }

@@ -37,6 +37,19 @@ namespace IcosWebApiGenerics.Utils
             {"dl-li-cor sflux2", @"^(SMART2)\-[0-9]{5}$"}
         };
 
+        public static Dictionary<string, string> correctSn = new Dictionary<string, string>
+        {
+            { "ga_aiu-li-cor li-7550", @"AIU-XXXX" },  ///^(AIU)-\d{4}$/
+            { "ga_cp-li-cor li-7200", @"72H-XXXX" },   ////^(72H)-\d{4}$/;
+            { "ga_cp-li-cor li-7200rs", @"72H-XXXX" },
+            {"sa-gill hs-100",@"HXXXXXX"},                ////^H\d{6}$/;
+            {"sa-gill hs-50",@"HXXXXXX"},
+            {"rad_4c-k&z cnr1",@"XXXXXX"},               ////RAD_4C-K&Z CNR4 RAD_4C-K&Z CNR1  rad_4c-k&z cnr1
+            {"rad_4c-k&z cnr4",@"XXXXXX"},
+            {"ga_cp-li-cor li-7000",  @"IRG4-XXXX$"},
+            {"dl-li-cor sflux2", @"SMART2-XXXXX$"}
+        };
+
         public static readonly decimal MIN_UTC_OFFSET_VAL = -12;
         public static readonly decimal MAX_UTC_OFFSET_VAL = 14;
         public static readonly decimal MAX_LONGITUDE_VALUE = 180;

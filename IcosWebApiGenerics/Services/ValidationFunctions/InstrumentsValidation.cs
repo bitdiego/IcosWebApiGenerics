@@ -23,22 +23,39 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return 0;
         }
+
+        public static int SerialNumberCheck(string instModel, string instSn, ref string correctSn)
+        {
+            if (!Globals.regulars.ContainsKey(instModel.ToLower())) return 0;
+            string instReg = Globals.regulars[instModel.ToLower()];
+            Match instMatch = Regex.Match(instSn, instReg, RegexOptions.IgnoreCase);
+            if (!instMatch.Success)
+            {
+                correctSn = Globals.correctSn[instModel.ToLower()];
+                return (int)Globals.ErrorValidationCodes.WRONG_SERIALNUMBER_FORMAT;
+            }
+            return 0;
+        }
         public static async Task<int> LastExpectedOpByDateAsync(GRP_INST inst, IcosDbContext db)
         {
 
-            if (String.Compare(inst.INST_MODEL, "purchase", true) == 0)
+            if (String.Compare(inst.INST_FACTORY, "purchase", true) == 0)
             {
-                if (await db.GRP_INST.AnyAsync(xinst => xinst.INST_FACTORY.ToLower() == "purchase" && String.Compare(xinst.INST_MODEL, inst.INST_MODEL, true) == 0
-                                                    && String.Compare(xinst.INST_SN, inst.INST_SN, true) == 0 && xinst.SiteId == inst.SiteId && xinst.DataStatus == 0))
+                bool isAlreadyPurchased = await db.GRP_INST.AnyAsync(xinst => xinst.INST_FACTORY.ToLower() == "purchase" && xinst.INST_MODEL==inst.INST_MODEL
+                                                   && xinst.INST_SN==inst.INST_SN && xinst.SiteId == inst.SiteId && xinst.DataStatus == 0 && xinst.INST_DATE!=inst.INST_DATE);
+                if (isAlreadyPurchased)
                 {
                     return (int)Globals.ErrorValidationCodes.GRP_INST_ALREADY_PURCHASED;
                 }
             }
             else
             {
-                var item = await db.GRP_INST.FirstOrDefaultAsync(xinst => (string.Compare(xinst.INST_FACTORY, "purchase", true) == 0)
+                var item = await db.GRP_INST.FirstOrDefaultAsync(xinst => xinst.INST_FACTORY.ToLower() == "purchase"
+                                                                        && xinst.INST_MODEL==inst.INST_MODEL
+                                                                        && xinst.INST_SN==inst.INST_SN && xinst.SiteId == inst.SiteId);
+                /*var item = await db.GRP_INST.FirstOrDefaultAsync(xinst => (string.Compare(xinst.INST_FACTORY, "purchase", true) == 0)
                                                                         && (string.Compare(xinst.INST_MODEL, inst.INST_MODEL, true) == 0)
-                                                                        && (string.Compare(xinst.INST_SN, inst.INST_SN, true) == 0) && xinst.SiteId == inst.SiteId);
+                                                                        && (string.Compare(xinst.INST_SN, inst.INST_SN, true) == 0) && xinst.SiteId == inst.SiteId);*/
                 if (item == null)
                 {
                     return (int)Globals.ErrorValidationCodes.GRP_INST_NOT_PURCHASE;

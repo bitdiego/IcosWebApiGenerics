@@ -14,11 +14,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 {
     public class GrpValidator
     {
-        private Response response;
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
-
-        
 
         public static async Task ValidateDhpResponseAsync(GRP_DHP dhp, IcosDbContext db, Response response)
         {
@@ -251,11 +248,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = InstrumentsValidation.SerialNumberCheck(inst.INST_MODEL, inst.INST_SN);
+                string aux = "";
+                errorCode = InstrumentsValidation.SerialNumberCheck(inst.INST_MODEL, inst.INST_SN, ref aux);
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_SN", "$V0$", "INST_SN", "$GRP$", "GRP_INST");
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_SN", "$V0$", aux, "$V1$", inst.INST_SN);
                 }
             }
 
@@ -271,7 +269,23 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_FACTORY", "$V0$", inst.INST_MODEL, "$V1$", "INST_FACTORY", "$GRP$", "GRP_INST");
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_FACTORY", "$V0$", inst.INST_FACTORY, "$V1$", "INST_FACTORY", "$GRP$", "GRP_INST");
+                }
+                else
+                {
+                    /*errorCode = await InstrumentsValidation.InstrumentInGrpInst(inst, inst.SiteId, db);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
+                    }
+                    */
+                    errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
+                    }
                 }
             }
 
@@ -288,24 +302,24 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_DATE", "$V0$", "INST_DATE", "$V1$", inst.INST_DATE);
             }
 
-            errorCode = await InstrumentsValidation.InstrumentInGrpInst(inst, inst.SiteId, db);
-            if (errorCode > 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
-            }
+            /* errorCode = await InstrumentsValidation.InstrumentInGrpInst(inst, inst.SiteId, db);
+             if (errorCode > 0)
+             {
+                 response.Code += errorCode;
+                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
+             }
 
-            errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
-            if (errorCode > 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
-            }
+             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
+             if (errorCode > 0)
+             {
+                 response.Code += errorCode;
+                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
+             }*/
             //return response;
         }
-        
+
         /////////////////////////////////
-        
+
         /*private static int ValidateGaiByMethod(GRP_GAI model,string ecosystem)
         {
             //clean all data not bound to selected method...best to do before validation???

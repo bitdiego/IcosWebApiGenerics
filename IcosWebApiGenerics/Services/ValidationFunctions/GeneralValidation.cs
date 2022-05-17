@@ -124,7 +124,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             string bmList = await db.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefaultAsync();
 
             var res = await db.BADMList.Where(item => item.cv_index == cvIndex)
-                                 .AnyAsync(item => (String.Compare(item.shortname, value, true) == 0));
+                                        .AnyAsync(item => item.shortname== value);
             if (!res)
             {
                 return 7;

@@ -57,7 +57,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             else
             {
                 //check if plot_type in controlled vocabulary
-                errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
