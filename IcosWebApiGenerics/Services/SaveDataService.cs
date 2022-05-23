@@ -15,6 +15,51 @@ namespace IcosWebApiGenerics.Services
         {
             _context = context;
         }
+
+        public async Task<bool> ItemInDbAsync(T t)
+        {
+            bool res = false;
+            bool isIdentical = false;
+            switch (t.GroupId)
+            {
+                case (int)Globals.Groups.GRP_LOCATION:
+                    GRP_LOCATION loc = t as GRP_LOCATION;
+                    var iteml = await _context.GRP_LOCATION.FirstOrDefaultAsync(l => l.SiteId == loc.SiteId && l.DataStatus == 0);
+
+                    if (iteml != null)
+                    {
+                        //only one record for location group
+                        res = isIdentical = iteml == loc;
+                        if (!isIdentical)
+                        {
+                            //mark existing record as invalid
+                            await SetItemInvalidAsync(t);
+                        }
+                    }
+                    break;
+                case (int)Globals.Groups.GRP_INST:
+                    GRP_INST inst = t as GRP_INST;
+                    //var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
+                    var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.INST_FACTORY == inst.INST_FACTORY 
+                                                                && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
+
+                    if (_item != null)
+                    {
+                        res = isIdentical = _item == inst;
+                        if (!isIdentical)
+                        {
+                            //what is changed??? comment? operation ? 
+                            //for inst, there must be only a purchase item: so model, sn, date and factory operation are the same, 
+                            //and if comment, calib function, firmware are changed -> update record
+                        }
+
+
+                    }
+                    break;
+            }
+            return res;
+        }
+
         public async Task<T> ItemInDbAsync(T t, int siteId)
         {
             
@@ -22,7 +67,7 @@ namespace IcosWebApiGenerics.Services
             dynamic xitem = null;
             Type xt=t.GetType();
             string xs = xt.ToString();
-
+            bool isIdentical = false;
 
             switch (t.GroupId)
             {
@@ -32,21 +77,31 @@ namespace IcosWebApiGenerics.Services
 
                     if (iteml != null)
                     {
-                        bool qq = iteml == loc;
+                        isIdentical = iteml == loc;
+                        if (!isIdentical)
+                        {
+                            //mark existing record as invalid
+                            await SetItemInvalidAsync(t);
+                        }
                         xitem = iteml;
                     }
                 break;
                 case (int)Globals.Groups.GRP_INST:
                     GRP_INST inst = t as GRP_INST;
-                    var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
+                    //var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
+                    var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.DataStatus == 0 && x.SiteId == inst.SiteId).ToListAsync();
+
                     if (_item != null)
                     {
-                        bool qq = _item == inst;
-                        if (qq)
+                        isIdentical = _item.Any(xinst => xinst == inst);
+                        //isIdentical = _item == inst;
+                        if (!isIdentical)
                         {
-                            xitem = _item;
-                            res = 0;
+                            //what is changed??? comment? operation ? 
                         }
+                        
+                        xitem = _item;
+                        res = 0;
                     }
                     break;
                 /*
@@ -132,6 +187,17 @@ namespace IcosWebApiGenerics.Services
             res = await _context.SaveChangesAsync();
             return res > 0;
         }
+
+        public async Task<bool> SetItemInvalidAsync(T t)
+        {
+            int res = 0;
+            t.DataStatus = 2;
+            t.DeletedDate = DateTime.Now;
+            t.DeleteUserId = t.InsertUserId;
+            res = await _context.SaveChangesAsync();
+            return res > 0;
+        }
+
         public async Task<bool> SaveItemAsync(T t, int insertUserId, int siteId)
         {
             if (siteId < 1) return false;
@@ -140,13 +206,15 @@ namespace IcosWebApiGenerics.Services
             t.SiteId = siteId;
             t.InsertDate = DateTime.Now;
             t.DataOrigin = 1;
-            var item = await ItemInDbAsync(t, siteId);
-            if (item != null)
+            // var item = await ItemInDbAsync(t, siteId);
+            var isRecordPresent = await ItemInDbAsync(t);
+            if (isRecordPresent) return true;
+            /*if (item != null)
             {
                 bool b = await SetItemInvalidAsync(siteId, insertUserId, item);
                 if (!b) return false;
             }
-
+            */
             _context.Set<T>().Add(t);
             int res = await _context.SaveChangesAsync();
            
