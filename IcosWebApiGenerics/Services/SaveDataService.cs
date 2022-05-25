@@ -33,7 +33,48 @@ namespace IcosWebApiGenerics.Services
                         if (!isIdentical)
                         {
                             //mark existing record as invalid
-                            await SetItemInvalidAsync(t);
+                            await SetItemInvalidAsync(iteml as T);
+                        }
+                    }
+                    break;
+                case (int)Globals.Groups.GRP_UTC_OFFSET:
+                    GRP_UTC_OFFSET utc = t as GRP_UTC_OFFSET;
+                    var utcItem = await _context.GRP_UTC_OFFSET.FirstOrDefaultAsync(u => u.SiteId == utc.SiteId && u.DataStatus == 0);
+
+                    if (utcItem != null)
+                    {
+                        //only one record for GRP_UTC_OFFSET
+                        res = isIdentical = utcItem == utc;
+                        if (!isIdentical)
+                        {
+                            //mark existing record as invalid
+                            await SetItemInvalidAsync(utcItem as T);
+                        }
+                    }
+                    break;
+                case (int)Globals.Groups.GRP_CLIM_AVG:
+                    GRP_CLIM_AVG clAvg = t as GRP_CLIM_AVG;
+                    var avgItem = await _context.GRP_CLIM_AVG.FirstOrDefaultAsync(u => u.SiteId == clAvg.SiteId && u.DataStatus == 0);
+                    if (avgItem != null)
+                    {
+                        //only one record for GRP_UTC_OFFSET
+                        res = isIdentical = avgItem == clAvg;
+                        if (!isIdentical)
+                        {
+                            //mark existing record as invalid
+                            /*foreach (var prop in avgItem.GetType().GetProperties())
+                            {
+                                if (prop.Name == "Id" || prop.Name == "DataStatus" || prop.Name == "InsertUserId"
+                                    || prop.Name == "InsertDate" || prop.Name == "DeletedDate" || prop.Name == "DeleteUserId" || prop.Name == "Differences") continue;
+                                var val1 = prop.GetValue(avgItem, null);
+                                var val2 = clAvg.GetType().GetProperty(prop.Name).GetValue(clAvg, null);
+                                if(val1!=null && val2 == null)
+                                {
+                                    prop.SetValue(clAvg, val1);
+                                }
+                            }*/
+                            clAvg.CopyVals(avgItem);
+                            await SetItemInvalidAsync(avgItem as T);
                         }
                     }
                     break;
@@ -51,8 +92,13 @@ namespace IcosWebApiGenerics.Services
                             //what is changed??? comment? operation ? 
                             //for inst, there must be only a purchase item: so model, sn, date and factory operation are the same, 
                             //and if comment, calib function, firmware are changed -> update record
+                            if (!GRP_INST.Differences.Contains("INST_DATE"))
+                            {
+                                //Submitted instrument has the same model, sn, factory and date
+                                //existing item must be marked as Invalid
+                                await SetItemInvalidAsync(_item as T);
+                            }
                         }
-
 
                     }
                     break;
@@ -117,29 +163,13 @@ namespace IcosWebApiGenerics.Services
                         xitem = _plot;
                     }
                     break;
-                case (int)Globals.Groups.GRP_INST:
-                    GRP_INST inst = t as GRP_INST;
-                    var item = await _context.GRP_INST.FirstOrDefaultAsync(md => md.INST_MODEL == inst.INST_MODEL && md.INST_SN == inst.INST_SN
-                                                                && md.INST_FACTORY == inst.INST_FACTORY && md.SiteId == inst.SiteId && md.DataStatus == 0);
-                    bool isEqual = item == inst;
-                    if (isEqual)
-                    {
-                        res = item.Id;
-                        xitem = item;
-                    }
-                    break;
+
                 
                 case (int)Globals.Groups.GRP_TOWER:
                     GRP_TOWER tower = t as GRP_TOWER;
                     var itemt = await _context.GRP_TOWER.FirstOrDefaultAsync(t => t.SiteId == tower.SiteId && t.DataStatus == 0);
                     if (itemt != null)
                         xitem = itemt;
-                    break;
-                case (int)Globals.Groups.GRP_CLIM_AVG:
-                    GRP_CLIM_AVG climavg = t as GRP_CLIM_AVG;
-                    var itemc = await _context.GRP_CLIM_AVG.FirstOrDefaultAsync(c => c.SiteId == climavg.SiteId && c.DataStatus == 0);
-                    if (itemc != null)
-                        xitem = itemc;
                     break;
                 case (int)Globals.Groups.GRP_DHP:
                     GRP_DHP dhp = t as GRP_DHP;
