@@ -61,20 +61,10 @@ namespace IcosWebApiGenerics.Services
                         res = isIdentical = avgItem == clAvg;
                         if (!isIdentical)
                         {
-                            //mark existing record as invalid
-                            /*foreach (var prop in avgItem.GetType().GetProperties())
-                            {
-                                if (prop.Name == "Id" || prop.Name == "DataStatus" || prop.Name == "InsertUserId"
-                                    || prop.Name == "InsertDate" || prop.Name == "DeletedDate" || prop.Name == "DeleteUserId" || prop.Name == "Differences") continue;
-                                var val1 = prop.GetValue(avgItem, null);
-                                var val2 = clAvg.GetType().GetProperty(prop.Name).GetValue(clAvg, null);
-                                if(val1!=null && val2 == null)
-                                {
-                                    prop.SetValue(clAvg, val1);
-                                }
-                            }*/
-                            clAvg.CopyVals(avgItem);
+                            //copy previous values for item
                             await SetItemInvalidAsync(avgItem as T);
+                            //mark existing record as invalid
+                            clAvg.CopyVals(avgItem);
                         }
                     }
                     break;
