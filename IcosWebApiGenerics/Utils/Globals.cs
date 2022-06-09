@@ -360,6 +360,7 @@ namespace IcosWebApiGenerics.Utils
             INST_NOT_VALID_OPERATION,
             INST_ALREADY_REMOVED,
             EC_GA_FIELD_CALIBRATION,
+            ECSYS_NOT_FOUND_IN_EC,
             CSV_NOT_ALLOWED_FOR_BINARY = 234,
             BIN_NOT_ALLOWED_FOR_ASCII,
             FILE_HEAD_VARS_MISSING,

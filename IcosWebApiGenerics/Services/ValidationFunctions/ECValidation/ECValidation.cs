@@ -63,13 +63,66 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(ecInst, db);
         }
 
-        public static Task<Response> ValidateEcSysResponseAsync(GRP_ECSYS ecSys, IcosDbContext context)
+        public static async Task<Response> ValidateEcSysResponseAsync(GRP_ECSYS ecSys, IcosDbContext context, Response response)
         {
+            //1. check if GA e SA are in Inst group
+            if (!String.IsNullOrEmpty(ecSys.ECSYS_GA_MODEL) || !String.IsNullOrEmpty(ecSys.ECSYS_GA_SN))
+            {
+                string dateToCheck = ecSys.ECSYS_DATE;
+                if (!String.IsNullOrEmpty(dateToCheck))
+                {
+                    errorCode = await InstrumentsValidation.SensorInGrpInst(ecSys.ECSYS_GA_MODEL, ecSys.ECSYS_GA_SN, dateToCheck, ecSys.SiteId, context);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "ECSYS_GA_MODEL");
+                    }
+                    else
+                    {
+                        //2. check if they are correctly installed in GRP_EC
+                        errorCode = await InstrumentsValidation.EcSysInstalled(ecSys.ECSYS_GA_MODEL, ecSys.ECSYS_GA_SN, ecSys.ECSYS_DATE, ecSys.SiteId, context);
+                        if (errorCode > 0)
+                        {
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "ECSYS_GA_MODEL");
+                        }
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(ecSys.ECSYS_SA_MODEL) || !String.IsNullOrEmpty(ecSys.ECSYS_SA_SN))
+            {
+                string dateToCheck = ecSys.ECSYS_DATE;
+                if (!String.IsNullOrEmpty(dateToCheck))
+                {
+                    errorCode = await InstrumentsValidation.SensorInGrpInst(ecSys.ECSYS_SA_MODEL, ecSys.ECSYS_SA_SN, dateToCheck, ecSys.SiteId, context);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "ECSYS_SA_MODEL");
+                    }
+                    else
+                    {
+                        //2. check if they are correctly installed in GRP_EC
+                        errorCode = await InstrumentsValidation.EcSysInstalled(ecSys.ECSYS_SA_MODEL, ecSys.ECSYS_SA_SN, ecSys.ECSYS_DATE, ecSys.SiteId, context);
+                        if (errorCode > 0)
+                        {
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GrpEcErrors[errorCode], "ECSYS_SA_MODEL");
+                        }
+                    }
+                }
+            }
+            
+
+            //3. if GA_PUMP, check constraints on ECSYS_SEPs
+            //4. all ECSYS_SEPs are mandatory
             throw new NotImplementedException();
         }
 
-        public static Task<Response> ValidateEcWexclResponseAsync(GRP_ECWEXCL ecWexcl, IcosDbContext context)
+        public static Task<Response> ValidateEcWexclResponseAsync(GRP_ECWEXCL ecWexcl, IcosDbContext context, Response response)
         {
+            //All variables (except _COMMENT) are mandatory
             throw new NotImplementedException();
         }
     }

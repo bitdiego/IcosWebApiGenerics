@@ -94,8 +94,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     bool bDateCompareResult = false;
 
                     var pp = await _context.GRP_EC.Where(item => item.EC_MODEL == model.EC_MODEL && item.EC_SN == model.EC_SN
-                    && (item.EC_TYPE == "Removal" || item.EC_TYPE == "Installation") && item.SiteId == model.SiteId)
-                    .OrderByDescending(ec => ec.EC_DATE).ToListAsync();
+                                                        && (item.EC_TYPE == "Removal" || item.EC_TYPE == "Installation") && item.SiteId == model.SiteId)
+                                                        .OrderByDescending(ec => ec.EC_DATE).ToListAsync();
 
                     lastRecord = pp.FirstOrDefault(item => String.Compare(item.EC_DATE, cDate) < 0);
 
@@ -362,6 +362,28 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     result = (int)Globals.ErrorValidationCodes.BM_SENSOR_FOLLOWING_OPERATION;
                 }
             }
+            return result;
+        }
+
+        public static async Task<int> EcSysInstalled(string model, string sn, string date, int siteId, IcosDbContext _context)
+        {
+            int result = 0;
+            var lastRecord = await _context.GRP_EC.Where(item => item.EC_MODEL == model && item.EC_SN == sn
+                                                        && (item.EC_TYPE == "Removal" || item.EC_TYPE == "Installation") && String.Compare(item.EC_DATE,date)<=0 && item.SiteId == siteId && item.DataStatus==0)
+                                                        .OrderByDescending(ec => ec.EC_DATE).FirstOrDefaultAsync();
+
+            if (lastRecord == null)
+            {
+                return (int)Globals.ErrorValidationCodes.ECSYS_NOT_FOUND_IN_EC;
+            }
+            else
+            {
+                if (String.Compare(lastRecord.EC_TYPE, "installation", true) != 0)
+                {
+                    return (int)Globals.ErrorValidationCodes.INST_NOT_VALID_OPERATION;
+                }
+            }
+            
             return result;
         }
 

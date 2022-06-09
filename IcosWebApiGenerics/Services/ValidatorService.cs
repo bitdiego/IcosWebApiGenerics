@@ -1,12 +1,11 @@
 ﻿using IcosWebApiGenerics.Models;
 using IcosWebApiGenerics.Utils;
 using System;
-using IcosWebApiGenerics.Services.ValidationFunctions;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IcosWebApiGenerics.Data;
 using IcosWebApiGenerics.Models.BADM;
+using IcosWebApiGenerics.Services.ValidationFunctions;
 using IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.ECValidation;
@@ -168,11 +167,11 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_ECSYS:
                     GRP_ECSYS ecSys = t as GRP_ECSYS;
-                    response = await ECValidation.ValidateEcSysResponseAsync(ecSys, _context);
+                    response = await ECValidation.ValidateEcSysResponseAsync(ecSys, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_ECWEXCL:
                     GRP_ECWEXCL ecWexcl = t as GRP_ECWEXCL;
-                    response = await ECValidation.ValidateEcWexclResponseAsync(ecWexcl, _context);
+                    response = await ECValidation.ValidateEcWexclResponseAsync(ecWexcl, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_BM:
                     GRP_BM bmModel = t as GRP_BM;
