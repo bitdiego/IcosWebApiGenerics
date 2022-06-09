@@ -67,6 +67,7 @@ namespace IcosWebApiGenerics.Services
 
         public async Task<Response> Validate(T t)
         {
+            //May be to add a general validation? For Dates format? Mandatory variables? Item in CV?
             switch (t.GroupId)
             {
                 case (int)Globals.Groups.GRP_LOCATION:
