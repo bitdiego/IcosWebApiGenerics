@@ -231,12 +231,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
+               /* errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_MODEL", "$V0$", inst.INST_MODEL, "$V1$", "INST_MODEL", "$GRP$", "GRP_INST");
-                }
+                }*/
             }
 
             
@@ -265,6 +265,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             else
             {
+                errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
+                }
+                /*
                 errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
                 if (errorCode > 0)
                 {
@@ -273,13 +280,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 }
                 else
                 {
-                    /*errorCode = await InstrumentsValidation.InstrumentInGrpInst(inst, inst.SiteId, db);
-                    if (errorCode > 0)
-                    {
-                        response.Code += errorCode;
-                        response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
-                    }
-                    */
+                    
                     errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
                     if (errorCode > 0)
                     {
@@ -287,6 +288,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                         response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
                     }
                 }
+                */
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_DATE, "INST_DATE", "GRP_INST");

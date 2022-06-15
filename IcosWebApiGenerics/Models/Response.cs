@@ -31,7 +31,11 @@ namespace IcosWebApiGenerics.Models
             {
                 Error = Error.Replace(list[i], list[i + 1]);
             }
-            this.Messages.Add(key, Error);
+            if (!this.Messages.ContainsKey(key))
+            {
+                this.Messages.Add(key, Error);
+            }
+            
             Error = "";
         }
 

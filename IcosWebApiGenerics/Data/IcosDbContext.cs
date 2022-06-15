@@ -1,4 +1,5 @@
-﻿using IcosWebApiGenerics.Models.BADM;
+﻿using IcosWebApiGenerics.Models;
+using IcosWebApiGenerics.Models.BADM;
 using Microsoft.EntityFrameworkCore;
 
 namespace IcosWebApiGenerics.Data
@@ -17,6 +18,8 @@ namespace IcosWebApiGenerics.Data
 
         public DbSet<BADMList> BADMList { get; set; }
 
+        public DbSet<Variable> Variables { get; set; }
+        public DbSet<Group> Groups { get; set; }
         public DbSet<GRP_LOCATION> GRP_LOCATION { get; set; }
         public DbSet<GRP_UTC_OFFSET> GRP_UTC_OFFSET { get; set; }
         public DbSet<GRP_LAND_OWNERSHIP> GRP_LAND_OWNERSHIP { get; set; }

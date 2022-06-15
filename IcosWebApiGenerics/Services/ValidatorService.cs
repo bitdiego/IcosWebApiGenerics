@@ -14,6 +14,9 @@ using IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.STALValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation;
 using IcosWebApiGenerics.Services.ValidationFunctions.StorageValidation;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace IcosWebApiGenerics.Services
 {
@@ -68,6 +71,24 @@ namespace IcosWebApiGenerics.Services
         public async Task<Response> Validate(T t)
         {
             //May be to add a general validation? For Dates format? Mandatory variables? Item in CV?
+            var xList = GetCvIndexVariables(t.GroupId);
+            if (xList != null)
+            {
+                var props = t.GetType().GetProperties();
+                foreach (var xl in xList)
+                {
+                    var prop = props.FirstOrDefault(p => p.Name == xl.Name);
+                    var value = prop.GetValue(t, null);
+                    if (!String.IsNullOrEmpty((string)value))
+                    {
+                        if (!IsInControlledVocabulary((string)value, (int)xl.CvIndex))
+                        {
+                            response.Code += 7;
+                            response.FormatError(ErrorCodes.GeneralErrors[7], prop.Name, "$V0$", (string)value, "$V1$", BadmListName((int)xl.CvIndex), "$GRP$", GetGroupName(t.GroupId));
+                        }
+                    }
+                }
+            }
             switch (t.GroupId)
             {
                 case (int)Globals.Groups.GRP_LOCATION:
@@ -186,48 +207,41 @@ namespace IcosWebApiGenerics.Services
             return response;
         }
 
-        /// <summary>
-        /// Variables to check:
-        /// UTC_OFFSET (must be a valid float number, possibly in a range)
-        /// UTC_OFFSET_DATE_START: must be a valid isodate
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        private int ValidateUtcOffsetGroup(T t)
+        private IEnumerable<Variable> GetCvIndexVariables(int grId)
         {
-            GRP_UTC_OFFSET utcOffset = t as GRP_UTC_OFFSET;
-            var _offset = utcOffset.UTC_OFFSET;
-            if(Decimal.Compare(_offset, Globals.MIN_UTC_OFFSET_VAL) <0 || Decimal.Compare(_offset, Globals.MAX_UTC_OFFSET_VAL) > 0)
-            {
-                return 1;
-            }
-            /*if (!Globals.ValidateIsoDate(utcOffset.UTC_OFFSET_DATE_START))
-            {
-                return 300;
-            }*/
-            return 0;
+            var query = _context.Variables.Where(vv => vv.GroupId == grId && vv.CvIndex != 0 && vv.CvIndex != null);
+            Console.WriteLine(query.ToQueryString());
+            List<Variable> variables = query.ToList();
+            //List<Variable> variables = _context.Variables.Where(vv => vv.GroupId == grId && vv.CvIndex != 0 && vv.CvIndex != null).ToList();
+            return variables;
         }
 
-        /*private Response ValidateLocationResponse(T t)
+        private bool IsInControlledVocabulary(/*Variable v*/ string value, int cvIndex)
         {
-            Response r = new Response();
-            GRP_LOCATION location = t as GRP_LOCATION;
-            if (String.IsNullOrEmpty(location.LOCATION_DATE))
+            var item = _context.BADMList.Where(bm => bm.cv_index == cvIndex && bm.shortname == value).FirstOrDefault();//.shortname;
+            if (item == null) return false;
+            if (String.Compare(item.shortname, value, false) != 0)
             {
-                r.Code |= 1;
-                r.Message += "<br />Error: LOCATION_DATE is mandatory";
+                //raise warn string...
+                //WarningString += Environment.NewLine + "Warning: case differences in entered item. Found " + v.Value + " instead of " + item + " in cell " + v.Cell;
+                //WarningString += ". Item value will be corrected";
+                value = item.shortname;
             }
-            if (location.LOCATION_LAT > 1000)
-            {
-                r.Code |= 2;
-                r.Message += "<br />Error: LOCATION_LAT must be between -180 and 180";
-            }
-            if (location.LOCATION_LONG > 1000)
-            {
-                r.Code |= 3;
-                r.Message += "<br />Error: LOCATION_LONG must be between -360 and 360";
-            }
-            return r;
-        }*/
+            
+            return true;
+        }
+
+        private string BadmListName(int cvIndex)
+        {
+            var item = _context.Variables.Where(bm => bm.CvIndex == cvIndex).FirstOrDefault();//.shortname;
+            
+            return item.UnitOfMeasure;
+        }
+
+        private string GetGroupName(int groupId)
+        {
+            var item = _context.Groups.Where(gr=>gr.id_group==groupId).FirstOrDefault();//.shortname;
+            return item.GroupName;
+        }
     }
 }
