@@ -43,12 +43,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidati
             else
             {
                 //in badm list
-                errorCode = await GeneralValidation.ItemInBadmListAsync(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(gai.GAI_METHOD, (int)Globals.CvIndexes.GAIMETHOD, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "GAI_METHOD", "$V0$", gai.GAI_METHOD, "$V1$", "GAI_METHOD", "$GRP$", "GRP_GAI");
-                }
+                }*/
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(gai.GAI_DATE, "GAI_DATE", "GRP_GAI");
@@ -126,12 +126,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.GreenAreaIndexValidati
             }
             else
             {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(bulkh.BULKH_PLOT_TYPE, (int)Globals.CvIndexes.PLOTTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BULKH_PLOT_TYPE", "$V0$", bulkh.BULKH_PLOT_TYPE, "$V1$", "BULKH_PLOT_TYPE", "$GRP$", "GRP_BULKH");
-                }
+                }*/
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<decimal>(bulkh.BULKH, "BULKH", "GRP_BULKH");

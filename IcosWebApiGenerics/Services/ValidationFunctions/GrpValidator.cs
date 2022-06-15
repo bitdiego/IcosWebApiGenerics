@@ -39,12 +39,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be in badmlist
-                errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA", "$V0$", dhp.DHP_CAMERA, "$V1$", "CAMERA", "$GRP$", "GRP_DHP");
-                }
+                }*/
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_CAMERA_SN, "DHP_CAMERA_SN", "GRP_DHP");
@@ -63,12 +63,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be in badmlist
-                errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_LENS", "$V0$", dhp.DHP_LENS, "$V1$", "LENS", "$GRP$", "GRP_DHP");
-                }
+                }*/
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_LENS_SN, "DHP_LENS_SN", "GRP_DHP");

@@ -96,22 +96,22 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 
             if (!String.IsNullOrEmpty(spps.SPPS_TWSP_PCT))
             {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(spps.SPPS_TWSP_PCT, (int)Globals.CvIndexes.TWSP, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_TWSP_PCT", "$V0$", spps.SPPS_TWSP_PCT, "$V1$", "SPPS_TWSP_PCT", "$GRP$", "GRP_SPPS");
-                }
+                }*/
             }
 
             if (!String.IsNullOrEmpty(spps.SPPS_PTYPE))
             {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(spps.SPPS_PTYPE, (int)Globals.CvIndexes.SPPPTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PTYPE", "$V0$", spps.SPPS_PTYPE, "$V1$", "SPPS_PTYPE", "$GRP$", "GRP_SPPS");
-                }
+                }*/
             }
 
            // return response;

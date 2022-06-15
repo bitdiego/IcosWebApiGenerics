@@ -125,6 +125,21 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return 0;
         }
 
+        public static async Task<int> IsInControlledVocabulary(string value, int cvIndex, IcosDbContext _context)
+        {
+            var item = await _context.BADMList.Where(bm => bm.cv_index == cvIndex && bm.shortname == value).FirstOrDefaultAsync();
+            if (item == null) return 7;
+            if (String.Compare(item.shortname, value, false) != 0)
+            {
+                //raise warn string...
+                //WarningString += Environment.NewLine + "Warning: case differences in entered item. Found " + v.Value + " instead of " + item + " in cell " + v.Cell;
+                //WarningString += ". Item value will be corrected";
+                value = item.shortname;
+            }
+
+            return 0;
+        }
+
         public static bool IsAnyPropNotNull<T>(T model, params string[] vars)
         {
             Type myType = model.GetType();

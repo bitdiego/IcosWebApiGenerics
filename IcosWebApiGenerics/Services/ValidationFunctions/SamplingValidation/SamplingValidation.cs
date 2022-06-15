@@ -57,12 +57,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             else
             {
                 //check if plot_type in controlled vocabulary
-                errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTYPE, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_TYPE", "$V0$", samplingScheme.PLOT_TYPE, "$V1$", "PLOTTYPE", "$GRP$", "GRP_PLOT");
-                }
+                }*/
                 string _subPlot = samplingScheme.PLOT_ID.Substring(0, samplingScheme.PLOT_ID.IndexOf('_'));
                 errorCode = 1;
                 response.Code += errorCode;
@@ -90,12 +90,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
                 {
                     //check if plot_type in controlled vocabulary
-                    errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
+                    /*errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
                     if (errorCode > 0)
                     {
                         response.Code += errorCode;
                         response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_REFERENCE_POINT", "$V0$", samplingScheme.PLOT_REFERENCE_POINT, "$V1$", "PLOTREF", "$GRP$", "GRP_PLOT");
-                    }
+                    }*/
                     if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
                     {
                         errorCode = 3;
@@ -160,12 +160,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             }
             else
             {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_TYPE", "$V0$", flsm.FLSM_SAMPLE_TYPE, "$V1$", "FLSM_STYPE", "$GRP$", "GRP_FLSM");
-                }
+                }*/
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<int>(flsm.FLSM_SAMPLE_ID, "FLSM_SAMPLE_ID", "GRP_FLSM");
@@ -184,12 +184,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
 
             if (!String.IsNullOrEmpty(flsm.FLSM_PTYPE))
             {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
+                /*errorCode = await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_PTYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PTYPE", "$V0$", flsm.FLSM_PTYPE, "$V1$", "FLSM_PTYPE", "$GRP$", "GRP_FLSM");
-                }
+                }*/
             }
 
             //return response;

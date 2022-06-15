@@ -11,9 +11,12 @@ namespace IcosWebApiGenerics.Models
         public Response()
         {
             Messages = new Dictionary<string, string>();
+            Warnings = new Dictionary<int, string>();
         }
         public int Code { get; set; }
+        public int WarningCode { get; set; } = 0;
         public Dictionary<string, string> Messages { get; set; }
+        public Dictionary<int, string> Warnings { get; set; }
         private string Error { get; set; }
         public void FormatError(string key, params string[] list)
         {

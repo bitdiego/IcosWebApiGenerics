@@ -78,13 +78,22 @@ namespace IcosWebApiGenerics.Services
                 foreach (var xl in xList)
                 {
                     var prop = props.FirstOrDefault(p => p.Name == xl.Name);
-                    var value = prop.GetValue(t, null);
+                    var value = prop.GetValue(t, null).ToString();
+                    string str = "";
                     if (!String.IsNullOrEmpty((string)value))
                     {
-                        if (!IsInControlledVocabulary((string)value, (int)xl.CvIndex))
+                        int xCv = IsInControlledVocabularyExt(value, (int)xl.CvIndex, ref str);
+                        if (xCv == 0)
                         {
-                            response.Code += 7;
-                            response.FormatError(ErrorCodes.GeneralErrors[7], prop.Name, "$V0$", (string)value, "$V1$", BadmListName((int)xl.CvIndex), "$GRP$", GetGroupName(t.GroupId));
+                            if (!String.IsNullOrEmpty(str))
+                            {
+                                prop.SetValue(t, str);
+                            }
+                        }
+                        else//if (!IsInControlledVocabulary(value, (int)xl.CvIndex))
+                        {
+                            response.Code += xCv;
+                            response.FormatError(ErrorCodes.GeneralErrors[7], prop.Name, "$V0$", value, "$V1$", BadmListName((int)xl.CvIndex), "$GRP$", GetGroupName(t.GroupId));
                         }
                     }
                 }
@@ -216,19 +225,30 @@ namespace IcosWebApiGenerics.Services
             return variables;
         }
 
-        private bool IsInControlledVocabulary(/*Variable v*/ string value, int cvIndex)
+        /*private bool IsInControlledVocabulary(string value, int cvIndex)
         {
             var item = _context.BADMList.Where(bm => bm.cv_index == cvIndex && bm.shortname == value).FirstOrDefault();//.shortname;
             if (item == null) return false;
             if (String.Compare(item.shortname, value, false) != 0)
             {
-                //raise warn string...
-                //WarningString += Environment.NewLine + "Warning: case differences in entered item. Found " + v.Value + " instead of " + item + " in cell " + v.Cell;
-                //WarningString += ". Item value will be corrected";
                 value = item.shortname;
             }
             
             return true;
+        }
+        */
+
+        private int IsInControlledVocabularyExt(string value, int cvIndex, ref string newVal)
+        {
+            var item = _context.BADMList.Where(bm => bm.cv_index == cvIndex && bm.shortname == value).FirstOrDefault();//.shortname;
+            if (item == null) return 7;
+            if (String.Compare(item.shortname, value, false) != 0)
+            {
+                response.Warnings.Add(response.WarningCode++, "Warning: case differences in entered item. Found " +value + " instead of " + item.shortname + " in cell " + "v.Cell" + ". Item value will be corrected");
+                newVal = item.shortname;
+            }
+            newVal = null;
+            return 0;
         }
 
         private string BadmListName(int cvIndex)

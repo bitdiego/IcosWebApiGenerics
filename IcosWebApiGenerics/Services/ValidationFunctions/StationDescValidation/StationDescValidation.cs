@@ -79,7 +79,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 }
             }
 
-            if (!String.IsNullOrEmpty(land.LAND_OWNERSHIP))
+            /*if (!String.IsNullOrEmpty(land.LAND_OWNERSHIP))
             {
                 errorCode = await GeneralValidation.ItemInBadmListAsync(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
                 if (errorCode > 0)
@@ -87,7 +87,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_OWNERSHIP", "$V0$", land.LAND_OWNERSHIP, "$V1$", "LAND_OWNERSHIP", "$GRP$", "GRP_LAND_OWNERSHIP");
                 }
-            }
+            }*/
             //return response;
         }
 
@@ -101,10 +101,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TOWER_DATE", "$V0$", "TOWER_DATE", "$GRP$", "GRP_TOWER");
             }
             DatesValidator.IsoDateCheck(tower.TOWER_DATE, "TOWER_DATE");
+            /*
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_ACCESS, (int)Globals.CvIndexes.TOWER_ACCESS, db);
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
             await GeneralValidation.ItemInBadmListAsync(tower.TOWER_DATATRAN, (int)Globals.CvIndexes.TOWER_DATATRAN, db);
+            
+             */
             //return response;
         }
 
