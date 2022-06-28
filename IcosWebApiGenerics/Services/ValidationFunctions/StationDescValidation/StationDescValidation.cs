@@ -19,6 +19,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
         //OK
         public static /*Response*/ void ValidateLocationResponse(GRP_LOCATION location, Response response)
         {
+            //Not mandatory
             errorCode = GeneralValidation.MissingMandatoryData<string>(location.LOCATION_DATE, "LOCATION_DATE", "GRP_LOCATION");
             if (errorCode != 0)
             {
@@ -69,6 +70,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
         //OK
         public static async Task ValidateLandOwnerResponseAsync(GRP_LAND_OWNERSHIP land, IcosDbContext db, Response response)
         {
+            //Not mandatory
             if (!String.IsNullOrEmpty(land.LAND_DATE))
             {
                 errorCode = DatesValidator.IsoDateCheck(land.LAND_DATE, "LAND_DATE");
@@ -79,15 +81,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 }
             }
 
-            /*if (!String.IsNullOrEmpty(land.LAND_OWNERSHIP))
-            {
-                errorCode = await GeneralValidation.ItemInBadmListAsync(land.LAND_OWNERSHIP, (int)Globals.CvIndexes.LAND_OWNERSHIP, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LAND_OWNERSHIP", "$V0$", land.LAND_OWNERSHIP, "$V1$", "LAND_OWNERSHIP", "$GRP$", "GRP_LAND_OWNERSHIP");
-                }
-            }*/
             //return response;
         }
 
@@ -101,13 +94,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TOWER_DATE", "$V0$", "TOWER_DATE", "$GRP$", "GRP_TOWER");
             }
             DatesValidator.IsoDateCheck(tower.TOWER_DATE, "TOWER_DATE");
-            /*
-            await GeneralValidation.ItemInBadmListAsync(tower.TOWER_TYPE, (int)Globals.CvIndexes.TOWER_TYPE, db);
-            await GeneralValidation.ItemInBadmListAsync(tower.TOWER_ACCESS, (int)Globals.CvIndexes.TOWER_ACCESS, db);
-            await GeneralValidation.ItemInBadmListAsync(tower.TOWER_POWER, (int)Globals.CvIndexes.TOWER_POWER, db);
-            await GeneralValidation.ItemInBadmListAsync(tower.TOWER_DATATRAN, (int)Globals.CvIndexes.TOWER_DATATRAN, db);
-            
-             */
             //return response;
         }
 
@@ -148,8 +134,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
                 response.FormatError("DM_DATE", "$V0$", distMan.DM_DATE, "$V1$", distMan.DM_DATE_START, "$V2$", distMan.DM_DATE_END);
-                //Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE, "$V1$", distMan.DM_DATE_START, "$V2$", distMan.DM_DATE_END);
-            }
+  0          }
             if (!String.IsNullOrEmpty(distMan.DM_DATE_START) && !String.IsNullOrEmpty(distMan.DM_DATE_END))
             {
                 if (String.Compare(distMan.DM_DATE_START, distMan.DM_DATE_END) > 0)
@@ -158,25 +143,9 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                     response.Code += errorCode;
                     Err = ErrorCodes.GeneralErrors[errorCode];
                     response.FormatError("DM_DATE_START", "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
-                    //Globals.FormatError(ref Err, "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
-                }
+                 }
             }
-            /*
-            GeneralValidation.ItemInBadmList("DM_ENCROACH", distMan.DM_ENCROACH, "GRP_DM", (int)Globals.CvIndexes.DM_ENCROACH, db);
-            GeneralValidation.ItemInBadmList("DM_AGRICULTURE", distMan.DM_AGRICULTURE, "GRP_DM", (int)Globals.CvIndexes.DM_AGRICULTURE, db);
-            GeneralValidation.ItemInBadmList("DM_EXT_WEATHER", distMan.DM_EXT_WEATHER, "GRP_DM", (int)Globals.CvIndexes.DM_EXT_WEATHER, db);
-            GeneralValidation.ItemInBadmList("DM_FERT_M", distMan.DM_FERT_M, "GRP_DM", (int)Globals.CvIndexes.DM_FERT_M, db);
-            GeneralValidation.ItemInBadmList("DM_FERT_O", distMan.DM_FERT_M, "DM_FERT_O", (int)Globals.CvIndexes.DM_FERT_O, db); 
-            GeneralValidation.ItemInBadmList("DM_FIRE", distMan.DM_FERT_M, "DM_FIRE", (int)Globals.CvIndexes.DM_FIRE, db);
-            GeneralValidation.ItemInBadmList("DM_FORESTRY", distMan.DM_FERT_M, "DM_FORESTRY", (int)Globals.CvIndexes.DM_FORESTRY, db);
-            GeneralValidation.ItemInBadmList("DM_GRAZE", distMan.DM_FERT_M, "DM_GRAZE", (int)Globals.CvIndexes.DM_GRAZE, db);
-            GeneralValidation.ItemInBadmList("DM_INS_PATH", distMan.DM_FERT_M, "DM_INS_PATH", (int)Globals.CvIndexes.DM_INS_PATH, db);
-            GeneralValidation.ItemInBadmList("DM_PESTICIDE", distMan.DM_FERT_M, "DM_PESTICIDE", (int)Globals.CvIndexes.DM_PESTICIDE, db);
-            GeneralValidation.ItemInBadmList("DM_PLANTING", distMan.DM_FERT_M, "DM_PLANTING", (int)Globals.CvIndexes.DM_PLANTING, db);
-            GeneralValidation.ItemInBadmList("DM_TILL", distMan.DM_FERT_M, "DM_TILL", (int)Globals.CvIndexes.DM_TILL, db); 
-            GeneralValidation.ItemInBadmList("DM_WATER", distMan.DM_FERT_M, "DM_WATER", (int)Globals.CvIndexes.DM_WATER, db);
-            GeneralValidation.ItemInBadmList("DM_GENERAL", distMan.DM_FERT_M, "DM_GENERAL", (int)Globals.CvIndexes.DM_GENERAL, db);
-            */
+            
             if (!GeneralValidation.IsAnyPropNotNull<GRP_DM>(distMan))
             {
                 errorCode = 9;

@@ -42,5 +42,13 @@ namespace IcosWebApiGenerics.Models
             Error = "";
         }
 
+        public void FormatWarnings(string warn, int key)
+        {
+            if (!this.Warnings.ContainsKey(key))
+            {
+                this.Warnings.Add(key, warn);
+            }
+        }
+
     }
 }

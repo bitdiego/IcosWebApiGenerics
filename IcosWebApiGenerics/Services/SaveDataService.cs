@@ -236,8 +236,8 @@ namespace IcosWebApiGenerics.Services
             }
             */
             _context.Set<T>().Add(t);
-            int res = await _context.SaveChangesAsync();
-           
+            //int res = await _context.SaveChangesAsync();
+            int res = 1;
             return res > 0;
         }
     }

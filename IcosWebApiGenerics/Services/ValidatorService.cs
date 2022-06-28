@@ -98,6 +98,35 @@ namespace IcosWebApiGenerics.Services
                     }
                 }
             }
+
+            //Dates....
+            var _dates = GetDatesVariables(t.GroupId);
+            if (_dates != null)
+            {
+                var props = t.GetType().GetProperties();
+                foreach (var _dt in _dates)
+                {
+                    var prop = props.FirstOrDefault(p => p.Name == _dt.Name);
+                    var value = prop.GetValue(t, null).ToString();
+                    if ((value.IndexOf("/") >= 0) || (value.IndexOf("-") >= 0) || (value.IndexOf(" ") >= 0))
+                    {
+                        try
+                        {
+                            string temp = value;
+                            value = DatesValidator.DateTransform(value);
+                            prop.SetValue(t, value);
+                            response.FormatWarnings("Warning: wrong date format in cell " + "date.Cell" + ": " + temp + " converted in " + value, 0);
+                        }
+                        catch (Exception e)
+                        {
+                            response.Code += 2;
+                            response.FormatError(ErrorCodes.GeneralErrors[2], prop.Name, "$V0$", prop.Name, "$V1$", value);
+                        }
+                    }
+                }
+            }
+
+
             switch (t.GroupId)
             {
                 case (int)Globals.Groups.GRP_LOCATION:
@@ -221,22 +250,16 @@ namespace IcosWebApiGenerics.Services
             var query = _context.Variables.Where(vv => vv.GroupId == grId && vv.CvIndex != 0 && vv.CvIndex != null);
             Console.WriteLine(query.ToQueryString());
             List<Variable> variables = query.ToList();
-            //List<Variable> variables = _context.Variables.Where(vv => vv.GroupId == grId && vv.CvIndex != 0 && vv.CvIndex != null).ToList();
             return variables;
         }
 
-        /*private bool IsInControlledVocabulary(string value, int cvIndex)
+        private IEnumerable<Variable> GetDatesVariables(int grId)
         {
-            var item = _context.BADMList.Where(bm => bm.cv_index == cvIndex && bm.shortname == value).FirstOrDefault();//.shortname;
-            if (item == null) return false;
-            if (String.Compare(item.shortname, value, false) != 0)
-            {
-                value = item.shortname;
-            }
-            
-            return true;
+            var query = _context.Variables.Where(vv => vv.GroupId == grId && vv.Name.IndexOf("DATE") >= 0 && vv.Name.IndexOf("DATE_UNC") < 0);
+            Console.WriteLine(query.ToQueryString());
+            List<Variable> variables = query.ToList();
+            return variables;
         }
-        */
 
         private int IsInControlledVocabularyExt(string value, int cvIndex, ref string newVal)
         {

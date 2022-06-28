@@ -167,5 +167,24 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             }
             return 0;
         }
+
+        public static string DateTransform(string input)
+        {
+            string output = "";
+            DateTime tempDT = Convert.ToDateTime(input);
+            int yy = tempDT.Year;
+            int mo = tempDT.Month;
+            int dd = tempDT.Day;
+            int hh = tempDT.Hour;
+            int mm = tempDT.Minute;
+            string format = "yyyy";
+            if (mo != 0) format += "MM";
+            if (dd != 0) format += "dd";
+            if (hh != 0) format += "HH";
+            if (mm != 0) format += "mm";
+            output = tempDT.ToString(format);
+
+            return output;
+        }
     }
 }

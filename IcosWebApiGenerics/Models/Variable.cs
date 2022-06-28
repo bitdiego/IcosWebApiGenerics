@@ -20,7 +20,7 @@ namespace IcosWebApiGenerics.Models
         public int? CvIndex { get; set; }
 
         [Column("hasMultiple", TypeName = "bool")]
-        public bool HasMultiple { get; set; }
+        public bool? HasMultiple { get; set; }
 
         [Column("unit_type", TypeName = "smallint")]
         public int Unit { get; set; }
