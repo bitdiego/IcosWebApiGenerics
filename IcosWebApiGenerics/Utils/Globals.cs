@@ -446,12 +446,12 @@ namespace IcosWebApiGenerics.Utils
         public static int IsValidCoordinateSystem<T>(params T[] coordinates)
         {
             int nCoo = coordinates.ToList().Count(v => v != null);
-            if (nCoo != 2) return 1;
+            if (nCoo != 2) return -1;
 
             int index1 = coordinates.ToList().FindIndex(v => v != null);
             int index2 = coordinates.ToList().FindLastIndex(v => v != null);
-            if (((index2 - index1) != 1) || (index1 % 2 != 0)) return 1;
-            return 0; // index1 / 2; 
+            if (((index2 - index1) != 1) || (index1 % 2 != 0)) return -1;
+            return index1 / 2; // index1 / 2; 
         }
 
         public static bool IsValidPlotId(string plotId, int groupId)

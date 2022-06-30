@@ -87,8 +87,11 @@ namespace IcosWebApiGenerics.Utils
                   Environment.NewLine + "These couples of information are mutually exclusive"},
             {3,"Error: PLOT_REFERENCE_POINT is allowed only for SP-II sampling points"},
             {4,"Error: PLOT_REFERENCE_POINT is not allowed when PLOT_LOCATION_LAT and PLOT_LOCATION_LONG are submitted"},
-            {5,"Error: PLOT_REFERENCE_POINT is mandatory for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
+            {5,"Error: PLOT_REFERENCE_POINT is mandatory only for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
             {6,"Error: PLOT_ID is mandatory for SP-II sampling points when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
+            {7,"Error: PLOT_NORTHREF is mandatory when PLOT_EASTWARD_DIST <---> PLOT_NORTHWARD_DIST, or PLOT_DISTANCE_POLAR <---> PLOT_ANGLE_POLAR are submitted"},
+            {8,"Error: PLOT_REFERENCE_POINT and PLOT_NORTHREF are not allowed when PLOT_LOCATION_LAT and PLOT_LOCATION_LONG are submitted"}
+
         };
 
         public static Dictionary<int, string> GrpFlsmErrors = new Dictionary<int, string>

@@ -71,14 +71,24 @@ namespace IcosWebApiGenerics.Services
         public async Task<Response> Validate(T t)
         {
             //May be to add a general validation? For Dates format? Mandatory variables? Item in CV?
-            var xList = GetCvIndexVariables(t.GroupId);
+            var xList = await GetCvIndexVariables(t.GroupId);
             if (xList != null)
             {
                 var props = t.GetType().GetProperties();
                 foreach (var xl in xList)
                 {
                     var prop = props.FirstOrDefault(p => p.Name == xl.Name);
-                    var value = prop.GetValue(t, null).ToString();
+                    string value;
+                    try
+                    {
+                        var sv = prop.GetValue(t, null).ToString();
+                        value = (string)sv;
+                    }
+                    catch(Exception e)
+                    {
+                        continue;
+                    }
+                   // var value = prop.GetValue(t, null).ToString();
                     string str = "";
                     if (!String.IsNullOrEmpty((string)value))
                     {
@@ -108,6 +118,8 @@ namespace IcosWebApiGenerics.Services
                 {
                     var prop = props.FirstOrDefault(p => p.Name == _dt.Name);
                     var value = prop.GetValue(t, null).ToString();
+                    //Dates not in ISODATE format: for example, dd-mm-yyyy or dd/mm//yyyy:
+                    //try to convert in ISODATE
                     if ((value.IndexOf("/") >= 0) || (value.IndexOf("-") >= 0) || (value.IndexOf(" ") >= 0))
                     {
                         try
@@ -121,6 +133,16 @@ namespace IcosWebApiGenerics.Services
                         {
                             response.Code += 2;
                             response.FormatError(ErrorCodes.GeneralErrors[2], prop.Name, "$V0$", prop.Name, "$V1$", value);
+                        }
+                    }
+                    else
+                    {
+                        //is a valid isodate?
+                        int dVal = DatesValidator.IsoDateCheck(value, prop.Name);
+                        if (dVal > 0)
+                        {
+                            response.Code += dVal;
+                            response.FormatError(ErrorCodes.GeneralErrors[dVal], prop.Name, "$V0$", prop.Name, "$V1$", value);
                         }
                     }
                 }
@@ -245,11 +267,11 @@ namespace IcosWebApiGenerics.Services
             return response;
         }
 
-        private IEnumerable<Variable> GetCvIndexVariables(int grId)
+        private async Task<IEnumerable<Variable>> GetCvIndexVariables(int grId)
         {
-            var query = _context.Variables.Where(vv => vv.GroupId == grId && vv.CvIndex != 0 && vv.CvIndex != null);
-            Console.WriteLine(query.ToQueryString());
-            List<Variable> variables = query.ToList();
+            var variables = await _context.Variables.Where(vv => vv.GroupId == grId && (vv.CvIndex > 0 /*&& vv.CvIndex != null*/)).ToListAsync();
+           // Console.WriteLine(query.ToQueryString());
+           // List<Variable> variables = query.ToList();
             return variables;
         }
 

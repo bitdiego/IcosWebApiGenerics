@@ -125,16 +125,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
         //to do
         public static Response ValidateDistManResponse(GRP_DM distMan, IcosDbContext db, Response response)
         {
-            DatesValidator.IsoDateCheck(distMan.DM_DATE, "DM_DATE");
-            DatesValidator.IsoDateCheck(distMan.DM_DATE_START, "DM_DATE_START");
-            DatesValidator.IsoDateCheck(distMan.DM_DATE_END, "DM_DATE_END");
             if (!String.IsNullOrEmpty(distMan.DM_DATE) && !String.IsNullOrEmpty(distMan.DM_DATE_START) && !String.IsNullOrEmpty(distMan.DM_DATE_END))
             {
                 errorCode = 4;
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
-                response.FormatError("DM_DATE", "$V0$", distMan.DM_DATE, "$V1$", distMan.DM_DATE_START, "$V2$", distMan.DM_DATE_END);
-  0          }
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DM_DATE", "$V0$", "DM_DATE", "$V1$", "DM_DATE_START", "$V2$", "DM_DATE_END");
+            }
             if (!String.IsNullOrEmpty(distMan.DM_DATE_START) && !String.IsNullOrEmpty(distMan.DM_DATE_END))
             {
                 if (String.Compare(distMan.DM_DATE_START, distMan.DM_DATE_END) > 0)
@@ -142,15 +139,18 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                     errorCode = 6;
                     response.Code += errorCode;
                     Err = ErrorCodes.GeneralErrors[errorCode];
-                    response.FormatError("DM_DATE_START", "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DM_DATE_START", "$V0$", distMan.DM_DATE_END, "$V1$", distMan.DM_DATE_START);
                  }
             }
             
-            if (!GeneralValidation.IsAnyPropNotNull<GRP_DM>(distMan))
+            if (!GeneralValidation.IsAnyPropNotNull<GRP_DM>(distMan, "DM_AGRICULTURE","DM_ENCROACH","DM_EXT_WEATHER","DM_FERT_M","DM_FERT_O","DM_FIRE",
+                                                                        "DM_FORESTRY","DM_GRAZE","DM_INS_PATH", "DM_PESTICIDE",
+                                                                        "DM_PLANTING","DM_TILL","DM_WATER","DM_GENERAL","DM_SURF","DM_SURF_MEAS_PRECISION"))
             {
                 errorCode = 9;
                 response.Code += errorCode;
                 Err = ErrorCodes.GeneralErrors[errorCode];
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DM_AGRICULTURE");
             }
 
             return response;

@@ -99,12 +99,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return isMatch;
         }
 
-        public static int ItemInSamplingPointGroupAsync(string modelPlotId, string modelDate, int siteId, IcosDbContext db)
+        public static async Task<int> ItemInSamplingPointGroupAsync(string modelPlotId, string modelDate, int siteId, IcosDbContext db)
         {
             if (String.Compare(modelPlotId, "Outside_CP", true) == 0) return 0;
-            var item = db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+            var item = await db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
                                                 String.Compare(plot.PLOT_ID, modelPlotId) == 0 &&
-                                                String.Compare(plot.PLOT_DATE, modelDate) <= 0).FirstOrDefault();
+                                                String.Compare(plot.PLOT_DATE, modelDate) <= 0).FirstOrDefaultAsync();
             if (item == null)
             {
                 return (int)Globals.ErrorValidationCodes.PLOT_ID_NOT_FOUND;

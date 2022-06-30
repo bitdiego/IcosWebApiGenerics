@@ -137,7 +137,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             //return response;
         }
 
-        public static void ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db, Response response)
+        public static async Task ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
             if (errorCode != 0)
@@ -168,7 +168,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(dSnow.D_SNOW_PLOT))
             {
-                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_DATE, dSnow.SiteId, db);
+                errorCode = await GeneralValidation.ItemInSamplingPointGroupAsync(dSnow.D_SNOW_PLOT, dSnow.D_SNOW_DATE, dSnow.SiteId, db);
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
@@ -178,7 +178,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             //return response;
         }
 
-        public static void ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db, Response response)
+        public static async Task ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
             if (errorCode != 0)
@@ -210,7 +210,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
             if (!String.IsNullOrEmpty(wtdPnt.WTDPNT_PLOT))
             {
-                errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_DATE, wtdPnt.SiteId, db);
+                errorCode = await GeneralValidation.ItemInSamplingPointGroupAsync(wtdPnt.WTDPNT_PLOT, wtdPnt.WTDPNT_DATE, wtdPnt.SiteId, db);
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;

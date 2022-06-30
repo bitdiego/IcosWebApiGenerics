@@ -25,13 +25,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$GRP$", "GRP_PLOT");
             }
-            errorCode = DatesValidator.IsoDateCheck(samplingScheme.PLOT_DATE, "PLOT_DATE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_DATE", "$V0$", "PLOT_DATE", "$V1$", samplingScheme.PLOT_DATE);
-            }
-
             errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_ID, "PLOT_ID", "GRP_PLOT");
             if (errorCode != 0)
             {
@@ -46,6 +39,38 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_ID", "$V0$", "PLOT_ID", "$V1$", samplingScheme.PLOT_ID);
                 }
+                else
+                {
+                    /*if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
+                    {
+                        if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                        {
+                            errorCode = 3;
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                        }
+                        if (samplingScheme.PLOT_LOCATION_LAT != null && samplingScheme.PLOT_LOCATION_LONG != null)
+                        {
+                            errorCode = 4;
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                        }
+                    }
+                    else
+                    {
+
+                        if (samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                        {
+                            if ((samplingScheme.PLOT_ANGLE_POLAR != null && samplingScheme.PLOT_DISTANCE_POLAR != null) ||
+                            (samplingScheme.PLOT_EASTWARD_DIST != null && samplingScheme.PLOT_NORTHWARD_DIST != null))
+                            {
+                                errorCode = 5;
+                                response.Code += errorCode;
+                                response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                            }
+                        }
+                    }*/
+                }
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(samplingScheme.PLOT_TYPE, "PLOT_TYPE", "GRP_PLOT");
@@ -56,18 +81,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             }
             else
             {
-                //check if plot_type in controlled vocabulary
-                /*errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_TYPE, (int)Globals.CvIndexes.PLOTYPE, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_TYPE", "$V0$", samplingScheme.PLOT_TYPE, "$V1$", "PLOTTYPE", "$GRP$", "GRP_PLOT");
-                }*/
                 string _subPlot = samplingScheme.PLOT_ID.Substring(0, samplingScheme.PLOT_ID.IndexOf('_'));
-                errorCode = 1;
-                response.Code += errorCode;
+                
                 if (String.Compare(_subPlot, samplingScheme.PLOT_TYPE, true) != 0)
                 {
+                    errorCode = 1;
+                    response.Code += errorCode;
                     response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_TYPE", "$V0$", _subPlot, "$V1$", samplingScheme.PLOT_TYPE);
                 }
             }
@@ -77,45 +96,37 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             int xc = Globals.IsValidCoordinateSystem<decimal?>(samplingScheme.PLOT_EASTWARD_DIST, samplingScheme.PLOT_NORTHWARD_DIST,
                                                                samplingScheme.PLOT_DISTANCE_POLAR, samplingScheme.PLOT_ANGLE_POLAR,
                                                                samplingScheme.PLOT_LOCATION_LAT, samplingScheme.PLOT_LOCATION_LONG);
-            if (xc > 0)
+            if (xc < 0)
             {
                 errorCode = 2;
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_EASTWARD_DIST");
             }
-
-            //to be testes only if PLOT_ID != null
-            if (samplingScheme.PLOT_ID != null)
+            else
             {
-                if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
+                if (xc < 2)
                 {
-                    //check if plot_type in controlled vocabulary
-                    /*errorCode = await GeneralValidation.ItemInBadmListAsync(samplingScheme.PLOT_REFERENCE_POINT, (int)Globals.CvIndexes.PLOTREF, db);
-                    if (errorCode > 0)
+                    //PLOT_EASTWARD_DIST/PLOT_NORTHWARD_DIST or PLOT_ANGLE_POLAR/PLOT_DISTANCE_POLAR have been submitted:
+                    //must have also PLOT_REFERENCE_POINT and PLOT_NORTHREF
+                    if(samplingScheme.PLOT_NORTHREF == null)
                     {
+                        errorCode = 7;
                         response.Code += errorCode;
-                        response.FormatError(ErrorCodes.GeneralErrors[errorCode], "PLOT_REFERENCE_POINT", "$V0$", samplingScheme.PLOT_REFERENCE_POINT, "$V1$", "PLOTREF", "$GRP$", "GRP_PLOT");
-                    }*/
-                    if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
-                    {
-                        errorCode = 3;
-                        response.Code += errorCode;
-                        response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                        response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_NORTHREF");
                     }
-                    if (samplingScheme.PLOT_LOCATION_LAT != null && samplingScheme.PLOT_LOCATION_LONG != null)
+                    if (samplingScheme.PLOT_REFERENCE_POINT != null)
                     {
-                        errorCode = 4;
-                        response.Code += errorCode;
-                        response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                        if (samplingScheme.PLOT_TYPE.ToLower() != "sp-ii" || !samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                        {
+                            errorCode = 5;
+                            response.Code += errorCode;
+                            response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                        }
+                        
                     }
-                }
-                else
-                {
-
-                    if (samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
+                    else
                     {
-                        if ((samplingScheme.PLOT_ANGLE_POLAR != null && samplingScheme.PLOT_DISTANCE_POLAR != null) ||
-                        (samplingScheme.PLOT_EASTWARD_DIST != null && samplingScheme.PLOT_NORTHWARD_DIST != null))
+                        if (samplingScheme.PLOT_TYPE.ToLower() == "sp-ii" && samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
                         {
                             errorCode = 5;
                             response.Code += errorCode;
@@ -123,7 +134,19 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                         }
                     }
                 }
+                else
+                {
+                    //PLOT_LOCATION_LAT/PLOT_LOCATION_LONG have been submitted:
+                    //no need of PLOT_REFERENCE_POINT and PLOT_NORTHREF
+                    if (samplingScheme.PLOT_NORTHREF != null || samplingScheme.PLOT_REFERENCE_POINT != null)
+                    {
+                        errorCode = 8;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
+                    }
+                }
             }
+            
 
             //return response;
         }
@@ -132,7 +155,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
         public static async Task ValidateFlsmResponseAsync(GRP_FLSM flsm, IcosDbContext db, Response response)
         {
             //to do::: FLSM_PLOT_ID present in GRP_PLOT
-            errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
+            errorCode = await GeneralValidation .ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
             if (errorCode > 0)
             {
                 response.Code += errorCode;
@@ -195,10 +218,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             //return response;
         }
 
-        public static void ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext db, Response response)
+        public static async Task ValidateSosmResponse(GRP_SOSM sosm, IcosDbContext db, Response response)
         {
             //to do::: SOSM_PLOT_ID present in GRP_PLOT
-            errorCode = GeneralValidation.ItemInSamplingPointGroupAsync(sosm.SOSM_PLOT_ID, sosm.SOSM_DATE, sosm.SiteId, db);
+            errorCode = await GeneralValidation.ItemInSamplingPointGroupAsync(sosm.SOSM_PLOT_ID, sosm.SOSM_DATE, sosm.SiteId, db);
             if (errorCode != 0)
             {
                 response.Code += errorCode;
