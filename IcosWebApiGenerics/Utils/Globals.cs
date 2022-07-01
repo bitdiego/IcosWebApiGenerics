@@ -56,6 +56,7 @@ namespace IcosWebApiGenerics.Utils
         public static readonly decimal MAX_LATITUDE_VALUE = 90;
         public static readonly decimal MIN_ALLOWED_TEMPERATURE = -273.15M;
         public static readonly decimal MAX_PERCENT = 100;
+        public static readonly decimal MAX_POLAR_ANGLE = 360;
         public enum Groups
         {
             GRP_HEADER = 1,

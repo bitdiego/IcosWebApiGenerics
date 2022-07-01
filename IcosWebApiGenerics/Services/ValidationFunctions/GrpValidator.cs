@@ -172,7 +172,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_PLOT");
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_PLOT", "$V0$", dSnow.D_SNOW_PLOT);
                 }
             }
             //return response;
@@ -214,7 +214,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 if (errorCode != 0)
                 {
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_PLOT");
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_PLOT", "$V0$", wtdPnt.WTDPNT_PLOT);
                 }
             }
 

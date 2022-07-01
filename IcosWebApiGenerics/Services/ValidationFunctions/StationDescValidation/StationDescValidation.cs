@@ -39,14 +39,18 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.StationDescValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LAT", "$V0$", location.LOCATION_LAT.ToString());
             }
-            if (location.LOCATION_LONG > Globals.MAX_LONGITUDE_VALUE || location.LOCATION_LONG < -Globals.MAX_LONGITUDE_VALUE)
+            if(!GeneralValidation.DecimalValueInRange(- Globals.MAX_LONGITUDE_VALUE, Globals.MAX_LONGITUDE_VALUE, location.LOCATION_LONG))
             {
                 errorCode = 5;
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LONG", "$V0$", location.LOCATION_LONG.ToString());
             }
-            //return response;
-
+            if (!GeneralValidation.DecimalValueInRange(-Globals.MAX_LATITUDE_VALUE, Globals.MAX_LATITUDE_VALUE, location.LOCATION_LAT))
+            {
+                errorCode = 5;
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LAT", "$V0$", location.LOCATION_LAT.ToString());
+            }
         }
 
         //OK

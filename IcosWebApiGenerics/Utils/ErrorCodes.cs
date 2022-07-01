@@ -23,7 +23,7 @@ namespace IcosWebApiGenerics.Utils
             {35,"Error: operation date for Instrument $V0$ with serial number $V0$ is less than purchase date in GRP_INST group"},
             {48,"Error: integer number expected; found $V0$ for variable $V1$"},
             {49,"Error: decimal number expected; found $V0$ for variable $V1$"},
-            {86,"Error: entered plot ID not found in GRP_PLOT"},
+            {86,"Error: entered plot ID $V0$ not found in GRP_PLOT"},
             {118,"Error: Serial number wrong format. Correct format: $V0$, where X is a digit. Found value: $V1$"},
             {200,"Error; Missing $V0$, $V1$ and $V2$ variables. Please, enter either $V0$ or $V1$/$V2$"},
             {201,"Error; Found $V0$ together with $V1$ and/or $V2$ variables. Please, enter either $V0$ or $V1$/$V2$"},

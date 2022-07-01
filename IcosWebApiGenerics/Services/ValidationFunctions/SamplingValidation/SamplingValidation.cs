@@ -41,35 +41,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 }
                 else
                 {
-                    /*if (!String.IsNullOrEmpty(samplingScheme.PLOT_REFERENCE_POINT))
-                    {
-                        if (!samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
-                        {
-                            errorCode = 3;
-                            response.Code += errorCode;
-                            response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
-                        }
-                        if (samplingScheme.PLOT_LOCATION_LAT != null && samplingScheme.PLOT_LOCATION_LONG != null)
-                        {
-                            errorCode = 4;
-                            response.Code += errorCode;
-                            response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
-                        }
-                    }
-                    else
-                    {
-
-                        if (samplingScheme.PLOT_ID.ToLower().StartsWith("sp-ii"))
-                        {
-                            if ((samplingScheme.PLOT_ANGLE_POLAR != null && samplingScheme.PLOT_DISTANCE_POLAR != null) ||
-                            (samplingScheme.PLOT_EASTWARD_DIST != null && samplingScheme.PLOT_NORTHWARD_DIST != null))
-                            {
-                                errorCode = 5;
-                                response.Code += errorCode;
-                                response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
-                            }
-                        }
-                    }*/
+                    
                 }
             }
 
@@ -108,7 +80,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 {
                     //PLOT_EASTWARD_DIST/PLOT_NORTHWARD_DIST or PLOT_ANGLE_POLAR/PLOT_DISTANCE_POLAR have been submitted:
                     //must have also PLOT_REFERENCE_POINT and PLOT_NORTHREF
-                    if(samplingScheme.PLOT_NORTHREF == null)
+                    if (samplingScheme.PLOT_NORTHREF == null)
                     {
                         errorCode = 7;
                         response.Code += errorCode;
@@ -122,7 +94,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                             response.Code += errorCode;
                             response.FormatError(ErrorCodes.GrpSamplingSchemeErrors[errorCode], "PLOT_REFERENCE_POINT");
                         }
-                        
+
                     }
                     else
                     {
@@ -138,6 +110,18 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 {
                     //PLOT_LOCATION_LAT/PLOT_LOCATION_LONG have been submitted:
                     //no need of PLOT_REFERENCE_POINT and PLOT_NORTHREF
+                    if (!GeneralValidation.DecimalValueInRange(-Globals.MAX_LONGITUDE_VALUE, Globals.MAX_LONGITUDE_VALUE, (decimal)samplingScheme.PLOT_LOCATION_LONG))
+                    {
+                        errorCode = 5;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LONG", "$V0$", samplingScheme.PLOT_LOCATION_LONG.ToString());
+                    }
+                    if (!GeneralValidation.DecimalValueInRange(-Globals.MAX_LATITUDE_VALUE, Globals.MAX_LATITUDE_VALUE, (decimal)samplingScheme.PLOT_LOCATION_LAT))
+                    {
+                        errorCode = 5;
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpLocationErrors[errorCode], "LOCATION_LAT", "$V0$", samplingScheme.PLOT_LOCATION_LAT.ToString());
+                    }
                     if (samplingScheme.PLOT_NORTHREF != null || samplingScheme.PLOT_REFERENCE_POINT != null)
                     {
                         errorCode = 8;
@@ -146,20 +130,33 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                     }
                 }
             }
-            
-
-            //return response;
         }
 
         //validate also numeric values...
         public static async Task ValidateFlsmResponseAsync(GRP_FLSM flsm, IcosDbContext db, Response response)
         {
-            //to do::: FLSM_PLOT_ID present in GRP_PLOT
-            errorCode = await GeneralValidation .ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
-            if (errorCode > 0)
+            errorCode = GeneralValidation.MissingMandatoryData<string>(flsm.FLSM_PLOT_ID, "FLSM_PLOT_ID", "GRP_FLSM");
+            if (errorCode != 0)
             {
                 response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PLOT_ID");
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PLOT_ID", "$V0$", "FLSM_PLOT_ID", "$GRP$", "GRP_FLSM");
+            }
+            else
+            {
+                //check if valid format for FLSM_PLOT_ID
+                if (!GeneralValidation.IsValidPlotString(flsm.FLSM_PLOT_ID, flsm.GroupId))
+                {
+                    errorCode = 10;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PLOT_ID", "$V0$", "FLSM_PLOT_ID", "$V1$", flsm.FLSM_PLOT_ID);
+                }
+                //to do::: FLSM_PLOT_ID present in GRP_PLOT
+                errorCode = await GeneralValidation.ItemInSamplingPointGroupAsync(flsm.FLSM_PLOT_ID, flsm.FLSM_DATE, flsm.SiteId, db);
+                if (errorCode > 0)
+                {
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_PLOT_ID", "$V0$", flsm.FLSM_PLOT_ID);
+                }
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(flsm.FLSM_DATE, "FLSM_DATE", "GRP_FLSM");
@@ -168,29 +165,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_DATE", "$V0$", "FLSM_DATE", "$GRP$", "GRP_FLSM");
             }
-            errorCode = DatesValidator.IsoDateCheck(flsm.FLSM_DATE, "FLSM_DATE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_DATE", "$V0$", "FLSM_DATE", "$V1$", flsm.FLSM_DATE);
-            }
-
+            
             errorCode = GeneralValidation.MissingMandatoryData<string>(flsm.FLSM_SAMPLE_TYPE, "FLSM_SAMPLE_TYPE", "GRP_FLSM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_TYPE", "$V0$", "FLSM_SAMPLE_TYPE", "$GRP$", "GRP_FLSM");
             }
-            else
-            {
-                /*errorCode = await GeneralValidation.ItemInBadmListAsync(flsm.FLSM_SAMPLE_TYPE, (int)Globals.CvIndexes.FLSM_STYPE, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FLSM_SAMPLE_TYPE", "$V0$", flsm.FLSM_SAMPLE_TYPE, "$V1$", "FLSM_STYPE", "$GRP$", "GRP_FLSM");
-                }*/
-            }
-
+            
             errorCode = GeneralValidation.MissingMandatoryData<int>(flsm.FLSM_SAMPLE_ID, "FLSM_SAMPLE_ID", "GRP_FLSM");
             if (errorCode != 0)
             {
@@ -225,7 +207,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.SamplingValidation
             if (errorCode != 0)
             {
                 response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_PLOT_ID");
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SOSM_PLOT_ID", "$V0$", sosm.SOSM_PLOT_ID);
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(sosm.SOSM_DATE, "SOSM_DATE", "GRP_SOSM");

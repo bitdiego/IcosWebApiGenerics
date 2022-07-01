@@ -52,7 +52,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT");
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_PLOT", "$V0$", spps.SPPS_PLOT);
                 }
             }
 
@@ -148,7 +148,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                         if (errorCode != 0)
                         {
                             response.Code += errorCode;
-                            response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_PLOT");
+                            response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_PLOT", "$V0$", tree.TREE_PLOT);
                         }
                     }
                 }
@@ -231,7 +231,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "AGB_PLOT");
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "AGB_PLOT", "$V0$", agb.AGB_PLOT);
                 }
             }
 

@@ -105,6 +105,9 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             var item = await db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
                                                 String.Compare(plot.PLOT_ID, modelPlotId) == 0 &&
                                                 String.Compare(plot.PLOT_DATE, modelDate) <= 0).FirstOrDefaultAsync();
+            var cippa = db.GRP_PLOT.Where(plot => plot.SiteId == siteId && plot.DataStatus == 0 &&
+                                                String.Compare(plot.PLOT_ID, modelPlotId) == 0 &&
+                                                String.Compare(plot.PLOT_DATE, modelDate) <= 0).ToQueryString();
             if (item == null)
             {
                 return (int)Globals.ErrorValidationCodes.PLOT_ID_NOT_FOUND;
@@ -169,6 +172,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 return 1;
             }
             return 0;
+        }
+
+        public static bool DecimalValueInRange(decimal min, decimal max, decimal value)
+        {
+            return value >= min && value <= max;
         }
 
     }
