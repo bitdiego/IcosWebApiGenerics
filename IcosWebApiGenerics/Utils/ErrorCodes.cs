@@ -222,7 +222,7 @@ namespace IcosWebApiGenerics.Utils
 
         public static Dictionary<int, string> GrpAllomErrors = new Dictionary<int, string>
         {
-            {1,@"Error: for GRP_ALLOM and Cropland Ecosysten the following variables are all mandatory:"+Environment.NewLine+
+            {1,@"Error: for GRP_ALLOM and Cropland Ecosystem the following variables are all mandatory:"+Environment.NewLine+
                   "ALLOM_DBH, ALLOM_HEIGHT, ALLOM_SPP, ALLOM_STEM_BIOM, ALLOM_BRANCHES_BIOM"},
         };
 

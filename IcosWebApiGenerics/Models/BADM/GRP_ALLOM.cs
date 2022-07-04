@@ -14,18 +14,18 @@ namespace IcosWebApiGenerics.Models.BADM
 		public GRP_ALLOM() { GroupId = (int)Globals.Groups.GRP_ALLOM; }
 
 		[Column(TypeName = "decimal(18, 8)")]
-		public decimal ALLOM_DBH { get; set; }
+		public decimal ALLOM_DBH { get; set; } = -9999;
 
 		[Column(TypeName = "decimal(18, 8)")]
-		public decimal ALLOM_HEIGHT { get; set; }
+		public decimal ALLOM_HEIGHT { get; set; } = -9999;
 
 		public string ALLOM_SPP { get; set; }
 
 		[Column(TypeName = "decimal(18, 8)")]
-		public decimal ALLOM_STEM_BIOM { get; set; }
+		public decimal ALLOM_STEM_BIOM { get; set; } = -9999;
 
 		[Column(TypeName = "decimal(18, 8)")]
-		public decimal ALLOM_BRANCHES_BIOM { get; set; }
+		public decimal ALLOM_BRANCHES_BIOM { get; set; } = -9999;
 
 		[Column(TypeName = "decimal(18, 8)")]
 		public decimal ALLOM_LEAVES_BIOM { get; set; }

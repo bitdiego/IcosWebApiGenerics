@@ -187,28 +187,87 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 
         public static void ValidateAllomResponse(GRP_ALLOM allom, IcosDbContext context, Response response)
         {
-           /*
-            * errorCode = GeneralValidation.MissingMandatoryData<string>(allom.ALLOM_DATE, "ALLOM_DATE", "GRP_ALLOM");
+            /*
+             * Checck the decimal constraints / validity of te following vars
+                ALLOM_DBH
+                ALLOM_HEIGHT
+                ALLOM_SPP
+                ALLOM_STEM_BIOM
+                ALLOM_BRANCHES_BIOM
+                ALLOM_LEAVES_BIOM
+            */
+            
+              errorCode = GeneralValidation.MissingMandatoryData<string>(allom.ALLOM_SPP, "ALLOM_SPP", "GRP_ALLOM");
+             if (errorCode != 0)
+             {
+                 response.Code += errorCode;
+                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_SPP", "$V0$", "ALLOM_SPP", "$GRP$", "GRP_ALLOM");
+             }
+            
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(allom.ALLOM_DBH, "ALLOM_DBH", "GRP_ALLOM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DATE", "$V0$", "ALLOM_DATE", "$GRP$", "GRP_ALLOM");
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DBH", "$V0$", "ALLOM_DBH", "$GRP$", "GRP_ALLOM");
             }
-            errorCode = DatesValidator.IsoDateCheck(allom.ALLOM_DATE, "ALLOM_DATE");
+            else
+            {
+                if (!NumericValidation.IsValidPositiveDecimal(allom.ALLOM_DBH.ToString()))
+                {
+                    errorCode = 49;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DBH", "$V0$", allom.ALLOM_DBH.ToString(), "$V1$", "ALLOM_DBH");
+                }
+            }
+            ////
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(allom.ALLOM_HEIGHT, "ALLOM_HEIGHT", "GRP_ALLOM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DATE", "$V0$", "ALLOM_DATE", "$V1$", allom.ALLOM_DATE);
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_HEIGHT", "$V0$", "ALLOM_HEIGHT", "$GRP$", "GRP_ALLOM");
             }
-           */
-            if (GeneralValidation.FindMandatoryNull<GRP_ALLOM>(allom, "ALLOM_DBH", "ALLOM_HEIGHT", "ALLOM_SPP", "ALLOM_STEM_BIOM", "ALLOM_BRANCHES_BIOM"))
+            else
             {
-                errorCode = 1;
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GrpAllomErrors[errorCode], "ALLOM_DBH");
+                if (!NumericValidation.IsValidPositiveDecimal(allom.ALLOM_HEIGHT.ToString()))
+                {
+                    errorCode = 49;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_HEIGHT", "$V0$", allom.ALLOM_HEIGHT.ToString(), "$V1$", "ALLOM_HEIGHT");
+                }
             }
-
-            //return response;
+            ////
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(allom.ALLOM_BRANCHES_BIOM, "ALLOM_BRANCHES_BIOM", "GRP_ALLOM");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_BRANCHES_BIOM", "$V0$", "ALLOM_BRANCHES_BIOM", "$GRP$", "GRP_ALLOM");
+            }
+            else
+            {
+                if (!NumericValidation.IsValidPositiveDecimal(allom.ALLOM_BRANCHES_BIOM.ToString()))
+                {
+                    errorCode = 49;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_BRANCHES_BIOM", "$V0$", allom.ALLOM_BRANCHES_BIOM.ToString(), "$V1$", "ALLOM_BRANCHES_BIOM");
+                }
+            }
+            ///
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(allom.ALLOM_STEM_BIOM, "ALLOM_STEM_BIOM", "GRP_ALLOM");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_STEM_BIOM", "$V0$", "ALLOM_STEM_BIOM", "$GRP$", "GRP_ALLOM");
+            }
+            else
+            {
+                if (!NumericValidation.IsValidPositiveDecimal(allom.ALLOM_STEM_BIOM.ToString()))
+                {
+                    errorCode = 49;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_STEM_BIOM", "$V0$", allom.ALLOM_STEM_BIOM.ToString(), "$V1$", "ALLOM_STEM_BIOM");
+                }
+            }
+            
         }
 
         public static async Task ValidateAgbResponse(GRP_AGB agb, IcosDbContext db, Response response)
