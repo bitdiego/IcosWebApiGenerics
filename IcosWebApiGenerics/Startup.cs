@@ -28,7 +28,7 @@ namespace IcosWebApiGenerics
 
             services.AddScoped(typeof(IValidatorService<>), typeof(ValidatorService<>));
             services.AddScoped(typeof(ISaveDataService<>), typeof(SaveDataService<>));
-            services.AddScoped<IValidateService, ValidateService>();
+            //services.AddScoped<IValidateService, ValidateService>();
             services.AddScoped<IMapper, Mapper>();
             services.AddScoped<IErrorLogger, ErrorLogger>();
 

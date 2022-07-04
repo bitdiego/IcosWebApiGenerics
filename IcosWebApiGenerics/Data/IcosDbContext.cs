@@ -17,7 +17,6 @@ namespace IcosWebApiGenerics.Data
         }
 
         public DbSet<BADMList> BADMList { get; set; }
-
         public DbSet<Variable> Variables { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GRP_LOCATION> GRP_LOCATION { get; set; }

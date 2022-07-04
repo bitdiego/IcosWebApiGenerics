@@ -167,11 +167,30 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static int MissingMandatoryData<T>(T value, string name, string groupName)
         {
+            int res = 0;
             if (value == null)
             {
                 return 1;
             }
-            return 0;
+            else
+            {
+                var tt = typeof(T);
+                switch (tt.Name.ToLower())
+                {
+                    case "int32":
+                        int iVal = Convert.ToInt32(value);
+                        if (iVal < -9998) res = 1;
+                        break;
+                    case "decimal":
+                        decimal dVal= Convert.ToDecimal(value);
+                        if (dVal < -9998) res = 1;
+                        break;
+                    case "string":
+                        break;
+                }
+               
+            }
+            return res;
         }
 
         public static bool DecimalValueInRange(decimal min, decimal max, decimal value)

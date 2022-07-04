@@ -40,21 +40,6 @@ namespace IcosWebApiGenerics.Services
             return response;
         }
 
-        /* public int ValidateModel(T t)
-         {
-             int res = 0;
-             switch (t.GroupId)
-             {
-                 case (int)Globals.Groups.GRP_LOCATION: //grp location
-                     res = ValidateLocationGroup(t);
-                     break;
-                 case (int)Globals.Groups.GRP_UTC_OFFSET:
-                     res = ValidateUtcOffsetGroup(t);
-                     break;
-             }
-             return res;
-         }*/
-
         public Response ItemInBadmList(string value, int cvIndex)
         {
             string bmList = _context.BADMList.Where(item => item.cv_index == cvIndex).Select(x => x.vocabulary).FirstOrDefault();
@@ -189,7 +174,7 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_DHP:
                     GRP_DHP dhp = t as GRP_DHP;
-                    await GrpValidator.ValidateDhpResponseAsync(dhp, _context, response);
+                    GrpValidator.ValidateDhpResponse(dhp, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_GAI:
                     GRP_GAI gai = t as GRP_GAI;

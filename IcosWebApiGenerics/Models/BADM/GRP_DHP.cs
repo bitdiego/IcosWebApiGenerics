@@ -22,11 +22,11 @@ namespace IcosWebApiGenerics.Models.BADM
 
 		public string DHP_LENS_SN { get; set; }
 
-		public int DHP_OC_ROW { get; set; }
+		public int DHP_OC_ROW { get; set; } = -9999;
 
-		public int DHP_OC_COL { get; set; }
+		public int DHP_OC_COL { get; set; } = -9999;
 
-		public int DHP_RADIUS { get; set; }
+		public int DHP_RADIUS { get; set; } = -9999;
 
 		public string DHP_COMMENT { get; set; }
 

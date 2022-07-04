@@ -17,7 +17,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
         private static int errorCode = 0;
         private static string Ecosystem { get; set; }
 
-        public static async Task ValidateDhpResponseAsync(GRP_DHP dhp, IcosDbContext db, Response response)
+        public static void ValidateDhpResponse(GRP_DHP dhp, IcosDbContext db, Response response)
         {
             errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_ID, "DHP_ID", "GRP_DHP");
             if (errorCode != 0)
@@ -28,6 +28,12 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be integer value...
+                if (!NumericValidation.IsValidPositiveInteger(dhp.DHP_ID.ToString()))
+                {
+                    errorCode = 48;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_ID", "$V0$", dhp.DHP_ID.ToString(), "$V1$", "DHP_ID");
+                }
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_CAMERA, "DHP_CAMERA", "GRP_DHP");
@@ -36,17 +42,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA", "$V0$", "DHP_CAMERA", "$GRP$", "GRP_DHP");
             }
-            else
-            {
-                //must be in badmlist
-                /*errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_CAMERA, (int)Globals.CvIndexes.CAMERA, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_CAMERA", "$V0$", dhp.DHP_CAMERA, "$V1$", "CAMERA", "$GRP$", "GRP_DHP");
-                }*/
-            }
-
+            
             errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_CAMERA_SN, "DHP_CAMERA_SN", "GRP_DHP");
             if (errorCode != 0)
             {
@@ -59,16 +55,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_LENS", "$V0$", "DHP_LENS", "$GRP$", "GRP_DHP");
-            }
-            else
-            {
-                //must be in badmlist
-                /*errorCode = await GeneralValidation.ItemInBadmListAsync(dhp.DHP_LENS, (int)Globals.CvIndexes.LENS, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_LENS", "$V0$", dhp.DHP_LENS, "$V1$", "LENS", "$GRP$", "GRP_DHP");
-                }*/
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_LENS_SN, "DHP_LENS_SN", "GRP_DHP");
@@ -89,6 +75,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be integer value...
+                if (!NumericValidation.IsValidPositiveInteger(dhp.DHP_OC_ROW.ToString()))
+                {
+                    errorCode = 48;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_OC_ROW", "$V0$", dhp.DHP_OC_ROW.ToString(), "$V1$", "DHP_OC_ROW");
+                    isRowCol = false;
+                }
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<int>(dhp.DHP_OC_COL, "DHP_OC_COL", "GRP_DHP");
@@ -101,6 +94,14 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             else
             {
                 //must be integer value...
+                if (!NumericValidation.IsValidPositiveInteger(dhp.DHP_OC_COL.ToString()))
+                {
+                    errorCode = 48;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_OC_COL", "$V0$", dhp.DHP_OC_COL.ToString(), "V1", "DHP_OC_COL");
+                    isRowCol = false;
+                }
+                
             }
 
             if(isRowCol)
@@ -120,8 +121,17 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_RADIUS", "$V0$", "DHP_RADIUS", "$GRP$", "GRP_DHP");
             }
+            else
+            {
+                if (!NumericValidation.IsValidPositiveDecimal(dhp.DHP_RADIUS.ToString()))
+                {
+                    errorCode = 49;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_RADIUS", "$V0$", dhp.DHP_RADIUS.ToString(), "$V1$", "DHP_RADIUS");
+                }
+            }
 
-            errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_DATE, "DHP_DATE", "GRP_DHP");
+           /* errorCode = GeneralValidation.MissingMandatoryData<string>(dhp.DHP_DATE, "DHP_DATE", "GRP_DHP");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -133,7 +143,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "DHP_DATE", "$V0$", "DHP_DATE", "$V1$", dhp.DHP_DATE);
             }
-
+           */
             //return response;
         }
 

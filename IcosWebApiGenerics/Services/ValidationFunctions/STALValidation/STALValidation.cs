@@ -20,7 +20,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 
         public static async Task ValidateSppsResponseAsync(GRP_SPPS spps, IcosDbContext db, Response response)
         {
-            errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
+            /*errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_DATE, "SPPS_DATE", "GRP_SPPS");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -32,7 +32,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "SPPS_DATE", "$V0$", "SPPS_DATE", "$V1$", spps.SPPS_DATE);
             }
-
+            */
             errorCode = GeneralValidation.MissingMandatoryData<string>(spps.SPPS_PLOT, "SPPS_PLOT", "GRP_SPPS");
             if (errorCode != 0)
             {
@@ -119,7 +119,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 
         public static async Task ValidateTreeResponse(GRP_TREE tree, IcosDbContext db, Response response)
         {
-            errorCode = GeneralValidation.MissingMandatoryData<string>(tree.TREE_DATE, "TREE_DATE", "GRP_TREE");
+            /*errorCode = GeneralValidation.MissingMandatoryData<string>(tree.TREE_DATE, "TREE_DATE", "GRP_TREE");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -131,7 +131,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "TREE_DATE", "$V0$", "TREE_DATE", "$V1$", tree.TREE_DATE);
             }
-
+            */
             if (tree.TREE_PLOT.ToLower().StartsWith("cp") || tree.TREE_PLOT.ToLower().EndsWith("cp"))
             {
                 if (tree.TREE_ID == null)
@@ -187,7 +187,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
 
         public static void ValidateAllomResponse(GRP_ALLOM allom, IcosDbContext context, Response response)
         {
-            errorCode = GeneralValidation.MissingMandatoryData<string>(allom.ALLOM_DATE, "ALLOM_DATE", "GRP_ALLOM");
+           /*
+            * errorCode = GeneralValidation.MissingMandatoryData<string>(allom.ALLOM_DATE, "ALLOM_DATE", "GRP_ALLOM");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -199,7 +200,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ALLOM_DATE", "$V0$", "ALLOM_DATE", "$V1$", allom.ALLOM_DATE);
             }
-
+           */
             if (GeneralValidation.FindMandatoryNull<GRP_ALLOM>(allom, "ALLOM_DBH", "ALLOM_HEIGHT", "ALLOM_SPP", "ALLOM_STEM_BIOM", "ALLOM_BRANCHES_BIOM"))
             {
                 errorCode = 1;
@@ -364,7 +365,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LITTERPNT_PLOT", "$V0$", "LITTERPNT_PLOT", "$V1$", litterPnt.LITTERPNT_PLOT);
                 }
 
-                errorCode = await GeneralValidation.ItemInSamplingPointGroupAsync(litterPnt.LITTERPNT_PLOT, litterPnt.LITTERPNT_DATE, litterPnt.SiteId, db);
+                errorCode = await GeneralValidation.ItemInSamplingPointGroupAsync(litterPnt.LITTERPNT_PLOT, litterPnt.LITTERPNT_PLOT, litterPnt.SiteId, db);
                 if (errorCode > 0)
                 {
                     response.Code += errorCode;
@@ -372,7 +373,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
                 }
             }
 
-            errorCode = GeneralValidation.MissingMandatoryData<string>(litterPnt.LITTERPNT_DATE, "LITTERPNT_DATE", "GRP_LITTERPNT");
+           /* errorCode = GeneralValidation.MissingMandatoryData<string>(litterPnt.LITTERPNT_DATE, "LITTERPNT_DATE", "GRP_LITTERPNT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -383,7 +384,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.STALValidation
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LITTERPNT_DATE", "$V0$", "LITTERPNT_DATE", "$V1$", litterPnt.LITTERPNT_DATE);
-            }
+            }*/
 
             string litterType = litterPnt.LITTERPNT_TYPE.ToLower();
             switch (Ecosystem.ToLower())

@@ -29,7 +29,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation
                     }
                 }
             }
-            //ResponseWrapper.SetResponse();
+
             errorCode = GeneralValidation.MissingMandatoryData<string>(bmInst.BM_MODEL, "BM_MODEL", "GRP_BM");
             if (errorCode != 0)
             {
@@ -47,7 +47,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation
             errorCode = GeneralValidation.MissingMandatoryData<string>(bmInst.BM_TYPE, "BM_TYPE", "GRP_BM");
             if (errorCode != 0)
             {
-                //ResponseWrapper.WrapErrorCodeAndMessages(errorCode, "BM_TYPE", "$V0$", "BM_TYPE", "$GRP$", "GRP_BM");
+
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "BM_TYPE", "$V0$", "BM_TYPE", "$GRP$", "GRP_BM");
             }
@@ -60,7 +60,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.MeteoValidation
             }
 
             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(bmInst, db);
-            //return ResponseWrapper.GetResponse();
         }
 
         private int ValidateByBmType(GRP_BM model, IcosDbContext db)

@@ -47,6 +47,17 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return success;
         }
 
+        public static bool IsValidPositiveDecimal(this string s)
+        {
+            decimal num;
+            bool success = decimal.TryParse(s, out num);
+            if (success)
+            {
+                success = num > 0;
+            }
+            return success;
+        }
+
         public static bool IsDecimalNumberInRange(this string s, decimal min, decimal max)
         {
             decimal num;

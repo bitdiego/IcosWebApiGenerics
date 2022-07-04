@@ -53,13 +53,13 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
             }
 
             //check dates constraints
-            errorCode = DatesValidator.IsoDateCompare(ecInst.EC_DATE, ecInst.EC_DATE_START, ecInst.EC_DATE_END);
+            /*errorCode = DatesValidator.IsoDateCompare(ecInst.EC_DATE, ecInst.EC_DATE_START, ecInst.EC_DATE_END);
             if (errorCode != 0)
             {
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_DATE", "$V0$", "EC_DATE", "$V1$", "EC_DATE_START", "$V2$", "EC_DATE_END", "$GRP$", "GRP_EC");
             }
-
+            */
             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(ecInst, db);
         }
 
