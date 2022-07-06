@@ -71,7 +71,7 @@ namespace IcosWebApiGenerics.Services
                 case (int)Globals.Groups.GRP_INST:
                     GRP_INST inst = t as GRP_INST;
                     //var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
-                    var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == x.INST_SN && x.INST_FACTORY == inst.INST_FACTORY 
+                    var _item = await _context.GRP_INST.Where(x => x.INST_MODEL == inst.INST_MODEL && x.INST_SN == inst.INST_SN && x.INST_FACTORY == inst.INST_FACTORY 
                                                                 && x.DataStatus == 0 && x.SiteId == inst.SiteId).FirstOrDefaultAsync();
 
                     if (_item != null)
@@ -236,8 +236,8 @@ namespace IcosWebApiGenerics.Services
             }
             */
             _context.Set<T>().Add(t);
-            //int res = await _context.SaveChangesAsync();
-            int res = 1;
+            int res = await _context.SaveChangesAsync();
+            //int res = 1;
             return res > 0;
         }
     }

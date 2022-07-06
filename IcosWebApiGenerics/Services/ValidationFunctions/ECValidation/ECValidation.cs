@@ -52,18 +52,10 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_TYPE", "$V0$", "EC_TYPE", "$GRP$", "GRP_EC");
             }
 
-            //check dates constraints
-            /*errorCode = DatesValidator.IsoDateCompare(ecInst.EC_DATE, ecInst.EC_DATE_START, ecInst.EC_DATE_END);
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "EC_DATE", "$V0$", "EC_DATE", "$V1$", "EC_DATE_START", "$V2$", "EC_DATE_END", "$GRP$", "GRP_EC");
-            }
-            */
             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(ecInst, db);
         }
 
-        public static async Task<Response> ValidateEcSysResponseAsync(GRP_ECSYS ecSys, IcosDbContext context, Response response)
+        public static async Task ValidateEcSysResponseAsync(GRP_ECSYS ecSys, IcosDbContext context, Response response)
         {
             //1. check if GA e SA are in Inst group
             if (!String.IsNullOrEmpty(ecSys.ECSYS_GA_MODEL) || !String.IsNullOrEmpty(ecSys.ECSYS_GA_SN))
@@ -120,10 +112,58 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.ECValidation
             throw new NotImplementedException();
         }
 
-        public static Task<Response> ValidateEcWexclResponseAsync(GRP_ECWEXCL ecWexcl, IcosDbContext context, Response response)
+        public static void ValidateEcWexclResponse(GRP_ECWEXCL ecWexcl, IcosDbContext context, Response response)
         {
             //All variables (except _COMMENT) are mandatory
-            throw new NotImplementedException();
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(ecWexcl.ECWEXCL, "ECWEXCL", "GRP_ECWEXCL");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ECWEXCL", "$V0$", "ECWEXCL", "$GRP$", "GRP_ECWEXCL");
+            }
+            else
+            {
+                //can have negative values?
+                if (!NumericValidation.IsDecimalNumberInRange(ecWexcl.ECWEXCL_RANGE.ToString(), 1, 360))
+                {
+                    errorCode = 3;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ECWEXCL", "$V0$", "ECWEXCL");
+                }
+            }
+
+            errorCode = GeneralValidation.MissingMandatoryData<decimal>(ecWexcl.ECWEXCL_RANGE, "ECWEXCL_RANGE", "GRP_ECWEXCL");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ECWEXCL_RANGE", "$V0$", "ECWEXCL_RANGE", "$GRP$", "GRP_ECWEXCL");
+            }
+            else
+            {
+                //can have negative values? it seems not: from 1 to..360?
+                if(!NumericValidation.IsDecimalNumberInRange(ecWexcl.ECWEXCL_RANGE.ToString(), 1, 360))
+                {
+                    errorCode = 3;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ECWEXCL_RANGE", "$V0$", "ECWEXCL_RANGE");
+                }
+            }
+
+
+            errorCode = GeneralValidation.MissingMandatoryData<string>(ecWexcl.ECWEXCL_NORTHREF, "ECWEXCL_NORTHREF", "GRP_ECWEXCL");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ECWEXCL_NORTHREF", "$V0$", "ECWEXCL_NORTHREF", "$GRP$", "GRP_ECWEXCL");
+            }
+
+            errorCode = GeneralValidation.MissingMandatoryData<string>(ecWexcl.ECWEXCL_ACTION, "ECWEXCL_ACTION", "GRP_ECWEXCL");
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "ECWEXCL_ACTION", "$V0$", "ECWEXCL_ACTION", "$GRP$", "GRP_ECWEXCL");
+            }
+            //throw new NotImplementedException();
         }
     }
 }

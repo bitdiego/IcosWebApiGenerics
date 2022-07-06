@@ -149,7 +149,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static async Task ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db, Response response)
         {
-            errorCode = GeneralValidation.MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
+            /*errorCode = GeneralValidation.MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -161,7 +161,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_DATE", "$V0$", "D_SNOW_DATE", "$V1$", dSnow.D_SNOW_DATE);
             }
-
+            */
             if (Globals.IsValidCoordinateSystem(dSnow.D_SNOW_EASTWARD_DIST, dSnow.D_SNOW_NORTHWARD_DIST,
                                                 dSnow.D_SNOW_DISTANCE_POLAR, dSnow.D_SNOW_ANGLE_POLAR) > 0)
             {
@@ -190,7 +190,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
 
         public static async Task ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db, Response response)
         {
-            errorCode = GeneralValidation.MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
+           /* errorCode = GeneralValidation.MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
             if (errorCode != 0)
             {
                 response.Code += errorCode;
@@ -202,7 +202,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_DATE", "$V0$", "WTDPNT_DATE", "$V1$", wtdPnt.WTDPNT_DATE);
             }
-
+           */
             if (Globals.IsValidCoordinateSystem(wtdPnt.WTDPNT_EASTWARD_DIST, wtdPnt.WTDPNT_NORTHWARD_DIST,
                                                 wtdPnt.WTDPNT_DISTANCE_POLAR, wtdPnt.WTDPNT_ANGLE_POLAR) > 0)
             {
@@ -239,17 +239,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_MODEL", "$V0$", "INST_MODEL", "$GRP$", "GRP_INST");
             }
-            else
-            {
-               /* errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_MODEL, (int)Globals.CvIndexes.INST_MODEL, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_MODEL", "$V0$", inst.INST_MODEL, "$V1$", "INST_MODEL", "$GRP$", "GRP_INST");
-                }*/
-            }
 
-            
             errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_SN, "INST_SN", "GRP_INST");
             if (errorCode != 0)
             {
@@ -281,24 +271,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
                 }
-                /*
-                errorCode = await GeneralValidation.ItemInBadmListAsync(inst.INST_FACTORY, (int)Globals.CvIndexes.INST_FACTORY, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_FACTORY", "$V0$", inst.INST_FACTORY, "$V1$", "INST_FACTORY", "$GRP$", "GRP_INST");
-                }
-                else
-                {
-                    
-                    errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
-                    if (errorCode > 0)
-                    {
-                        response.Code += errorCode;
-                        response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
-                    }
-                }
-                */
             }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(inst.INST_DATE, "INST_DATE", "GRP_INST");
@@ -314,20 +286,7 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "INST_DATE", "$V0$", "INST_DATE", "$V1$", inst.INST_DATE);
             }
 
-            /* errorCode = await InstrumentsValidation.InstrumentInGrpInst(inst, inst.SiteId, db);
-             if (errorCode > 0)
-             {
-                 response.Code += errorCode;
-                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_MODEL");
-             }
-
-             errorCode = await InstrumentsValidation.LastExpectedOpByDateAsync(inst, db);
-             if (errorCode > 0)
-             {
-                 response.Code += errorCode;
-                 response.FormatError(ErrorCodes.GrpInstErrors[errorCode], "INST_FACTORY");
-             }*/
-            //return response;
+            
         }
 
         /////////////////////////////////
