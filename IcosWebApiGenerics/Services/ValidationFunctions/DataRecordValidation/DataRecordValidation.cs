@@ -122,11 +122,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
             }
             else
             {
-                if (!NumericValidation.IsValidPositiveInteger(logger.LOGGER_ID.ToString()))
+                if (!NumericValidation.IsIntegerNumberInRange(logger.LOGGER_ID.ToString(), 1,99))
                 {
-                    errorCode = 8;
+                    errorCode = 1;
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_ID", "$V0$", "LOGGER_ID", "$V1$", logger.LOGGER_ID.ToString());
+                    response.FormatError(ErrorCodes.GrpLoggerErrors[errorCode], "$V0$", logger.LOGGER_ID.ToString());
                 }
             }
             //DIEGO:: to be add a check on logger id: the same logger id can be reassigned to a logger of the same kind (model?)

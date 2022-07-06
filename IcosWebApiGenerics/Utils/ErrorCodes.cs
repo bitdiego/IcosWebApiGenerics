@@ -245,6 +245,23 @@ namespace IcosWebApiGenerics.Utils
             {226, "Error: Trying to remove Instrument $V0$, serial $V1$ which has been already removed and not reinstalled"},
         };
 
+        public static Dictionary<int, string> GrpLoggerErrors = new Dictionary<int, string>
+        {
+            {1,"Error: entered LOGGER_ID must be between 1 and 99. Found value $V0$"},
+            /*{234, "Error: .csv extension not allowed for binary files"},
+            {235, "Error: .bin extension not allowed for ASCII files"},
+            {236, "Error: FILE_HEAD_VARS for ASCII files must be specified if FILE_HEAD_NUM is entered"},
+            {237, "Error: FILE_HEAD_NUM for ASCII files must be specified if FILE_HEAD_VARS is entered"},
+            {238, "Error: FILE_HEAD_VARS cannot be greater than FILE_HEAD_NUM"},
+            {239, "Error: FILE_HEAD_TYPE must be different from FILE_HEAD_VARS"},
+            {240, "Error: FILE_HEAD_VARS and FILE_HEAD_TYPE for binary files must be specified if FILE_HEAD_NUM is entered"},
+            {241, "Error: FILE_HEAD_NUM and FILE_HEAD_TYPE for binary files must be specified if FILE_HEAD_VARS is entered"},
+            {242, "Error: FILE_HEAD_NUM and FILE_HEAD_VARS for binary files must be specified if FILE_HEAD_TYPE is entered"},
+            {243, "Error: FILE_HEAD_TYPE cannot be greater than FILE_HEAD_NUM"},
+            {244, "Error: FILE_HEAD_TYPE cannot be greater than FILE_HEAD_VARS"},
+            {245, "Error: FILE_FORMAT and FILE_EXT must be submitted together"}*/
+        };
+
         public static Dictionary<int, string> GrpFileErrors = new Dictionary<int, string>
         {
             {126,"Error: entered FILE_LOGGER_ID does not match with LOGGER_ID registered for this site in GRP_LOGGER group"},
