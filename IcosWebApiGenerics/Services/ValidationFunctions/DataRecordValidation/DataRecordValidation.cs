@@ -97,15 +97,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_MODEL", "$V0$", "LOGGER_MODEL", "$GRP$", "GRP_LOGGER");
             }
-            else
-            {
-                /*errorCode = await GeneralValidation.ItemInBadmListAsync(logger.LOGGER_MODEL, (int)Globals.CvIndexes.LOGGER_MODEL, db);
-                if (errorCode > 0)
-                {
-                    response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_MODEL", "$V0$", logger.LOGGER_MODEL, "$V1$", "LOGGER_MODEL", "$GRP$", "GRP_LOGGER");
-                }*/
-            }
 
             errorCode = GeneralValidation.MissingMandatoryData<string>(logger.LOGGER_SN, "LOGGER_SN", "GRP_LOGGER");
             if (errorCode != 0)
@@ -129,20 +120,16 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_ID", "$V0$", "LOGGER_ID", "$GRP$", "GRP_LOGGER");
             }
-
-            errorCode = GeneralValidation.MissingMandatoryData<string>(logger.LOGGER_DATE, "LOGGER_DATE", "GRP_LOGGER");
-            if (errorCode != 0)
+            else
             {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_DATE", "$V0$", "LOGGER_DATE", "$GRP$", "GRP_LOGGER");
+                if (!NumericValidation.IsValidPositiveInteger(logger.LOGGER_ID.ToString()))
+                {
+                    errorCode = 8;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_ID", "$V0$", "LOGGER_ID", "$V1$", logger.LOGGER_ID.ToString());
+                }
             }
-            errorCode = DatesValidator.IsoDateCheck(logger.LOGGER_DATE, "LOGGER_DATE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "LOGGER_DATE", "$V0$", "LOGGER_DATE", "$V1$", logger.LOGGER_DATE);
-            }
-            //return response;
+            //DIEGO:: to be add a check on logger id: the same logger id can be reassigned to a logger of the same kind (model?)
         }
 
         private static int CheckFileFormat(string fileFormat, string fileExt, int siteId)
