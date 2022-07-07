@@ -147,21 +147,8 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             //return response;
         }
 
-        public static async Task ValidateDSnowResponse(GRP_D_SNOW dSnow, IcosDbContext db, Response response)
+        public static async Task ValidateDSnowResponseAsync(GRP_D_SNOW dSnow, IcosDbContext db, Response response)
         {
-            /*errorCode = GeneralValidation.MissingMandatoryData<string>(dSnow.D_SNOW_DATE, "D_SNOW_DATE", "GRP_D_SNOW");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_DATE", "$V0$", "D_SNOW_DATE", "$GRP$", "GRP_D_SNOW");
-            }
-            errorCode = DatesValidator.IsoDateCheck(dSnow.D_SNOW_DATE, "D_SNOW_DATE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_DATE", "$V0$", "D_SNOW_DATE", "$V1$", dSnow.D_SNOW_DATE);
-            }
-            */
             if (Globals.IsValidCoordinateSystem(dSnow.D_SNOW_EASTWARD_DIST, dSnow.D_SNOW_NORTHWARD_DIST,
                                                 dSnow.D_SNOW_DISTANCE_POLAR, dSnow.D_SNOW_ANGLE_POLAR) > 0)
             {
@@ -185,24 +172,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "D_SNOW_PLOT", "$V0$", dSnow.D_SNOW_PLOT);
                 }
             }
-            //return response;
         }
 
-        public static async Task ValidateWtdPntResponse(GRP_WTDPNT wtdPnt, IcosDbContext db, Response response)
+        public static async Task ValidateWtdPntResponseAsync(GRP_WTDPNT wtdPnt, IcosDbContext db, Response response)
         {
-           /* errorCode = GeneralValidation.MissingMandatoryData<string>(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE", "GRP_WTDPNT");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_DATE", "$V0$", "WTDPNT_DATE", "$GRP$", "GRP_WTDPNT");
-            }
-            errorCode = DatesValidator.IsoDateCheck(wtdPnt.WTDPNT_DATE, "WTDPNT_DATE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_DATE", "$V0$", "WTDPNT_DATE", "$V1$", wtdPnt.WTDPNT_DATE);
-            }
-           */
+           
             if (Globals.IsValidCoordinateSystem(wtdPnt.WTDPNT_EASTWARD_DIST, wtdPnt.WTDPNT_NORTHWARD_DIST,
                                                 wtdPnt.WTDPNT_DISTANCE_POLAR, wtdPnt.WTDPNT_ANGLE_POLAR) > 0)
             {
@@ -227,8 +201,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
                     response.FormatError(ErrorCodes.GeneralErrors[errorCode], "WTDPNT_PLOT", "$V0$", wtdPnt.WTDPNT_PLOT);
                 }
             }
-
-            //return response;
         }
 
         public static async Task ValidateInstResponseAsync(GRP_INST inst, IcosDbContext db, Response response)

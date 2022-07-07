@@ -194,15 +194,15 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_TREE:
                     GRP_TREE dSnow = t as GRP_TREE;
-                    STALValidation.ValidateTreeResponse(dSnow, _context, response);
+                    await STALValidation.ValidateTreeResponseAsync(dSnow, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_AGB:
                     GRP_AGB agb = t as GRP_AGB;
-                    STALValidation.ValidateAgbResponse(agb, _context, response);
+                    await STALValidation.ValidateAgbResponseAsync(agb, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_LITTERPNT:
                     GRP_LITTERPNT litterPnt = t as GRP_LITTERPNT;
-                    STALValidation.ValidateLitterPntResponse(litterPnt, _context, response);
+                    await STALValidation.ValidateLitterPntResponseAsync(litterPnt, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_ALLOM:
                     GRP_ALLOM allom = t as GRP_ALLOM;
@@ -210,11 +210,11 @@ namespace IcosWebApiGenerics.Services
                     break;
                 case (int)Globals.Groups.GRP_WTDPNT:
                     GRP_WTDPNT wtdPnt = t as GRP_WTDPNT;
-                    GrpValidator.ValidateWtdPntResponse(wtdPnt, _context, response);
+                    await GrpValidator.ValidateWtdPntResponseAsync(wtdPnt, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_D_SNOW:
                     GRP_D_SNOW d_Snow = t as GRP_D_SNOW;
-                    GrpValidator.ValidateDSnowResponse(d_Snow, _context, response);
+                    await GrpValidator.ValidateDSnowResponseAsync(d_Snow, _context, response);
                     break;
                 case (int)Globals.Groups.GRP_INST:
                     GRP_INST inst = t as GRP_INST;
