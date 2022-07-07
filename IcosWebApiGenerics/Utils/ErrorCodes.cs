@@ -19,6 +19,7 @@ namespace IcosWebApiGenerics.Utils
             { 8, "Negative number not allowed for variable $V0$. Found $V1$"},
             { 9, "You have to submit at least one variable"},
             {10,"Error: $V0$ string does not have correct format: It must be CP_## or SP-I_## or SP-II_##-## where ## range from 01 to 20. Found value: $V1$"},
+            {11,"Error: expected positive integer number for variable $V0$; found $V1$"},
             {34,"Error: Instrument with serial number $V0$ is missing! Item must be added in GRP_INST group"},
             {35,"Error: operation date for Instrument $V0$ with serial number $V0$ is less than purchase date in GRP_INST group"},
             {48,"Error: integer number expected; found $V0$ for variable $V1$"},

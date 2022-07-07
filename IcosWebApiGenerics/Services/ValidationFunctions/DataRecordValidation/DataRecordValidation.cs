@@ -25,9 +25,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
             }
             else
             {
-                if (file.FILE_ID <= 0)
+                if (!NumericValidation.IsValidPositiveInteger(file.FILE_ID.ToString()))
                 {
-                    //must be strictly positive
+                    errorCode = 11;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FILE_ID", "$V0$", "FILE_ID", "V1", file.FILE_ID.ToString());
                 }
             }
 
@@ -39,9 +41,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
             }
             else
             {
-                if (file.FILE_LOGGER_ID <= 0)
+                if(!NumericValidation.IsIntegerNumberInRange(file.FILE_LOGGER_ID.ToString(), 1, 99))
                 {
-                    //must be strictly positive
+                    errorCode = 1;
+                    response.Code += errorCode;
+                    response.FormatError(ErrorCodes.GrpLoggerErrors[errorCode], "FILE_LOGGER_ID", "$V0$", file.FILE_LOGGER_ID.ToString());
                 }
 
                 var log = await context.GRP_LOGGER.AnyAsync(logger => logger.LOGGER_ID == file.FILE_LOGGER_ID && logger.SiteId == file.SiteId);
@@ -51,20 +55,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                     response.Code += errorCode;
                     response.FormatError(ErrorCodes.GrpFileErrors[errorCode], "FILE_LOGGER_ID");
                 }
-            }
-
-            errorCode = GeneralValidation.MissingMandatoryData<string>(file.FILE_DATE, "FILE_DATE", "GRP_FILE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FILE_DATE", "$V0$", "FILE_DATE", "$GRP$", "GRP_FILE");
-            }
-            
-            errorCode = DatesValidator.IsoDateCheck(file.FILE_DATE, "FILE_DATE");
-            if (errorCode != 0)
-            {
-                response.Code += errorCode;
-                response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FILE_DATE", "$V0$", "FILE_DATE", "$V1$", file.FILE_DATE);
             }
 
             errorCode = CheckFileFormat(file.FILE_FORMAT, file.FILE_EXTENSION, file.SiteId);
@@ -130,6 +120,11 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                 }
                 else
                 {
+                    //the same logger id can be reassigned to a logger of the same kind (model?)
+                    //check if a logger with same id is in table
+                    //if yes, check if same model
+                    //if yes, check dates: if new date > old date, substitution is ok, otherwise not
+                    //if not the same model, raise error
                     errorCode = await IsUniqueLoggerIdAsync(logger, db);
                     if (errorCode > 0)
                     {
@@ -138,11 +133,6 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                     }
                 }
             }
-            //DIEGO:: to be add a check on logger id: the same logger id can be reassigned to a logger of the same kind (model?)
-            //check if a logger with same id is in table
-            //if yes, check if same model
-            //if yes, check dates: if new date > old date, substitution is ok, otherwise not
-            //if not the same model, raise error
             
         }
 
