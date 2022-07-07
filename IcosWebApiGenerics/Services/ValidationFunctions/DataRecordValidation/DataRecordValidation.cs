@@ -126,10 +126,45 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                 {
                     errorCode = 1;
                     response.Code += errorCode;
-                    response.FormatError(ErrorCodes.GrpLoggerErrors[errorCode], "$V0$", logger.LOGGER_ID.ToString());
+                    response.FormatError(ErrorCodes.GrpLoggerErrors[errorCode], "LOGGER_ID", "$V0$", logger.LOGGER_ID.ToString());
+                }
+                else
+                {
+                    errorCode = await IsUniqueLoggerIdAsync(logger, db);
+                    if (errorCode > 0)
+                    {
+                        response.Code += errorCode;
+                        response.FormatError(ErrorCodes.GrpLoggerErrors[errorCode], "LOGGER_ID");
+                    }
                 }
             }
             //DIEGO:: to be add a check on logger id: the same logger id can be reassigned to a logger of the same kind (model?)
+            //check if a logger with same id is in table
+            //if yes, check if same model
+            //if yes, check dates: if new date > old date, substitution is ok, otherwise not
+            //if not the same model, raise error
+            
+        }
+
+        private static async Task<int> IsUniqueLoggerIdAsync(GRP_LOGGER logger, IcosDbContext db)
+        {
+            var item = await db.GRP_LOGGER.Where(log => log.LOGGER_ID == logger.LOGGER_ID && log.DataStatus == 0 && log.SiteId == logger.SiteId).
+                                OrderByDescending(d => d.LOGGER_DATE).FirstOrDefaultAsync();
+            if(String.Compare(item.LOGGER_MODEL, logger.LOGGER_MODEL)==0 && String.Compare(item.LOGGER_SN, logger.LOGGER_SN) != 0)
+            {
+                if (String.Compare(item.LOGGER_DATE, logger.LOGGER_DATE) >= 0)
+                {
+                    return 3;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 2;
+            }
         }
 
         private static int CheckFileFormat(string fileFormat, string fileExt, int siteId)

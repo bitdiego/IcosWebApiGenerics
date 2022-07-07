@@ -248,6 +248,8 @@ namespace IcosWebApiGenerics.Utils
         public static Dictionary<int, string> GrpLoggerErrors = new Dictionary<int, string>
         {
             {1,"Error: entered LOGGER_ID must be between 1 and 99. Found value $V0$"},
+            {2,"Error: there is already a logger with same LOGGER_ID but on a different LOGGER_MODEL"},
+            {3,"Error: there is a logger with same LOGGER_ID and same LOGGER_MODEL but mapped on a greater date"},
             /*{234, "Error: .csv extension not allowed for binary files"},
             {235, "Error: .bin extension not allowed for ASCII files"},
             {236, "Error: FILE_HEAD_VARS for ASCII files must be specified if FILE_HEAD_NUM is entered"},
