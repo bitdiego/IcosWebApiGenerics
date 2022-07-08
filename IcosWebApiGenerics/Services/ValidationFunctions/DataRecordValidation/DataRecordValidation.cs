@@ -70,6 +70,16 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                 response.Code += errorCode;
                 response.FormatError(ErrorCodes.GeneralErrors[errorCode], "FILE_FORMAT");
             }
+
+            errorCode = CheckFileLoggerId(file, context);
+            if (errorCode != 0)
+            {
+                response.Code += errorCode;
+                response.FormatError(ErrorCodes.GrpFileErrors[errorCode], "FILE_LOGGER_ID", "$V0$", file.FILE_LOGGER_ID.ToString(), "$V1$", file.FILE_ID.ToString(), "$V2$", file.FILE_TYPE);
+            }
+
+            //is it really useful??
+            //public bool CheckFileLoggerIdSameType(string fileId, string loggerId, string fileType, int siteId, string date)
         }
 
         public static async Task ValidateLoggerResponseAsync(GRP_LOGGER logger, IcosDbContext db, Response response)
@@ -270,6 +280,25 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions.DataRecordValidation
                     }
                 }
             }
+            return res;
+        }
+
+        private static int CheckFileLoggerId(GRP_FILE model, IcosDbContext db)
+        {
+            int res = 0;
+            /*
+             * SqlCommand cmd = new SqlCommand();
+            cmd.Connection = cn;
+            cmd.CommandText = "SELECT COUNT(*) as CQ FROM ICOS.dbo.DataStorage WHERE groupID=2002 AND siteID=@idSite AND dataStatus=0 and qual1=@loggerId And qual0=@fileId AND qual3!=@fileType";
+            
+            */
+            var item = db.GRP_FILE.Where(ff => ff.SiteId == model.SiteId && ff.DataStatus == 0 && ff.FILE_ID == model.FILE_ID && 
+                                         ff.FILE_LOGGER_ID == model.FILE_LOGGER_ID && ff.FILE_TYPE != model.FILE_TYPE);
+            if (item != null)
+            {
+                res = (int)Globals.ErrorValidationCodes.FILE_ID_LOGGER_ID_ALREADY_REGISTERED;
+            }
+
             return res;
         }
 

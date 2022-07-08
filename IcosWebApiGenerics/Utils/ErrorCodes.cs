@@ -268,6 +268,7 @@ namespace IcosWebApiGenerics.Utils
         public static Dictionary<int, string> GrpFileErrors = new Dictionary<int, string>
         {
             {126,"Error: entered FILE_LOGGER_ID does not match with LOGGER_ID registered for this site in GRP_LOGGER group"},
+            {127,"Error: The logger id=$V0$ and file id=$V1$ is already registered for $V2$ type in GRP_FILE"},
             {234, "Error: .csv extension not allowed for binary files"},
             {235, "Error: .bin extension not allowed for ASCII files"},
             {236, "Error: FILE_HEAD_VARS for ASCII files must be specified if FILE_HEAD_NUM is entered"},
