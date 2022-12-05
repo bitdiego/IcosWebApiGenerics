@@ -1,4 +1,5 @@
 ﻿using IcosWebApiGenerics.Data;
+using IcosWebApiGenerics.Models;
 using IcosWebApiGenerics.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -193,6 +194,45 @@ namespace IcosWebApiGenerics.Services.ValidationFunctions
             return res;
         }
 
+        /*public static void ManageMandatoryData(IEnumerable<Variable> varList, Response response)
+        {
+            foreach(var variable in varList)
+            {
+                var value = variable.Value;
+                if (value == null)
+                {
+                    //return 1;
+                    response.Code += 1;
+                    response.FormatError(ErrorCodes.GeneralErrors[1], variable.Name, "$V0$", variable.Name, "$GRP$", "getGroupByIdgroupofVar()");
+                }
+                else
+                {
+                    var tt = variable.Unit;
+                    int res=0;
+                    switch (tt)
+                    {
+                        case 3:
+                        case 4:
+                            int iVal = Convert.ToInt32(value);
+                            if (iVal < -9998) res = 1;
+                            break;
+                        case 2:
+                            decimal dVal = Convert.ToDecimal(value);
+                            if (dVal < -9998) res = 1;
+                            break;
+                        case 1:
+                            break;
+                    }
+                    if (res > 0)
+                    {
+                        response.Code += res;
+                        response.FormatError(ErrorCodes.GeneralErrors[1], variable.Name, "$V0$", variable.Name, "$GRP$", "getGroupByIdgroupofVar()");
+                    }
+                    
+                }
+            }
+        }
+        */
         public static bool DecimalValueInRange(decimal min, decimal max, decimal value)
         {
             return value >= min && value <= max;

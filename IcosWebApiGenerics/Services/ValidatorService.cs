@@ -55,9 +55,32 @@ namespace IcosWebApiGenerics.Services
 
         public async Task<Response> Validate(T t)
         {
+            //DIEGO:: TO BE CONSIDERED!!!
+            var mandatoryVarsList = await GetMandatoryVariableListAsync(t.GroupId);
+            var mandProps = t.GetType().GetProperties();
+
+            var stoca = mandProps.Where(x => mandatoryVarsList.Any(y => y.Name == x.Name));
+            foreach(var azz in stoca)
+            {
+                
+                var cippa = azz.GetValue(t, null);
+                var azzoType = azz.PropertyType.Name;
+                if(cippa == null)
+                {
+                    response.Code += 1;
+                    response.FormatError(ErrorCodes.GeneralErrors[1], azz.Name, "$V0$", azz.Name, "$GRP$", GetGroupName(t.GroupId));
+                }
+            }
+            //GeneralValidation.ManageMandatoryData(mandatoryVarsList, response);
+            /*foreach(var mandatory in mandatoryVarsList)
+            {
+                Type tt = mandatory.Value.GetType();
+                int ccc = GeneralValidation.MissingMandatoryData<string>(mandatory.Value, mandatory.Name, "");
+            }
+            */
             //May be to add a general validation? For Dates format? Mandatory variables? Item in CV?
             var xList = await GetCvIndexVariables(t.GroupId);
-            if (xList != null)
+            if (xList != null && xList.Count()>0)
             {
                 var props = t.GetType().GetProperties();
                 foreach (var xl in xList)
@@ -102,7 +125,10 @@ namespace IcosWebApiGenerics.Services
                 foreach (var _dt in _dates)
                 {
                     var prop = props.FirstOrDefault(p => p.Name == _dt.Name);
-                    var value = prop.GetValue(t, null).ToString();
+                    var objValue = prop.GetValue(t, null);
+                    if (objValue == null) continue;
+                    string value = objValue.ToString();
+                    //.ToString();
                     //Dates not in ISODATE format: for example, dd-mm-yyyy or dd/mm//yyyy:
                     //try to convert in ISODATE
                     if ((value.IndexOf("/") >= 0) || (value.IndexOf("-") >= 0) || (value.IndexOf(" ") >= 0))
@@ -250,6 +276,12 @@ namespace IcosWebApiGenerics.Services
                     break;
             }
             return response;
+        }
+
+        private async Task<IEnumerable<Variable>> GetMandatoryVariableListAsync(int grId)
+        {
+            var variables = await _context.Variables.Where(vv => vv.GroupId == grId && vv.Required).ToListAsync();
+            return variables;
         }
 
         private async Task<IEnumerable<Variable>> GetCvIndexVariables(int grId)

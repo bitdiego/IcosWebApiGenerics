@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IcosWebApiGenerics.Models
 {
@@ -8,7 +9,7 @@ namespace IcosWebApiGenerics.Models
         public int ID { get; set; }
         public string Name { get; set; }
 
-        [Column("required", TypeName = "bool")]
+        [Column("required", TypeName = "bit")]
         public bool Required { get; set; }
 
         [Column("varIndex", TypeName = "bool")]
@@ -30,6 +31,7 @@ namespace IcosWebApiGenerics.Models
 
         [Column("group_id", TypeName = "int")]
         public int GroupId { get; set; }
+
         [NotMapped]
         public int DataStatus { get; set; }
 
