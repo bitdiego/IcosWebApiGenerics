@@ -17,6 +17,7 @@ using IcosWebApiGenerics.Services.ValidationFunctions.StorageValidation;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace IcosWebApiGenerics.Services
 {
@@ -58,17 +59,43 @@ namespace IcosWebApiGenerics.Services
             //DIEGO:: TO BE CONSIDERED!!!
             var mandatoryVarsList = await GetMandatoryVariableListAsync(t.GroupId);
             var mandProps = t.GetType().GetProperties();
-
-            var stoca = mandProps.Where(x => mandatoryVarsList.Any(y => y.Name == x.Name));
-            foreach(var azz in stoca)
+            var mandItems = mandProps.Where(x => mandatoryVarsList.Any(y => y.Name == x.Name));
+            foreach(var item in mandItems)
             {
-                
-                var cippa = azz.GetValue(t, null);
-                var azzoType = azz.PropertyType.Name;
-                if(cippa == null)
+                int res = 0;
+                var itemValue = item.GetValue(t, null);
+                var itemType = item.PropertyType.Name;
+                if(itemValue == null)
+                {
+                    res = 1;
+                    
+                }
+                else
+                {   
+                    switch (itemType.ToLower())
+                    {
+                        case "int16":
+                        case "int32":
+                        case "int64":
+                            int iVal = Convert.ToInt32(itemValue);
+                            if (iVal < -9998) res = 1;
+                            break;
+                        case "decimal":
+                            decimal dVal = Convert.ToDecimal(itemValue);
+                            if (dVal < -9998) res = 1;
+                            break;
+                        case "string":
+                            if (String.IsNullOrEmpty(itemValue.ToString()))
+                            {
+                                res = 1;
+                            }
+                            break;
+                    }
+                }
+                if (res > 0)
                 {
                     response.Code += 1;
-                    response.FormatError(ErrorCodes.GeneralErrors[1], azz.Name, "$V0$", azz.Name, "$GRP$", GetGroupName(t.GroupId));
+                    response.FormatError(ErrorCodes.GeneralErrors[1], item.Name, "$V0$", item.Name, "$GRP$", GetGroupName(t.GroupId));
                 }
             }
             //GeneralValidation.ManageMandatoryData(mandatoryVarsList, response);
